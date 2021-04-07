@@ -28,7 +28,7 @@ from vonenet import get_model
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
 
 
-def compute_shape_bias(model, out_file):
+def compute_shape_bias(model, num_classes):
     """Test with cue-conflict images and record correct decisions.
     * You need to exclude images without a cue conflict (e.g. texture=cat, shape=cat)
     Dataset: Cue-conflict
@@ -40,12 +40,12 @@ def compute_shape_bias(model, out_file):
             # The number of shape images: 75 (per each shape category)
             # The number of texture images: 75 (per each tecture category)
     """
-    num_classes = 16  # number of classes
+    num_labels = 16  # number of classes
 
     # === compute shape-vs-texture decisions ===
     # make numpy arrays for recording
-    correct_shape_decisions = np.zeros(num_classes)
-    correct_texture_decisions = np.zeros(num_classes)
+    correct_shape_decisions = np.zeros(num_labels)
+    correct_texture_decisions = np.zeros(num_labels)
     all_results = []
     all_file_names = []
     # make dataloader
@@ -59,17 +59,26 @@ def compute_shape_bias(model, out_file):
             # first one is shape label. second one is texture label
             labels = [re.sub("\d+", "", f.split(".")[0]).split("-") for f in file_names]
             outputs = model(images)
-            outputs = torch.nn.Softmax(dim=1)(outputs)  # sofmax
+
 
             for i in range(outputs.shape[0]):
                 # get label keys from label_map (type: int)
                 shape_id, texture_id = [
                     get_key_from_value(label_map, v) for v in labels[i]
                 ]
-                # get model_decision (str) by mappig outputs from 1,000 to 16
-                model_decision = mapping.probabilities_to_decision(
-                    outputs[i].detach().cpu().numpy()
-                )
+
+                # get model decision
+                if num_classes == 1000:
+                    outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
+                    # get model_decision (str) by mappig outputs from 1,000 to 16
+                    model_decision = mapping.probabilities_to_decision(
+                        outputs[i].detach().cpu().numpy()
+                    )
+                elif num_classes == 16:
+                    # outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
+                    _, pred = outputs[i].topk(1)
+                    model_decision = pred.item()
+
                 # record all results
                 all_results.append(
                     [
@@ -104,7 +113,6 @@ def compute_shape_bias(model, out_file):
             ]
         ),
     )
-    df_all_decisions.to_csv(out_file)
 
     # save correct decisions
     correct_results = np.concatenate(
@@ -120,11 +128,11 @@ def compute_shape_bias(model, out_file):
     )
 
     return df_all_decisions, df_correct_decisions
-    df_correct_decisions.to_csv(out_file)
 
 
 if __name__ == "__main__":
     arch = "alexnet"
+    num_classes = 1000
     epoch = 60
     models_dir = "../../logs/models/"  # model directory
     results_dir = "./results/{}".format(arch)
@@ -206,9 +214,7 @@ if __name__ == "__main__":
             )
 
         # compute
-        df_all_decisions, df_correct_decisions = compute_shape_bias(
-            model=model, out_file=out_file
-        )
+        df_all_decisions, df_correct_decisions = compute_shape_bias(model=model, num_classes=num_classes)
 
         # save
         df_all_decisions.to_csv(all_file)
