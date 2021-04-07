@@ -125,7 +125,7 @@ if __name__ == "__main__":
     metrics = "correlation"
 
     # I/O settings
-    analysis_dir = "/home/sou/work/blur-training/analysis/rsa/bandpass"
+    analysis_dir = "/home/sou/work/blur-training-dev/analysis/rsa/bandpass"
     data_dir = os.path.join(
         analysis_dir, f"results/activations/{num_classes}-class-{arch}/"
     )

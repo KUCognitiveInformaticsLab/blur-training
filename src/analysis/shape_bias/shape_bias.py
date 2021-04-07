@@ -10,16 +10,19 @@ import numpy as np
 import pandas as pd
 import torch
 
-from utils import label_map, get_key_from_value, make_dataloader, load_model
-
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../"))
 
 # Ref: https://github.com/rgeirhos/texture-vs-shape/tree/master/code
 from src.model.mapping import probabilities_to_decision
-from vonenet import get_model
 from src.model.load_sin_pretrained_models import load_sin_model
+from src.model.utils import load_model
+from src.dataset.imagenet16 import label_map
+from src.dataset.cue_conflict import load_cue_conflict
+from src.utils.dictionary import get_key_from_value
+from vonenet import get_model
+
 
 # create mapping module
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
@@ -46,7 +49,7 @@ def compute_shape_bias(model, out_file):
     all_results = []
     all_file_names = []
     # make dataloader
-    cue_conf_loader = make_dataloader()
+    cue_conf_loader = load_cue_conflict()
     model.eval()
     with torch.no_grad():
         for images, _, file_names in cue_conf_loader:
@@ -101,11 +104,7 @@ def compute_shape_bias(model, out_file):
             ]
         ),
     )
-    if epoch == 0:
-        filename = "all_decisions_{}.csv".format(model_name)
-    else:
-        filename = "all_decisions_{}_e{}.csv".format(model_name, epoch)
-    df_all_decisions.to_csv(os.path.join(RESULTS_DIR, filename))
+    df_all_decisions.to_csv(out_file)
 
     # save correct decisions
     correct_results = np.concatenate(
@@ -119,20 +118,18 @@ def compute_shape_bias(model, out_file):
         index=["correct_shape_decisions", "correct_texture_decisions"],
         columns=list(label_map.values()),
     )
-    if epoch == 0:
-        filename = "correct_decisions_{}.csv".format(model_name)
-    else:
-        filename = "correct_decisions_{}_e{}.csv".format(model_name, epoch)
-    df_correct_decisions.to_csv(os.path.join(RESULTS_DIR, filename))
+
+    return df_all_decisions, df_correct_decisions
+    df_correct_decisions.to_csv(out_file)
 
 
 if __name__ == "__main__":
-    arch = sys.argv[1]
+    arch = "alexnet"
     epoch = 60
-    MODELS_DIR = "../../logs/models/"  # model directory
-    RESULTS_DIR = "./results/{}".format(arch)
-    if not os.path.exists(RESULTS_DIR):
-        os.makedirs(RESULTS_DIR)
+    models_dir = "../../logs/models/"  # model directory
+    results_dir = "./results/{}".format(arch)
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -166,13 +163,8 @@ if __name__ == "__main__":
             for sigma in range(1, 5):
                 model_names += [f"{mode}_s{sigma:02d}"]
 
-    # multi-steps
-    model_name = "{}_multi-steps".format(arch)
-    compute_shape_bias(model_name, arch, epoch)
-
     # VOneNet
-    model_name = "{}_vonenet".format(arch)
-    compute_shape_bias(model_name, arch, epoch=0)
+    model_names += ["{}_vonenet".format(arch)]
 
     # Stylized-ImageNet
     sin_names = {
@@ -180,21 +172,44 @@ if __name__ == "__main__":
         "vgg16": "vgg16_trained_on_SIN",
         "resnet50": "resnet50_trained_on_SIN",
     }
+    model_names += sin_names[arch]
 
     for model_name in model_names:
-        model_path = os.path.join(
-            MODELS_DIR, model_name, "epoch_{}.pth.tar".format(epoch)
-        )
-
+        print(model_name)
         # load model
         if "vonenet" in model_name:
             model = get_model(model_arch=arch, pretrained=True).to(device)
+            all_file = os.path.join(
+                results_dir, "all_decisions_{}.csv".format(model_name)
+            )
+            correct_file = os.path.join(
+                results_dir, "correct_decisions_{}.csv".format(model_name)
+            )
         elif "SIN" in model_name:
             model = load_sin_model(model_name).to(device)
+            all_file = os.path.join(
+                results_dir, "all_decisions_{}.csv".format(model_name)
+            )
+            correct_file = os.path.join(
+                results_dir, "correct_decisions_{}.csv".format(model_name)
+            )
         else:
-            model = load_model(model_path, arch).to(device)
-        print(model_name)
+            model_path = os.path.join(
+                models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
+            )
+            model = load_model(model_path).to(device)
+            all_file = os.path.join(
+                results_dir, "all_decisions_{}_e{}.csv".format(model_name, epoch)
+            )
+            correct_file = os.path.join(
+                results_dir, "correct_decisions_{}_e{}.csv".format(model_name, epoch)
+            )
 
-        out_file = "correct_decisions_{}_e{}.csv".format(model_name, epoch)
+        # compute
+        df_all_decisions, df_correct_decisions = compute_shape_bias(
+            model=model, out_file=out_file
+        )
 
-        compute_shape_bias(model, epoch=0)
+        # save
+        df_all_decisions.to_csv(all_file)
+        df_correct_decisions.to_csv(correct_file)
