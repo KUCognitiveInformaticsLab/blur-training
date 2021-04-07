@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 # from: https://github.com/rgeirhos/texture-vs-shape/tree/master/code
 
-import numpy as np
+import os
+import pathlib
+import sys
 from abc import ABC, abstractmethod
+
+import numpy as np
+
+# add the path to load src module
+current_dir = pathlib.Path(os.path.abspath(__file__)).parent
+sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 import src.model.mapping.helper.human_categories as hc
 

@@ -14,8 +14,6 @@ import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
-import torchvision.datasets as datasets
-import torchvision.transforms as transforms
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import models
 
@@ -25,7 +23,7 @@ sys.path.append(str(current_dir) + "/../")
 
 from src.dataset.imagenet import load_imagenet
 from src.image_process.lowpass_filter import GaussianBlurAll, RandomGaussianBlurAll
-from src.utils.model import save_model, save_checkpoint
+from src.model.utils import save_model, save_checkpoint
 from src.utils.adjust import (
     adjust_learning_rate,
     adjust_multi_steps,

@@ -16,7 +16,7 @@ from src.image_process.bandpass_filter import (
     apply_bandpass_filter,
 )
 from src.utils.accuracy import AverageMeter, accuracy
-from src.utils.model import load_model
+from src.model.utils import load_model
 from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
 

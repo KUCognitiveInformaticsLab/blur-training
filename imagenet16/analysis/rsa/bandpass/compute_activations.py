@@ -6,7 +6,7 @@ import sys
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
-from src.analysis.rsa.bandpass.compute_activations import main
+from src.analysis.rsa.bandpass.activations import main
 
 if __name__ == "__main__":
     # arguments

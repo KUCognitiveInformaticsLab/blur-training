@@ -6,11 +6,15 @@ of the 16 categories used in Robert's human and DNN
 experiments.
 
 """
-
-import numpy as np
 import os
+import pathlib
+import sys
 
-import helper.wordnet_functions as wf
+# add the path to load src module
+current_dir = pathlib.Path(os.path.abspath(__file__)).parent
+sys.path.append(os.path.join(str(current_dir), "../../../../"))
+
+import src.model.mapping.helper.wordnet_functions as wf
 
 
 def compute_imagenet_indices_for_category(category):

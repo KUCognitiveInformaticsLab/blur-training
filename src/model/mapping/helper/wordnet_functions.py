@@ -1,7 +1,5 @@
-import numpy as np
-from shutil import copyfile
 import os
-import linecache as lc
+
 
 def get_filenames_of_category(category, image_labels_path, categories):
     """Return a list of filenames of all images belonging to a category.

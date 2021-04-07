@@ -1,0 +1,21 @@
+# for training
+logs/
+
+# for analysis and noteboooks
+results/
+plots/
+test-images/
+
+# for developing new features
+dev/
+
+# for using tools from others
+tools/
+
+__pycache__/
+
+.ipynb_checkpoints/
+
+.DS_Store
+
+._.DS_Store

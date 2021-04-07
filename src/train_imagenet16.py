@@ -18,7 +18,7 @@ sys.path.append(str(current_dir) + "/../")
 
 from src.image_process.lowpass_filter import GaussianBlurAll, RandomGaussianBlurAll
 from src.dataset.imagenet16 import load_imagenet16
-from src.utils.model import load_model, save_model
+from src.model.utils import load_model, save_model
 from src.utils.adjust import (
     adjust_learning_rate,
     adjust_multi_steps,

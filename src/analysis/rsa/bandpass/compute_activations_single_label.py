@@ -11,8 +11,8 @@ import torchvision
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
-from src.utils.model import load_model
-from src.utils.image import imsave
+from src.model.utils import load_model
+from src.image_process.utils import imsave
 from src.analysis.rsa.rsa import AlexNetRSA
 from src.image_process.bandpass_images import (
     make_bandpass_images,

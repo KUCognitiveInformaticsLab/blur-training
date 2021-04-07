@@ -10,7 +10,7 @@ import torch
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
-from src.utils.model import load_model
+from src.model.utils import load_model
 from src.analysis.rsa.rsa import AlexNetRSA
 from src.dataset.imagenet16 import (
     load_imagenet16,
