@@ -2,9 +2,9 @@
 # coding: utf-8
 
 import os
-import sys
-import re
 import pathlib
+import re
+import sys
 
 import numpy as np
 import pandas as pd
@@ -22,7 +22,9 @@ from vonenet import get_model
 from src.model.load_sin_pretrained_models import load_sin_model
 
 # create mapping module
-mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()    
+mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
+
+
 def compute_shape_bias(model, out_file):
     """Test with cue-conflict images and record correct decisions.
     * You need to exclude images without a cue conflict (e.g. texture=cat, shape=cat)
@@ -44,7 +46,7 @@ def compute_shape_bias(model, out_file):
     all_results = []
     all_file_names = []
     # make dataloader
-    cue_conf_loader = make_dataloader()  
+    cue_conf_loader = make_dataloader()
     model.eval()
     with torch.no_grad():
         for images, _, file_names in cue_conf_loader:
@@ -52,56 +54,83 @@ def compute_shape_bias(model, out_file):
             images = images.to(device)
             # get labels from file names
             # first one is shape label. second one is texture label
-            labels = [re.sub('\d+', '', f.split('.')[0]).split('-') for f in file_names]
+            labels = [re.sub("\d+", "", f.split(".")[0]).split("-") for f in file_names]
             outputs = model(images)
             outputs = torch.nn.Softmax(dim=1)(outputs)  # sofmax
-            
+
             for i in range(outputs.shape[0]):
                 # get label keys from label_map (type: int)
-                shape_id, texture_id = [get_key_from_value(label_map, v) for v in labels[i]]
+                shape_id, texture_id = [
+                    get_key_from_value(label_map, v) for v in labels[i]
+                ]
                 # get model_decision (str) by mappig outputs from 1,000 to 16
-                model_decision = mapping.probabilities_to_decision(outputs[i].detach().cpu().numpy())
+                model_decision = mapping.probabilities_to_decision(
+                    outputs[i].detach().cpu().numpy()
+                )
                 # record all results
-                all_results.append([
-                                label_map[shape_id],  # shape label
-                                label_map[texture_id],  # texture label
-                                model_decision,  # model decision
-                                # *outputs[i].cpu().detach().numpy()  # remove all outputs
-                                ])
-                
-                if not shape_id == texture_id:  # Exclude images without a cue conflict (e.g. texture=cat, shape=cat)
+                all_results.append(
+                    [
+                        label_map[shape_id],  # shape label
+                        label_map[texture_id],  # texture label
+                        model_decision,  # model decision
+                        # *outputs[i].cpu().detach().numpy()  # remove all outputs
+                    ]
+                )
+
+                if (
+                    not shape_id == texture_id
+                ):  # Exclude images without a cue conflict (e.g. texture=cat, shape=cat)
                     # Sum up shape or texture decisions (when either shape or texture category is correctly predicted).
-                    correct_shape_decisions[shape_id] += float((model_decision == label_map[shape_id])) 
-                    correct_texture_decisions[texture_id] += float((model_decision == label_map[texture_id]))  
-    
+                    correct_shape_decisions[shape_id] += float(
+                        (model_decision == label_map[shape_id])
+                    )
+                    correct_texture_decisions[texture_id] += float(
+                        (model_decision == label_map[texture_id])
+                    )
+
     # save all decisions
-    df_all_decisions = pd.DataFrame(all_results, index=all_file_names, 
-                                columns=np.array(['shape_label', 'texture_label', 'model_decision', 
-                                                  #*label_map.values()  # remove all outputs
-                                                 ]))
+    df_all_decisions = pd.DataFrame(
+        all_results,
+        index=all_file_names,
+        columns=np.array(
+            [
+                "shape_label",
+                "texture_label",
+                "model_decision",
+                # *label_map.values()  # remove all outputs
+            ]
+        ),
+    )
     if epoch == 0:
-        filename = 'all_decisions_{}.csv'.format(model_name)
+        filename = "all_decisions_{}.csv".format(model_name)
     else:
-        filename = 'all_decisions_{}_e{}.csv'.format(model_name, epoch)
+        filename = "all_decisions_{}_e{}.csv".format(model_name, epoch)
     df_all_decisions.to_csv(os.path.join(RESULTS_DIR, filename))
-    
+
     # save correct decisions
-    correct_results = np.concatenate([correct_shape_decisions.reshape(1, -1), correct_texture_decisions.reshape(1, -1)])
-    df_correct_decisions = pd.DataFrame(correct_results, 
-                                        index=['correct_shape_decisions', 'correct_texture_decisions'], 
-                                        columns=list(label_map.values()))
+    correct_results = np.concatenate(
+        [
+            correct_shape_decisions.reshape(1, -1),
+            correct_texture_decisions.reshape(1, -1),
+        ]
+    )
+    df_correct_decisions = pd.DataFrame(
+        correct_results,
+        index=["correct_shape_decisions", "correct_texture_decisions"],
+        columns=list(label_map.values()),
+    )
     if epoch == 0:
-        filename = 'correct_decisions_{}.csv'.format(model_name)
+        filename = "correct_decisions_{}.csv".format(model_name)
     else:
-        filename = 'correct_decisions_{}_e{}.csv'.format(model_name, epoch)
+        filename = "correct_decisions_{}_e{}.csv".format(model_name, epoch)
     df_correct_decisions.to_csv(os.path.join(RESULTS_DIR, filename))
 
 
 if __name__ == "__main__":
     arch = sys.argv[1]
     epoch = 60
-    MODELS_DIR = '../../logs/models/'  # model directory
-    RESULTS_DIR = './results/{}'.format(arch)
+    MODELS_DIR = "../../logs/models/"  # model directory
+    RESULTS_DIR = "./results/{}".format(arch)
     if not os.path.exists(RESULTS_DIR):
         os.makedirs(RESULTS_DIR)
 
@@ -138,30 +167,34 @@ if __name__ == "__main__":
                 model_names += [f"{mode}_s{sigma:02d}"]
 
     # multi-steps
-    model_name = '{}_multi-steps'.format(arch)
+    model_name = "{}_multi-steps".format(arch)
     compute_shape_bias(model_name, arch, epoch)
 
     # VOneNet
-    model_name = '{}_vonenet'.format(arch)
+    model_name = "{}_vonenet".format(arch)
     compute_shape_bias(model_name, arch, epoch=0)
 
     # Stylized-ImageNet
     sin_names = {
-        'alexnet': "alexnet_trained_on_SIN",
-        'vgg16': "vgg16_trained_on_SIN",
-        'resnet50': "resnet50_trained_on_SIN"
+        "alexnet": "alexnet_trained_on_SIN",
+        "vgg16": "vgg16_trained_on_SIN",
+        "resnet50": "resnet50_trained_on_SIN",
     }
 
     for model_name in model_names:
-    model_path = os.path.join(MODELS_DIR, model_name, 'epoch_{}.pth.tar'.format(epoch))
+        model_path = os.path.join(
+            MODELS_DIR, model_name, "epoch_{}.pth.tar".format(epoch)
+        )
 
-    # load model
-    if 'vonenet' in model_name:
-        model = get_model(model_arch=arch, pretrained=True).to(device)
-    elif 'SIN' in model_name:
-        model = load_sin_model(model_name).to(device)
-    else:
-        model = load_model(model_path, arch).to(device)
-    print(model_name)
+        # load model
+        if "vonenet" in model_name:
+            model = get_model(model_arch=arch, pretrained=True).to(device)
+        elif "SIN" in model_name:
+            model = load_sin_model(model_name).to(device)
+        else:
+            model = load_model(model_path, arch).to(device)
+        print(model_name)
 
-    compute_shape_bias(sin_names[arch], arch, epoch=0)
+        out_file = "correct_decisions_{}_e{}.csv".format(model_name, epoch)
+
+        compute_shape_bias(model, epoch=0)

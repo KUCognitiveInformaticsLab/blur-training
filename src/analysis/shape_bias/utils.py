@@ -8,10 +8,27 @@ import torchvision.transforms as transforms
 
 
 # create label_map dictionary
-labels =sorted(["knife", "keyboard", "elephant", "bicycle", "airplane",
-            "clock", "oven", "chair", "bear", "boat", "cat",
-            "bottle", "truck", "car", "bird", "dog"])
-label_map =  {k:v for k, v in enumerate(labels)}
+labels = sorted(
+    [
+        "knife",
+        "keyboard",
+        "elephant",
+        "bicycle",
+        "airplane",
+        "clock",
+        "oven",
+        "chair",
+        "bear",
+        "boat",
+        "cat",
+        "bottle",
+        "truck",
+        "car",
+        "bird",
+        "dog",
+    ]
+)
+label_map = {k: v for k, v in enumerate(labels)}
 
 
 def get_key_from_value(d, val):
@@ -21,48 +38,52 @@ def get_key_from_value(d, val):
     return None
 
 
-def load_model(model_path, arch='alexnet'):
-    """Load model. 
+def load_model(model_path, arch="alexnet"):
+    """Load model.
     Args:
         model_path: Path to the pytorch saved file of the model you want to use
         arch: Architecture of CNN
-    Returns: CNN model 
+    Returns: CNN model
     """
-    checkpoint = torch.load(model_path, map_location='cuda:0')
+    checkpoint = torch.load(model_path, map_location="cuda:0")
     model = models.__dict__[arch]()
     try:
-        model.load_state_dict(checkpoint['state_dict'])
+        model.load_state_dict(checkpoint["state_dict"])
     except RuntimeError:
         model.features = torch.nn.DataParallel(model.features)
-        model.load_state_dict(checkpoint['state_dict'])
+        model.load_state_dict(checkpoint["state_dict"])
     return model
 
 
-def make_dataloader(data_path='/mnt/data/shape-texture-cue-conflict/' , 
-                            batch_size=64):
+def make_dataloader(data_path="/mnt/data/shape-texture-cue-conflict/", batch_size=64):
     """
-    Args: 
+    Args:
         data_path: path to the directory that contains cue conflict images
         bath_size: the size of each batch set
     """
     # normalization of cue-conflict images:
-    #normalize = transforms.Normalize(mean=[0.5374, 0.4923, 0.4556], std=[0.2260, 0.2207, 0.2231])
+    # normalize = transforms.Normalize(mean=[0.5374, 0.4923, 0.4556], std=[0.2260, 0.2207, 0.2231])
     # standard ImageNet normalization
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+    )
+
     # data augumentation for imagenet in robustness library is:
     # https://github.com/MadryLab/robustness/blob/master/robustness/data_augmentation.py
     dataset = ImageFolderWithFileName(
-                data_path,
-                transforms.Compose([
+        data_path,
+        transforms.Compose(
+            [
                 transforms.ToTensor(),
-                normalize,  
-            ]))
+                normalize,
+            ]
+        ),
+    )
 
     dataloader = torch.utils.data.DataLoader(
-            dataset, batch_size=batch_size, shuffle=False,
-            num_workers=5, pin_memory=True)
-    
+        dataset, batch_size=batch_size, shuffle=False, num_workers=5, pin_memory=True
+    )
+
     return dataloader
 
 
@@ -73,6 +94,7 @@ class ImageFolderWithFileName(datasets.ImageFolder):
     source code:
     https://github.com/pytorch/vision/blob/master/torchvision/datasets/folder.py#L128
     """
+
     # override the __getitem__ method that dataloader calls
     def __getitem__(self, index):
         """
@@ -87,16 +109,17 @@ class ImageFolderWithFileName(datasets.ImageFolder):
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-            
+
         # get filename from path
         filename = os.path.basename(path)
 
         return sample, target, filename  # add filename
 
-    
+
 class AverageMeter(object):
     """Computes and stores the average and current value"""
-    def __init__(self, name, fmt=':f'):
+
+    def __init__(self, name, fmt=":f"):
         self.name = name
         self.fmt = fmt
         self.reset()
@@ -114,10 +137,10 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
     def __str__(self):
-        fmtstr = '{name} {val' + self.fmt + '} ({avg' + self.fmt + '})'
+        fmtstr = "{name} {val" + self.fmt + "} ({avg" + self.fmt + "})"
         return fmtstr.format(**self.__dict__)
 
-    
+
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
     with torch.no_grad():
@@ -133,4 +156,3 @@ def accuracy(output, target, topk=(1,)):
             correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
-    

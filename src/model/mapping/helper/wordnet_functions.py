@@ -11,7 +11,7 @@ def get_filenames_of_category(category, image_labels_path, categories):
                  categories has to be the same as used for the labelling.
 
     """
-  
+
     # get indices of all subcategories that belong to the category
     subcategories_list = []
     counter = 0
@@ -19,7 +19,6 @@ def get_filenames_of_category(category, image_labels_path, categories):
         if is_hypernym(c, category):
             subcategories_list.append(counter)
         counter += 1
-
 
     image_list = []
     with open(image_labels_path) as labels_file:
@@ -36,7 +35,7 @@ def hypernyms_in_ilsvrc2012_categories(entity):
     """Return all hypernyms of categories.txt for a given entity.
 
     entity - a string, e.g. "furniture"
-  
+
     Returns the children of the entity, e.g. "bed" and "chair" if there were
     both a "bed" and a "chair" in categories.txt (the imagenet categories).
     If the entity itself is contained, it will be returned as well.
@@ -44,7 +43,7 @@ def hypernyms_in_ilsvrc2012_categories(entity):
 
     return get_hypernyms("categories.txt", entity)
 
-    
+
 def get_hypernyms(categories_file, entity):
     """Return all hypernyms of categories for a given entity.
 
@@ -80,7 +79,7 @@ def get_ilsvrc2012_training_WNID(entity):
     results = []
 
     hypernyms = hypernyms_in_ilsvrc2012_categories(entity)
-    
+
     for hyper in hypernyms:
 
         with open("WNID_synsets_mapping.txt") as f:
@@ -107,7 +106,7 @@ def get_ilsvrc2012_categories():
 
     with open("categories.txt") as f:
         for line in f:
-           categories.append(get_category_from_line(line))
+            categories.append(get_category_from_line(line))
 
     return categories
 
@@ -118,14 +117,14 @@ def get_category_from_line(line):
     category = line.split(",")[0][10:]
     category = category.replace(" ", "_")
     category = category.replace("\n", "")
-    return category           
+    return category
 
 
 def get_WNID_from_index(index):
     """Return WNID given an index of categories.txt"""
-    assert(index >= 0 and index < 1000), "index needs to be within [0, 999]"
+    assert index >= 0 and index < 1000, "index needs to be within [0, 999]"
 
     file_path = "categories.txt"  # change depending on location of categories.txt!
-    assert(os.path.exists(file_path)), "path to categories.txt wrong!"
-    line = lc.getline(file_path, index+1)
+    assert os.path.exists(file_path), "path to categories.txt wrong!"
+    line = lc.getline(file_path, index + 1)
     return line.split(" ")[0]

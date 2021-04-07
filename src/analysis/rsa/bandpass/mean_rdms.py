@@ -126,9 +126,15 @@ if __name__ == "__main__":
 
     # I/O settings
     analysis_dir = "/home/sou/work/blur-training/analysis/rsa/bandpass"
-    data_dir = os.path.join(analysis_dir, f"results/activations/{num_classes}-class-{arch}/")
-    results_dir = os.path.join(analysis_dir, f"results/mean_rdms_{metrics}/{num_classes}-class-{arch}/")
-    plots_dir = os.path.join(analysis_dir, f"plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/")
+    data_dir = os.path.join(
+        analysis_dir, f"results/activations/{num_classes}-class-{arch}/"
+    )
+    results_dir = os.path.join(
+        analysis_dir, f"results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    )
+    plots_dir = os.path.join(
+        analysis_dir, f"plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    )
 
     assert os.path.exists(data_dir), f"{data_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
@@ -181,9 +187,7 @@ if __name__ == "__main__":
         num_filters = mean_rdms["num_filters"]
 
         # (optional) set title of the plot
-        title = (
-            f"RDM({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
-        )
+        title = f"RDM({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set the plot path
         plot_file = f"{num_classes}-class_mean-rdms_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"

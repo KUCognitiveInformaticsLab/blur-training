@@ -12,10 +12,10 @@ from torch.utils import model_zoo
 def load_sin_model(model_name):
 
     model_urls = {
-            'resnet50_trained_on_SIN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/6f41d2e86fc60566f78de64ecff35cc61eb6436f/resnet50_train_60_epochs-c8e5653e.pth.tar',
-            'resnet50_trained_on_SIN_and_IN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_train_45_epochs_combined_IN_SF-2a0d100e.pth.tar',
-            'resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar',
-            'alexnet_trained_on_SIN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/0008049cd10f74a944c6d5e90d4639927f8620ae/alexnet_train_60_epochs_lr0.001-b4aa5238.pth.tar',
+        "resnet50_trained_on_SIN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/6f41d2e86fc60566f78de64ecff35cc61eb6436f/resnet50_train_60_epochs-c8e5653e.pth.tar",
+        "resnet50_trained_on_SIN_and_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_train_45_epochs_combined_IN_SF-2a0d100e.pth.tar",
+        "resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
+        "alexnet_trained_on_SIN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/0008049cd10f74a944c6d5e90d4639927f8620ae/alexnet_train_60_epochs_lr0.001-b4aa5238.pth.tar",
     }
 
     if "resnet50" in model_name:
@@ -25,17 +25,18 @@ def load_sin_model(model_name):
         checkpoint = model_zoo.load_url(model_urls[model_name])
     elif "vgg16" in model_name:
         print("Using the VGG-16 architecture.")
-       
+
         # download model from URL manually and save to desired location
         filepath = "./vgg16_train_60_epochs_lr0.01-6c6fcc9f.pth.tar"
 
-        assert os.path.exists(filepath), "Please download the VGG model yourself from the following link and save it locally: https://drive.google.com/drive/folders/1A0vUWyU6fTuc-xWgwQQeBvzbwi6geYQK (too large to be downloaded automatically like the other models)"
+        assert os.path.exists(
+            filepath
+        ), "Please download the VGG model yourself from the following link and save it locally: https://drive.google.com/drive/folders/1A0vUWyU6fTuc-xWgwQQeBvzbwi6geYQK (too large to be downloaded automatically like the other models)"
 
         model = torchvision.models.vgg16(pretrained=False)
         model.features = torch.nn.DataParallel(model.features)
         model.cuda()
         checkpoint = torch.load(filepath)
-
 
     elif "alexnet" in model_name:
         print("Using the AlexNet architecture.")
@@ -71,7 +72,7 @@ if __name__ == "__main__":
 
     model = load_sin_model(model_A)  # change to different model as desired
     print("Model download completed.")
- 
+
     # sanity check: print state_dict
     try:
         for k, v in model.module.state_dict().items():

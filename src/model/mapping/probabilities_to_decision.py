@@ -16,11 +16,9 @@ import src.model.mapping.helper.human_categories as hc
 
 
 class ProbabilitiesToDecisionMapping(ABC):
-
     @abstractmethod
     def probabilities_to_decision(self, probabilities):
         pass
-
 
     def check_input(self, probabilities):
         """Run assert checks on probabilities.
@@ -30,7 +28,6 @@ class ProbabilitiesToDecisionMapping(ABC):
                          (softmax output: all values should be
                          within [0,1])
         """
-
 
         assert type(probabilities) is np.ndarray
         assert (probabilities >= 0.0).all() and (probabilities <= 1.0).all()
@@ -42,7 +39,6 @@ class ImageNetProbabilitiesTo16ClassesMapping(ProbabilitiesToDecisionMapping):
     def __init__(self, aggregation_function=np.mean):
 
         self.aggregation_function = aggregation_function
-
 
     def probabilities_to_decision(self, probabilities):
         """Return one of 16 categories for vector of probabilities.
@@ -66,6 +62,5 @@ class ImageNetProbabilitiesTo16ClassesMapping(ProbabilitiesToDecisionMapping):
             if aggregated_value > max_value:
                 max_value = aggregated_value
                 category_decision = category
-   
-        return category_decision
 
+        return category_decision
