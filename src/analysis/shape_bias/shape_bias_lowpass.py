@@ -13,11 +13,11 @@ import torch
 from vonenet import get_model
 from src.model.load_sin_pretrained_models import load_sin_model
 # from https://github.com/rgeirhos/texture-vs-shape/tree/master/code
-import probabilities_to_decision
+from src.model.mapping import probabilities_to_decision
 
 from utils import label_map, get_key_from_value, load_model, make_dataloader
 
-sys.path.append('../../')
+sys.path.append('../../../')
 from training.utils import GaussianBlurAll
 
 

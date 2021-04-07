@@ -80,6 +80,7 @@ def compute_bandpass_acc(
             inputs = inputs.to(device)
             outputs = model(inputs)
             if model.num_classes == 1000 and test_loader.num_classes == 16:
+                pass
                 # map outputs from 1000 to 16
             acc1 = accuracy(outputs, labels, topk=(1,))
             top1.update(acc1[0], inputs.size(0))

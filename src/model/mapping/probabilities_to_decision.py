@@ -4,7 +4,7 @@
 import numpy as np
 from abc import ABC, abstractmethod
 
-import helper.human_categories as hc
+import src.model.mapping.helper.human_categories as hc
 
 
 class ProbabilitiesToDecisionMapping(ABC):

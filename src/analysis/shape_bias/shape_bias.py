@@ -4,54 +4,26 @@
 import os
 import sys
 import re
-
+import pathlib
 
 import numpy as np
 import pandas as pd
 import torch
-from torchvision import models
-
-from vonenet import get_model
-from src.model.load_sin_pretrained_models import load_sin_model
 
 from utils import label_map, get_key_from_value, make_dataloader, load_model
 
-# from https://github.com/rgeirhos/texture-vs-shape/tree/master/code
-import probabilities_to_decision
+# add the path to load src module
+current_dir = pathlib.Path(os.path.abspath(__file__)).parent
+sys.path.append(os.path.join(str(current_dir), "../../../"))
 
-
-arch = sys.argv[1]
-epoch = 60
-MODELS_DIR = '../../logs/models/'  # model directory
-RESULTS_DIR = './results/{}'.format(arch)
-if not os.path.exists(RESULTS_DIR):
-    os.makedirs(RESULTS_DIR)
-
-    
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-#print(device)
-
-
-def load_model(model_path, arch='alexnet'):
-    """Load model. 
-    Args:
-        model_path: Path to the pytorch saved file of the model you want to use
-        arch: Architecture of CNN
-    Returns: CNN model 
-    """
-    checkpoint = torch.load(model_path, map_location='cuda:0')
-    model = models.__dict__[arch]()
-    try:
-        model.load_state_dict(checkpoint['state_dict'])
-    except RuntimeError:
-        model.features = torch.nn.DataParallel(model.features)
-        model.load_state_dict(checkpoint['state_dict'])
-    return model
-
+# Ref: https://github.com/rgeirhos/texture-vs-shape/tree/master/code
+from src.model.mapping import probabilities_to_decision
+from vonenet import get_model
+from src.model.load_sin_pretrained_models import load_sin_model
 
 # create mapping module
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()    
-def test(model_name, arch, epoch): 
+def compute_shape_bias(model, out_file):
     """Test with cue-conflict images and record correct decisions.
     * You need to exclude images without a cue conflict (e.g. texture=cat, shape=cat)
     Dataset: Cue-conflict
@@ -64,17 +36,7 @@ def test(model_name, arch, epoch):
             # The number of texture images: 75 (per each tecture category)
     """
     num_classes = 16  # number of classes
-    model_path = os.path.join(MODELS_DIR, model_name, 'epoch_{}.pth.tar'.format(epoch))
-    
-    # load model
-    if 'vonenet' in model_name:
-        model = get_model(model_arch=arch, pretrained=True).to(device)
-    elif 'SIN' in model_name:
-        model = load_sin_model(model_name).to(device)
-    else:
-        model = load_model(model_path, arch).to(device)
-    print(model_name)
-    
+
     # === compute shape-vs-texture decisions ===
     # make numpy arrays for recording
     correct_shape_decisions = np.zeros(num_classes)
@@ -133,50 +95,73 @@ def test(model_name, arch, epoch):
     else:
         filename = 'correct_decisions_{}_e{}.csv'.format(model_name, epoch)
     df_correct_decisions.to_csv(os.path.join(RESULTS_DIR, filename))
-                         
 
-# normal
-model_name = '{}_normal'.format(arch)
-test(model_name, arch, epoch)
 
-# all
-for s in range(1, 5):
-    model_name = '{}_all_s{}'.format(arch, s)
-    test(model_name, arch, epoch)
+if __name__ == "__main__":
+    arch = sys.argv[1]
+    epoch = 60
+    MODELS_DIR = '../../logs/models/'  # model directory
+    RESULTS_DIR = './results/{}'.format(arch)
+    if not os.path.exists(RESULTS_DIR):
+        os.makedirs(RESULTS_DIR)
 
-# mix
-for s in range(1,5):
-    model_name = '{}_mix_s{}_b512'.format(arch, s)
-    test(model_name, arch, epoch)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# single-step
-for s in range(1,5):
-    model_name = '{}_single-step_s{}_b512'.format(arch, s)
-    test(model_name, arch, epoch)
+    # models to compare
+    model_names = [
+        f"{arch}_normal",
+        f"{arch}_multi-steps",
+    ]
+    modes = [
+        f"{arch}_all",
+        f"{arch}_mix",
+        f"{arch}_random-mix",
+        f"{arch}_single-step",
+        # f"{arch}_fixed-single-step",
+        # f"{arch}_reversed-single-step",
+    ]
 
-if arch == 'alexnet':
-    # fixed-single-step
-    for s in range(1,5):
-        model_name = '{}_fixed-single-step_s{}'.format(arch, s)
-        test(model_name, arch, epoch)
-    
-# reversed-single-step
-# for s in range(1, 5):
-#     model_name = '{}_reversed-single-step_s{}'.format(arch, s)
-#     test(model_name, arch, epoch)
-    
-# multi-steps
-model_name = '{}_multi-steps'.format(arch)
-test(model_name, arch, epoch)
+    # sigmas to compare
+    sigmas_mix = [s for s in range(1, 6)] + [10]
+    sigmas_random_mix = ["00-05", "00-10"]
 
-# VOneNet
-model_name = '{}_vonenet'.format(arch)
-test(model_name, arch, epoch=0)
+    # add sigma to compare to the model names
+    for mode in modes:
+        if mode == f"{arch}_random-mix":
+            for min_max in sigmas_random_mix:
+                model_names += [f"{mode}_s{min_max}"]
+        elif mode == f"{arch}_mix":
+            for sigma in sigmas_mix:
+                model_names += [f"{mode}_s{sigma:02d}"]
+        else:
+            for sigma in range(1, 5):
+                model_names += [f"{mode}_s{sigma:02d}"]
 
-# Stylized-ImageNet
-model_names = {
-    'alexnet': "alexnet_trained_on_SIN", 
-    'vgg16': "vgg16_trained_on_SIN",
-    'resnet50': "resnet50_trained_on_SIN"
-}
-test(model_names[arch], arch, epoch=0)
+    # multi-steps
+    model_name = '{}_multi-steps'.format(arch)
+    compute_shape_bias(model_name, arch, epoch)
+
+    # VOneNet
+    model_name = '{}_vonenet'.format(arch)
+    compute_shape_bias(model_name, arch, epoch=0)
+
+    # Stylized-ImageNet
+    sin_names = {
+        'alexnet': "alexnet_trained_on_SIN",
+        'vgg16': "vgg16_trained_on_SIN",
+        'resnet50': "resnet50_trained_on_SIN"
+    }
+
+    for model_name in model_names:
+    model_path = os.path.join(MODELS_DIR, model_name, 'epoch_{}.pth.tar'.format(epoch))
+
+    # load model
+    if 'vonenet' in model_name:
+        model = get_model(model_arch=arch, pretrained=True).to(device)
+    elif 'SIN' in model_name:
+        model = load_sin_model(model_name).to(device)
+    else:
+        model = load_model(model_path, arch).to(device)
+    print(model_name)
+
+    compute_shape_bias(sin_names[arch], arch, epoch=0)

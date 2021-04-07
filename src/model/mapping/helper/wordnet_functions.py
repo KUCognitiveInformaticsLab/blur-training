@@ -127,7 +127,7 @@ def get_WNID_from_index(index):
     """Return WNID given an index of categories.txt"""
     assert(index >= 0 and index < 1000), "index needs to be within [0, 999]"
 
-    file_path = "categories.txt" # change depending on location of categories.txt!
+    file_path = "categories.txt"  # change depending on location of categories.txt!
     assert(os.path.exists(file_path)), "path to categories.txt wrong!"
     line = lc.getline(file_path, index+1)
     return line.split(" ")[0]
