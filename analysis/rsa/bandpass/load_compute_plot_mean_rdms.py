@@ -7,10 +7,10 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.mean_rdms import (
-    compute_mean_rdms,
-    save_rdms,
+    load_compute_mean_rdms,
     plot_bandpass_rdms,
 )
+from src.analysis.rsa.rdm import save_rdms
 
 if __name__ == "__main__":
     arch = "alexnet"
@@ -65,6 +65,7 @@ if __name__ == "__main__":
                 model_names += [f"{mode}_s{sigma:02d}"]
 
     from src.analysis.rsa.rsa import alexnet_layers
+
     min_list = []
     max_list = []
 
@@ -72,7 +73,7 @@ if __name__ == "__main__":
         in_dir = os.path.join(data_dir, f"{model_name}_e{epoch:02d}")
         assert os.path.exists(in_dir), f"{in_dir} does not exist."
 
-        mean_rdms = compute_mean_rdms(
+        mean_rdms = load_compute_mean_rdms(
             in_dir=in_dir, num_filters=6, num_images=1600, metrics=metrics
         )
 
@@ -111,5 +112,6 @@ if __name__ == "__main__":
         )
 
     import numpy as np
+
     print(np.array(min_list).min())
     print(np.array(max_list).max())

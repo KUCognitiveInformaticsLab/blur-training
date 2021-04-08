@@ -53,6 +53,7 @@ def main(
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # make Dataloader
+    # ** batch_size must be 1 **
     _, test_loader = load_imagenet16(imagenet_path=dataset_path, batch_size=1)
 
     # make filters
@@ -67,7 +68,7 @@ def main(
         out_dir = os.path.join(results_dir, f"{model_name}_e{epoch:02d}")
         os.makedirs(out_dir, exist_ok=True)
 
-        compute_activations_on_bandpass(
+        compute(
             model,
             device=device,
             data_loader=test_loader,
@@ -76,7 +77,7 @@ def main(
         )
 
 
-def compute_activations_on_bandpass(
+def compute(
     model,
     device: torch.device,
     data_loader: iter,
@@ -90,86 +91,39 @@ def compute_activations_on_bandpass(
         image (torch.Tensor): torch.Size([1, 3, 375, 500])
         label (torch.Tensor): e.g. tensor([0])
         """
-        # make bandpass images
-        test_images = torch.zeros([len(filters) + 1, 1, num_channels, height, width])
-        test_images[0] = image  # add raw images
-        for i, (s1, s2) in enumerate(filters.values(), 1):
-            test_images[i] = apply_bandpass_filter(images=image, sigma1=s1, sigma2=s2)
+        activations = compute_activations_with_bandpass(
+            RSA=RSA, image=image, label=label, filters=filters, device=device
+        )
 
-        # change the order of num_images and num_filters(+1)
-        test_images = test_images.transpose(1, 0)  # (1, F+1, C, H, W)
-
-        activations = RSA.compute_activations(test_images[0].to(device))
-        # print(activations["conv-relu-1"].shape)  # torch.Size([F+1, 64, 55, 55])
-
-        # add parameter settings of this analysis
-        activations["label_id"] = label.item()
-        activations["num_filters"] = len(filters)
-
-        # save
+        # save (This file size is very big with iterations!)
         file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
         file_path = os.path.join(out_dir, file_name)
         save_activations(activations=activations, file_path=file_path)
 
 
-if __name__ == "__main__":
-    # arguments
-    arch = "alexnet"
-    num_classes = 16
-    epoch = 60
-    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
-    )
-    results_dir = f"/home/sou/work/blur-training/analysis/rsa/bandpass/results/activations/{num_classes}-class-{arch}"
-    assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
+def compute_activations_with_bandpass(
+    RSA,
+    image: torch.Tensor,
+    label: torch.Tensor,
+    filters: dict,
+    device: torch.device,
+):
+    """Computes activations of a sigle image with band-pass filters applied.
+    image (torch.Tensor): torch.Size([1, 3, 375, 500])
+    label (torch.Tensor): e.g. tensor([0])
+    """
+    test_images = torch.zeros([len(filters) + 1, 1, num_channels, height, width])
+    test_images[0] = image  # add raw images
+    for i, (s1, s2) in enumerate(filters.values(), 1):
+        test_images[i] = apply_bandpass_filter(images=image, sigma1=s1, sigma2=s2)
 
-    # all_filter_combinations = False
-    # if all_filter_combinations:
-    #     results_dir = f"./results/{arch}_bandpass_all_filter_comb/activations"
-    # else:
-    #     results_dir = f"./results/{arch}_bandpass/activations"
+    # change the order of num_images and num_filters(+1)
+    test_images = test_images.transpose(1, 0)  # (1, F+1, C, H, W)
 
-    # models to compare
-    modes = [
-        "normal",
-        # "all",
-        # "mix",
-        # "random-mix",
-        # "single-step",
-        # "fixed-single-step",
-        # "reversed-single-step",
-        # "multi-steps",
-    ]
+    activations = RSA.compute_activations(test_images[0].to(device))
 
-    # sigmas to compare
-    sigmas_mix = [s for s in range(1, 6)] + [10]
-    sigmas_random_mix = ["00-05", "00-10"]
+    # add parameter settings of this analysis
+    activations["label_id"] = label.item()
+    activations["num_filters"] = len(filters)
 
-    # make model name list
-    model_names = []
-    for mode in modes:
-        if mode in ("normal", "multi-steps"):
-            model_names += [f"{arch}_{mode}"]
-        elif mode == "random-mix":
-            for min_max in sigmas_random_mix:
-                model_names += [f"{arch}_{mode}_s{min_max}"]
-        elif mode == "mix":
-            for sigma in sigmas_mix:
-                model_names += [f"{arch}_{mode}_s{sigma:02d}"]
-        else:
-            for s in range(4):
-                model_names += [f"{arch}_{mode}_s{s + 1:02d}"]
-
-    main(
-        arch=arch,
-        num_classes=num_classes,
-        model_names=model_names,
-        models_dir=models_dir,  # model directory
-        results_dir=results_dir,
-        dataset_path="/mnt/data1/ImageNet/ILSVRC2012/",
-        # all_filter_combinations=all_filter_combinations,
-        num_filters=6,  # number of band-pass filters
-        seed=42,
-    )
+    return activations

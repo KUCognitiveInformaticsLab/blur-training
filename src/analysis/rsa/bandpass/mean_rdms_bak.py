@@ -4,7 +4,6 @@ import sys
 
 import numpy as np
 import seaborn as sns
-import torch
 from matplotlib import pyplot as plt
 from scipy.spatial.distance import squareform, pdist
 
@@ -12,80 +11,12 @@ from scipy.spatial.distance import squareform, pdist
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
-from src.analysis.rsa.rsa import alexnet_layers, AlexNetRSA
+from src.analysis.rsa.rsa import alexnet_layers
 from src.analysis.rsa.activations import load_activations
-from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
+from src.analysis.rsa.rdm import save_rdms
 
 
-def compute_mean_rdms_with_bandpass(
-    model,
-    data_loader: iter,
-    filters: dict,
-    device: torch.device,
-    metrics: str = "correlation",  # # "1-covariance", "negative-covariance"
-) -> dict:
-    """Computes RDM for each image and return mean RDMs.
-    Args:
-        in_dir: path to input directory
-        num_filters: number of band-pass filter
-        num_images: number of images
-    Returns: Mean RDMs (Dict)
-    """
-    RSA = AlexNetRSA(model)
-
-    mean_rdms = {}
-    mean_rdms["num_filters"] = len(filters)
-    mean_rdms["num_images"] = len(data_loader)
-    # mean_rdms["target_id"] = target_id
-
-    for layer in alexnet_layers:
-        rdms = []
-        # compute RDM for each image (with some filters applied)
-        for image_id, (image, label) in enumerate(data_loader):
-            """Note that data_loader SHOULD return a single image for each loop.
-            image (torch.Tensor): torch.Size([1, 3, 375, 500])
-            label (torch.Tensor): e.g. tensor([0])
-            """
-            activations = compute_activations_with_bandpass(
-                RSA=RSA, image=image, label=label, filters=filters, device=device
-            )
-            # save (This file size is very big with iterations!)
-            # file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
-            # file_path = os.path.join(out_dir, file_name)
-            # save_activations(activations=activations, file_path=file_path)
-
-            # reshape activations for computing rdm
-            activation = activations[layer].reshape(len(filters) + 1, -1)
-
-            if metrics == "correlation":
-                rdm = squareform(pdist(activation, metric=metrics))  # 1 - corr.
-            elif metrics == "negative-covariance":
-                rdm = squareform(
-                    pdist(
-                        activation,
-                        lambda u, v: -np.average(
-                            (u - np.average(u)) * (v - np.average(v))
-                        ),
-                    )  # - cov.
-                )
-            elif metrics == "1-covariance":
-                rdm = squareform(
-                    pdist(
-                        activation,
-                        lambda u, v: 1
-                        - np.average((u - np.average(u)) * (v - np.average(v))),
-                    )  # 1 - cov.
-                )
-            rdms.append(rdm)
-
-        rdms = np.array(rdms)
-
-        mean_rdms[layer] = rdms.mean(0)
-
-    return mean_rdms
-
-
-def load_compute_mean_rdms(
+def compute_mean_rdms(
     in_dir: str,
     num_filters: int = 6,
     num_images: int = 1600,
@@ -109,7 +40,6 @@ def load_compute_mean_rdms(
         for image_id in range(num_images):
             file_name = f"image{image_id:04d}_f{num_filters:02d}.pkl"
             file_path = os.path.join(in_dir, file_name)
-            print(file_path)
             activations = load_activations(file_path=file_path)
             activation = activations[layer].reshape(num_filters + 1, -1)
             if metrics == "correlation":
@@ -207,3 +137,90 @@ def plot_bandpass_rdms(
     if show_plot:
         plt.show()
     plt.close()
+
+
+if __name__ == "__main__":
+    arch = "alexnet"
+    num_classes = 1000
+    epoch = 60
+    metrics = "correlation"  # or "covariance"
+
+    # I/O settings
+    analysis_dir = "/home/sou/work/blur-training-dev/analysis/rsa/bandpass"
+    data_dir = os.path.join(
+        analysis_dir, f"results/activations/{num_classes}-class-{arch}/"
+    )
+    results_dir = os.path.join(
+        analysis_dir, f"results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    )
+    plots_dir = os.path.join(
+        analysis_dir, f"plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    )
+
+    assert os.path.exists(data_dir), f"{data_dir} does not exist."
+    os.makedirs(results_dir, exist_ok=True)
+    os.makedirs(plots_dir, exist_ok=True)
+
+    # models to compare
+    model_names = [
+        f"{arch}_normal",
+        f"{arch}_multi-steps",
+    ]
+    modes = [
+        f"{arch}_all",
+        f"{arch}_mix",
+        f"{arch}_random-mix",
+        f"{arch}_single-step",
+        # f"{arch}_fixed-single-step",
+        # f"{arch}_reversed-single-step",
+    ]
+
+    # sigmas to compare
+    sigmas_mix = [s for s in range(1, 6)] + [10]
+    sigmas_random_mix = ["00-05", "00-10"]
+
+    # add sigma to compare to the model names
+    for mode in modes:
+        if mode == f"{arch}_random-mix":
+            for min_max in sigmas_random_mix:
+                model_names += [f"{mode}_s{min_max}"]
+        elif mode == f"{arch}_mix":
+            for sigma in sigmas_mix:
+                model_names += [f"{mode}_s{sigma:02d}"]
+        else:
+            for sigma in range(1, 5):
+                model_names += [f"{mode}_s{sigma:02d}"]
+
+    for model_name in model_names:
+        in_dir = os.path.join(data_dir, f"{model_name}_e{epoch:02d}")
+        assert os.path.exists(in_dir), f"{in_dir} does not exist."
+
+        mean_rdms = compute_mean_rdms(
+            in_dir=in_dir, num_filters=6, num_images=1600, metrics=metrics
+        )
+
+        result_file = f"{model_name}_e{epoch:02d}.pkl"
+        result_path = os.path.join(results_dir, result_file)
+        save_rdms(mean_rdms=mean_rdms, file_path=result_path)
+
+        # get analysis parameters.
+        num_images = mean_rdms["num_images"]
+        num_filters = mean_rdms["num_filters"]
+
+        # (optional) set title of the plot
+        title = f"RDM({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
+
+        # set the plot path
+        plot_file = f"{num_classes}-class_mean-rdms_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
+        plot_path = os.path.join(plots_dir, plot_file)
+
+        # plot
+        plot_bandpass_rdms(
+            rdms=mean_rdms,
+            num_filters=num_filters,
+            vmin=0,
+            vmax=2,
+            title=title,
+            out_file=plot_path,
+            show_plot=False,
+        )

@@ -22,7 +22,6 @@ if __name__ == "__main__":
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-
     # models to compare
     model_names = [
         f"{arch}_normal",
@@ -54,6 +53,7 @@ if __name__ == "__main__":
                 model_names += [f"{mode}_s{sigma:02d}"]
 
     from src.analysis.rsa.rsa import alexnet_layers
+
     min_list = []
     max_list = []
 
@@ -92,5 +92,6 @@ if __name__ == "__main__":
         )
 
     import numpy as np
+
     print(np.array(min_list).min())
     print(np.array(max_list).max())
