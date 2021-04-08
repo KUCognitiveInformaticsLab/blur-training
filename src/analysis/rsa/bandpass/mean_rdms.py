@@ -47,7 +47,7 @@ def compute_mean_rdms(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v: np.average(
+                        lambda u, v: 1 - np.average(
                             (u - np.average(u)) * (v - np.average(v))
                         ),
                     )
@@ -88,6 +88,12 @@ def plot_bandpass_rdms(
             # cbar_ax=cbar_ax,
         )
 
+        ax.hlines(
+            1,  # diff. line for separating raw images and bandpass images
+            *ax.get_xlim(),
+            linewidth=0.1,
+            colors="gray",
+        )
         ax.hlines(
             [i for i in range(1, num_filters + 1)],
             *ax.get_xlim(),

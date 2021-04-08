@@ -1,6 +1,5 @@
 import os
 import pathlib
-import pickle
 import sys
 
 import numpy as np
@@ -12,6 +11,7 @@ sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.model.utils import load_model
 from src.analysis.rsa.rsa import AlexNetRSA
+from src.analysis.rsa.activations import save_activations
 from src.dataset.imagenet16 import (
     load_imagenet16,
     num_channels,
@@ -30,7 +30,7 @@ def main(
     model_names: list = ["alexnet_normal"],
     epoch: int = 60,
     models_dir: str = "/mnt/work/blur-training/imagenet16/logs/models/",  # model directory
-    out_dir: str = "./results/alexnet_bandpass/activations",
+    results_dir: str = "./results/alexnet_bandpass/activations",
     dataset_path="/mnt/data1/ImageNet/ILSVRC2012/",
     # all_filter_combinations: bool = False,
     num_filters: int = 6,  # number of band-pass filters
@@ -39,7 +39,7 @@ def main(
     """Computes band-pass test images."""
     # I/O settings
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    os.makedirs(out_dir, exist_ok=True)
+    os.makedirs(results_dir, exist_ok=True)
 
     # data settings
     # num_data = 1600
@@ -59,12 +59,16 @@ def main(
     filters = make_bandpass_filters(num_filters=num_filters)
 
     for model_name in model_names:
-        analyze(
-            models_dir=models_dir,
-            arch=arch,
-            num_classes=num_classes,
-            model_name=model_name,
-            epoch=epoch,
+        model_path = os.path.join(models_dir, model_name, f"epoch_{epoch:02d}.pth.tar")
+        model = load_model(
+            arch=arch, num_classes=num_classes, model_path=model_path
+        ).to(device)
+
+        out_dir = os.path.join(results_dir, f"{model_name}_e{epoch:02d}")
+        os.makedirs(out_dir, exist_ok=True)
+
+        compute_activations_on_bandpass(
+            model,
             device=device,
             data_loader=test_loader,
             filters=filters,
@@ -72,25 +76,13 @@ def main(
         )
 
 
-def analyze(
-    models_dir: str,
-    arch: str,
-    num_classes: int,
-    model_name: str,
-    epoch: int,
+def compute_activations_on_bandpass(
+    model,
     device: torch.device,
     data_loader: iter,
     filters: dict,
     out_dir: str,
 ):
-    model_path = os.path.join(models_dir, model_name, f"epoch_{epoch:02d}.pth.tar")
-    model = load_model(arch=arch, num_classes=num_classes, model_path=model_path).to(
-        device
-    )
-
-    out_model_dir = os.path.join(out_dir, f"{model_name}_e{epoch:02d}")
-    os.makedirs(out_model_dir, exist_ok=True)
-
     RSA = AlexNetRSA(model)
 
     for image_id, (image, label) in enumerate(data_loader):
@@ -116,9 +108,8 @@ def analyze(
 
         # save
         file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
-        file_path = os.path.join(out_model_dir, file_name)
-        with open(file_path, "wb") as f:
-            pickle.dump(activations, f)
+        file_path = os.path.join(out_dir, file_name)
+        save_activations(activations=activations, file_path=file_path)
 
 
 if __name__ == "__main__":
@@ -129,16 +120,16 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    out_dir = f"/home/sou/work/blur-training/analysis/rsa/bandpass/results/activations/{num_classes}-class-{arch}"
+    results_dir = f"/home/sou/work/blur-training/analysis/rsa/bandpass/results/activations/{num_classes}-class-{arch}"
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
 
     # all_filter_combinations = False
     # if all_filter_combinations:
-    #     out_dir = f"./results/{arch}_bandpass_all_filter_comb/activations"
+    #     results_dir = f"./results/{arch}_bandpass_all_filter_comb/activations"
     # else:
-    #     out_dir = f"./results/{arch}_bandpass/activations"
+    #     results_dir = f"./results/{arch}_bandpass/activations"
 
     # models to compare
     modes = [
@@ -176,7 +167,7 @@ if __name__ == "__main__":
         num_classes=num_classes,
         model_names=model_names,
         models_dir=models_dir,  # model directory
-        out_dir=out_dir,
+        results_dir=results_dir,
         dataset_path="/mnt/data1/ImageNet/ILSVRC2012/",
         # all_filter_combinations=all_filter_combinations,
         num_filters=6,  # number of band-pass filters

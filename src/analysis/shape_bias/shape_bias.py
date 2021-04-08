@@ -60,7 +60,6 @@ def compute_shape_bias(model, num_classes):
             labels = [re.sub("\d+", "", f.split(".")[0]).split("-") for f in file_names]
             outputs = model(images)
 
-
             for i in range(outputs.shape[0]):
                 # get label keys from label_map (type: int)
                 shape_id, texture_id = [
@@ -214,7 +213,9 @@ if __name__ == "__main__":
             )
 
         # compute
-        df_all_decisions, df_correct_decisions = compute_shape_bias(model=model, num_classes=num_classes)
+        df_all_decisions, df_correct_decisions = compute_shape_bias(
+            model=model, num_classes=num_classes
+        )
 
         # save
         df_all_decisions.to_csv(all_file)

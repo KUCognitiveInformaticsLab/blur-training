@@ -51,8 +51,10 @@ def test_performance(model, test_loader, bandpass_filters, device, out_file):
     )
     df.to_csv(out_file)
 
+
 # create mapping
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
+
 
 def compute_bandpass_acc(
     model,
