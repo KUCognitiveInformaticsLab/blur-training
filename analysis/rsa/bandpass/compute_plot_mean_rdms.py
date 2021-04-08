@@ -14,9 +14,9 @@ from src.analysis.rsa.bandpass.mean_rdms import (
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 1000
+    num_classes = 16
     epoch = 60
-    metrics = "covariance"  # or "covariance"
+    metrics = "negative-covariance"  # "1-covariance", "negative-covariance"
 
     # I/O settings
     analysis_dir = "./"
@@ -24,10 +24,10 @@ if __name__ == "__main__":
         analysis_dir, f"results/activations/{num_classes}-class-{arch}/"
     )
     results_dir = os.path.join(
-        analysis_dir, f"results/mean_rdms_1-{metrics}/{num_classes}-class-{arch}/"
+        analysis_dir, f"results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
     )
     plots_dir = os.path.join(
-        analysis_dir, f"plots/mean_rdms_1-{metrics}/{num_classes}-class-{arch}/"
+        analysis_dir, f"plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
     )
 
     assert os.path.exists(data_dir), f"{data_dir} does not exist."
@@ -64,6 +64,10 @@ if __name__ == "__main__":
             for sigma in range(1, 5):
                 model_names += [f"{mode}_s{sigma:02d}"]
 
+    from src.analysis.rsa.rsa import alexnet_layers
+    min_list = []
+    max_list = []
+
     for model_name in model_names:
         in_dir = os.path.join(data_dir, f"{model_name}_e{epoch:02d}")
         assert os.path.exists(in_dir), f"{in_dir} does not exist."
@@ -71,6 +75,10 @@ if __name__ == "__main__":
         mean_rdms = compute_mean_rdms(
             in_dir=in_dir, num_filters=6, num_images=1600, metrics=metrics
         )
+
+        for layer in alexnet_layers:
+            min_list.append((mean_rdms[layer].min()))
+            max_list.append((mean_rdms[layer].max()))
 
         result_file = f"{model_name}_e{epoch:02d}.pkl"
         result_path = os.path.join(results_dir, result_file)
@@ -80,20 +88,28 @@ if __name__ == "__main__":
         num_images = mean_rdms["num_images"]
         num_filters = mean_rdms["num_filters"]
 
-        # (optional) set title of the plot
-        title = f"RDM(1 - {metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
+        # (optional) set title
+        title = f"RDM ({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
 
-        # set the plot path
-        plot_file = f"mean-rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
-        plot_path = os.path.join(plots_dir, plot_file)
+        # set filename
+        filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
+        out_file = os.path.join(results_dir, filename)
 
-        # plot
+        # colour value range of the plots
+        vmin = 0 if metrics == "correlation" else -5
+        vmax = 2 if metrics == "correlation" else 5
+
+        # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)
         plot_bandpass_rdms(
             rdms=mean_rdms,
             num_filters=num_filters,
-            vmin=0,
-            vmax=2,
+            vmin=vmin,
+            vmax=vmax,
             title=title,
-            out_file=plot_path,
+            out_file=out_file,
             show_plot=False,
         )
+
+    import numpy as np
+    print(np.array(min_list).min())
+    print(np.array(max_list).max())

@@ -11,13 +11,13 @@ from src.analysis.rsa.bandpass.mean_rdms import plot_bandpass_rdms
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 1000
+    num_classes = 16
     epoch = 60
 
-    metrics = "covariance"  # or "covariance"
+    metrics = "correlation"  # "covariance"
 
-    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_1-{metrics}/{num_classes}-class-{arch}/"
-    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/mean_rdms_1-{metrics}/{num_classes}-class-{arch}"
+    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/mean_rdms_{metrics}/{num_classes}-class-{arch}"
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -53,28 +53,44 @@ if __name__ == "__main__":
             for sigma in range(1, 5):
                 model_names += [f"{mode}_s{sigma:02d}"]
 
+    from src.analysis.rsa.rsa import alexnet_layers
+    min_list = []
+    max_list = []
+
     for model_name in model_names:
         in_file = os.path.join(in_dir, f"{model_name}_e{epoch:02d}.pkl")
         rdms = load_rdms(file_path=in_file)
+
+        for layer in alexnet_layers:
+            min_list.append((rdms[layer].min()))
+            max_list.append((rdms[layer].max()))
 
         # get analysis parameters.
         num_images = rdms["num_images"]
         num_filters = rdms["num_filters"]
 
         # (optional) set title
-        title = f"RDM (1-{metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
+        title = f"RDM ({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set filename
         filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
         out_file = os.path.join(out_dir, filename)
 
+        # colour value range of the plots
+        vmin = 0 if metrics == "correlation" else -5
+        vmax = 2 if metrics == "correlation" else 5
+
         # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)
         plot_bandpass_rdms(
             rdms=rdms,
             num_filters=num_filters,
-            vmin=0,
-            vmax=2,
+            vmin=vmin,
+            vmax=vmax,
             title=title,
             out_file=out_file,
             show_plot=False,
         )
+
+    import numpy as np
+    print(np.array(min_list).min())
+    print(np.array(max_list).max())
