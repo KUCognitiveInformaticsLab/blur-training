@@ -14,7 +14,7 @@ if __name__ == "__main__":
     num_classes = 16
     epoch = 60
 
-    metrics = "correlation"  # "covariance"
+    metrics = "correlation"  # ("correlation", "1-covariance", "negative-covariance")
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
     out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/mean_rdms_{metrics}/{num_classes}-class-{arch}"

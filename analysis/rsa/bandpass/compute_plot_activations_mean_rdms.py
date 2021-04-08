@@ -7,7 +7,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.mean_rdms import (
-    load_compute_mean_rdms,
+    compute_mean_rdms_with_bandpass,
     plot_bandpass_rdms,
 )
 from src.analysis.rsa.rdm import save_rdms
@@ -16,21 +16,12 @@ if __name__ == "__main__":
     arch = "alexnet"
     num_classes = 16
     epoch = 60
-    metrics = "negative-covariance"  # ("correlation", "1-covariance", "negative-covariance")
+    metrics = "correlation"  # "1-covariance", "negative-covariance"
 
     # I/O settings
-    analysis_dir = "./"
-    data_dir = os.path.join(
-        analysis_dir, f"results/activations/{num_classes}-class-{arch}/"
-    )
-    results_dir = os.path.join(
-        analysis_dir, f"results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
-    )
-    plots_dir = os.path.join(
-        analysis_dir, f"plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
-    )
+    results_dir = f".results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    plots_dir = f"./plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
 
-    assert os.path.exists(data_dir), f"{data_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
 
@@ -64,17 +55,18 @@ if __name__ == "__main__":
             for sigma in range(1, 5):
                 model_names += [f"{mode}_s{sigma:02d}"]
 
-    from src.analysis.rsa.rsa import alexnet_layers
 
-    min_list = []
-    max_list = []
+    # random seed settings
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     for model_name in model_names:
-        in_dir = os.path.join(data_dir, f"{model_name}_e{epoch:02d}")
-        assert os.path.exists(in_dir), f"{in_dir} does not exist."
-
-        mean_rdms = load_compute_mean_rdms(
-            in_dir=in_dir, num_filters=6, num_images=1600, metrics=metrics
+        mean_rdms = compute_mean_rdms_with_bandpass(
+            model=model, data_loader=test_loader, filters=filters, device=device, metrics=metrics
         )
 
         for layer in alexnet_layers:
@@ -110,8 +102,3 @@ if __name__ == "__main__":
             out_file=out_file,
             show_plot=False,
         )
-
-    import numpy as np
-
-    print(np.array(min_list).min())
-    print(np.array(max_list).max())

@@ -22,7 +22,7 @@ def compute_mean_rdms_with_bandpass(
     data_loader: iter,
     filters: dict,
     device: torch.device,
-    metrics: str = "correlation",  # # "1-covariance", "negative-covariance"
+    metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
 ) -> dict:
     """Computes RDM for each image and return mean RDMs.
     Args:
