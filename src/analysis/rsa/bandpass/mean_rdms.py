@@ -39,7 +39,8 @@ def compute_mean_rdms(
         # compute RDM for each image (with some filters applied)
         for image_id in range(num_images):
             file_name = f"image{image_id:04d}_f{num_filters:02d}.pkl"
-            activations = load_activations(in_dir=in_dir, file_name=file_name)
+            file_path = os.path.join(in_dir, file_name)
+            activations = load_activations(file_path=file_path)
             activation = activations[layer].reshape(num_filters + 1, -1)
             if metrics == "correlation":
                 rdm = squareform(pdist(activation, metric=metrics))  # 1 - corr.
@@ -47,8 +48,7 @@ def compute_mean_rdms(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v:
-                        - np.average((u - np.average(u)) * (v - np.average(v))),
+                        lambda u, v: - np.average((u - np.average(u)) * (v - np.average(v))),
                     )  # - cov.
                 )
             elif metrics == "1-covariance":
