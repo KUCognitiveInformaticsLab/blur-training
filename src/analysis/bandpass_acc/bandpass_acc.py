@@ -19,7 +19,7 @@ from src.utils.accuracy import AverageMeter, accuracy
 from src.model.utils import load_model
 from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
-from src.model.mapping import probabilities_to_decision
+from src.utils.mapping import probabilities_to_decision
 
 
 def test_performance(model, test_loader, bandpass_filters, device, out_file):

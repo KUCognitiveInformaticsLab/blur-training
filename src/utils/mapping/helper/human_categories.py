@@ -14,7 +14,7 @@ import sys
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
-import src.model.mapping.helper.wordnet_functions as wf
+import src.utils.mapping.helper.wordnet_functions as wf
 
 
 def compute_imagenet_indices_for_category(category):

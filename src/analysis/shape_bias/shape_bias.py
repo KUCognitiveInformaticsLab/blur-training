@@ -15,7 +15,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../"))
 
 # Ref: https://github.com/rgeirhos/texture-vs-shape/tree/master/code
-from src.model.mapping import probabilities_to_decision
+from src.utils.mapping import probabilities_to_decision
 from src.model.load_sin_pretrained_models import load_sin_model
 from src.model.utils import load_model
 from src.dataset.imagenet16 import label_map

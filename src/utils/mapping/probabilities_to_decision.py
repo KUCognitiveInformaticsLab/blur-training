@@ -12,7 +12,7 @@ import numpy as np
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
-import src.model.mapping.helper.human_categories as hc
+import src.utils.mapping.helper.human_categories as hc
 
 
 class ProbabilitiesToDecisionMapping(ABC):
