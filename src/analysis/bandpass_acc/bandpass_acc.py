@@ -19,6 +19,7 @@ from src.utils.accuracy import AverageMeter, accuracy
 from src.model.utils import load_model
 from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
+from src.model.mapping import probabilities_to_decision
 
 
 def test_performance(model, test_loader, bandpass_filters, device, out_file):
@@ -50,6 +51,8 @@ def test_performance(model, test_loader, bandpass_filters, device, out_file):
     )
     df.to_csv(out_file)
 
+# create mapping
+mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
 
 def compute_bandpass_acc(
     model,
@@ -80,6 +83,11 @@ def compute_bandpass_acc(
             inputs = inputs.to(device)
             outputs = model(inputs)
             if model.num_classes == 1000 and test_loader.num_classes == 16:
+                outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
+                # get model_decision (str) by mappig outputs from 1,000 to 16
+                model_decision = mapping.probabilities_to_decision(
+                    outputs[i].detach().cpu().numpy()  # 一個ずつじゃ無いとダメ？
+                )
                 pass
                 # map outputs from 1000 to 16
             acc1 = accuracy(outputs, labels, topk=(1,))

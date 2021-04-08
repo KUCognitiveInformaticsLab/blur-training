@@ -24,7 +24,7 @@ from src.utils.dictionary import get_key_from_value
 from vonenet import get_model
 
 
-# create mapping module
+# create mapping
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
 
 
