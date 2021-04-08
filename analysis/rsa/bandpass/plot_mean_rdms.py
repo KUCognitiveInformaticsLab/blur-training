@@ -11,13 +11,13 @@ from src.analysis.rsa.bandpass.mean_rdms import plot_bandpass_rdms
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 16
+    num_classes = 1000
     epoch = 60
 
-    metrics = "covariance"
+    metrics = "covariance"  # or "covariance"
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_1-{metrics}/{num_classes}-class-{arch}/"
-    out_dir = f"./plots/mean_rdms_1-{metrics}/{num_classes}-class-{arch}"
+    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/mean_rdms_1-{metrics}/{num_classes}-class-{arch}"
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -26,13 +26,13 @@ if __name__ == "__main__":
     # models to compare
     model_names = [
         f"{arch}_normal",
-        # f"{arch}_multi-steps",
+        f"{arch}_multi-steps",
     ]
     modes = [
-        # f"{arch}_all",
-        # f"{arch}_mix",
-        # f"{arch}_random-mix",
-        # f"{arch}_single-step",
+        f"{arch}_all",
+        f"{arch}_mix",
+        f"{arch}_random-mix",
+        f"{arch}_single-step",
         # f"{arch}_fixed-single-step",
         # f"{arch}_reversed-single-step",
     ]
@@ -62,11 +62,10 @@ if __name__ == "__main__":
         num_filters = rdms["num_filters"]
 
         # (optional) set title
-        title = f"mean_rdms(1-{metrics}), {num_classes}-class-{arch}, epoch={epoch}"
+        title = f"RDM (1-{metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set filename
-        filename = f"mean_rdms_1-{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
-        # add "target_id" if you need it.
+        filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
         out_file = os.path.join(out_dir, filename)
 
         # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)

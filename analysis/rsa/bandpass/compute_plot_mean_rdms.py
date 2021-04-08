@@ -14,7 +14,7 @@ from src.analysis.rsa.bandpass.mean_rdms import (
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 16
+    num_classes = 1000
     epoch = 60
     metrics = "covariance"  # or "covariance"
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         title = f"RDM(1 - {metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set the plot path
-        plot_file = f"{num_classes}-class_mean-rdms_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
+        plot_file = f"mean-rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
         plot_path = os.path.join(plots_dir, plot_file)
 
         # plot

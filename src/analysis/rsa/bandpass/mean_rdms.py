@@ -87,28 +87,29 @@ def plot_bandpass_rdms(
             # cbar_ax=cbar_ax,
         )
 
-        ax.hlines(
-            1,  # diff. line for separating raw images and bandpass images
-            *ax.get_xlim(),
-            linewidth=1,
-            colors="gray",
-        )
+
         ax.hlines(
             [i for i in range(2, num_filters + 1)],
             *ax.get_xlim(),
             linewidth=0.1,
-            colors="gray",
-        )
-        ax.vlines(
-            1,  # diff. line for separating raw images and bandpass images
-            *ax.get_xlim(),
-            linewidth=1,
             colors="gray",
         )
         ax.vlines(
             [i for i in range(2, num_filters + 1)],
             *ax.get_ylim(),
             linewidth=0.1,
+            colors="gray",
+        )
+        ax.hlines(
+            1,  # diff. line for separating raw images and bandpass images
+            *ax.get_xlim(),
+            linewidth=1,
+            colors="gray",
+        )
+        ax.vlines(
+            1,  # diff. line for separating raw images and bandpass images
+            *ax.get_xlim(),
+            linewidth=1,
             colors="gray",
         )
 
