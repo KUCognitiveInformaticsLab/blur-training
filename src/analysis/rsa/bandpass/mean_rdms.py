@@ -104,12 +104,13 @@ def load_compute_mean_rdms(
     # mean_rdms["target_id"] = target_id
 
     for layer in alexnet_layers:
+        print(in_dir)
+        print(layer)
         rdms = []
         # compute RDM for each image (with some filters applied)
         for image_id in range(num_images):
             file_name = f"image{image_id:04d}_f{num_filters:02d}.pkl"
             file_path = os.path.join(in_dir, file_name)
-            print(file_path)
             activations = load_activations(file_path=file_path)
             activation = activations[layer].reshape(num_filters + 1, -1)
             if metrics == "correlation":
