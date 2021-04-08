@@ -90,7 +90,7 @@ def plot_bandpass_rdms(
         ax.hlines(
             1,  # diff. line for separating raw images and bandpass images
             *ax.get_xlim(),
-            linewidth=0.5,
+            linewidth=1,
             colors="gray",
         )
         ax.hlines(
@@ -102,7 +102,7 @@ def plot_bandpass_rdms(
         ax.vlines(
             1,  # diff. line for separating raw images and bandpass images
             *ax.get_xlim(),
-            linewidth=0.5,
+            linewidth=1,
             colors="gray",
         )
         ax.vlines(
