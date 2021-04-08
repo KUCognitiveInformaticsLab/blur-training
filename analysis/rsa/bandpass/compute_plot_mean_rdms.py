@@ -14,7 +14,7 @@ from src.analysis.rsa.bandpass.mean_rdms import (
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 1000
+    num_classes = 16
     epoch = 60
     metrics = "covariance"  # or "covariance"
 
