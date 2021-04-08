@@ -4,15 +4,19 @@ import sys
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(str(current_dir) + "/../../../../")
+sys.path.append(str(current_dir) + "/../../../")
 
-from src.analysis.rsa.bandpass.mean_rdms import compute_mean_rdms, save_rdms, plot_bandpass_rdms
+from src.analysis.rsa.bandpass.mean_rdms import (
+    compute_mean_rdms,
+    save_rdms,
+    plot_bandpass_rdms,
+)
 
 if __name__ == "__main__":
     arch = "alexnet"
     num_classes = 1000
     epoch = 60
-    metrics = "correlation"
+    metrics = "correlation"  # or "covariance"
 
     # I/O settings
     analysis_dir = "./"

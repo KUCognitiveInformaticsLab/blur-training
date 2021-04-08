@@ -20,7 +20,7 @@ def compute_mean_rdms(
     in_dir: str,
     num_filters: int = 6,
     num_images: int = 1600,
-    metrics: str = "correlation",
+    metrics: str = "correlation",  # or "covariance"
 ) -> dict:
     """Computes RDM for each image and return mean RDMs.
     Args:
@@ -47,9 +47,8 @@ def compute_mean_rdms(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v: 1 - np.average(
-                            (u - np.average(u)) * (v - np.average(v))
-                        ),
+                        lambda u, v: 1
+                        - np.average((u - np.average(u)) * (v - np.average(v))),
                     )
                 )
             rdms.append(rdm)
@@ -91,7 +90,7 @@ def plot_bandpass_rdms(
         ax.hlines(
             1,  # diff. line for separating raw images and bandpass images
             *ax.get_xlim(),
-            linewidth=0.3,
+            linewidth=0.5,
             colors="gray",
         )
         ax.hlines(
@@ -103,7 +102,7 @@ def plot_bandpass_rdms(
         ax.vlines(
             1,  # diff. line for separating raw images and bandpass images
             *ax.get_xlim(),
-            linewidth=0.3,
+            linewidth=0.5,
             colors="gray",
         )
         ax.vlines(
@@ -134,7 +133,7 @@ if __name__ == "__main__":
     arch = "alexnet"
     num_classes = 1000
     epoch = 60
-    metrics = "correlation"
+    metrics = "correlation"  # or "covariance"
 
     # I/O settings
     analysis_dir = "/home/sou/work/blur-training-dev/analysis/rsa/bandpass"
