@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
         # set filename
         filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_n{num_images}.png"
-        out_file = os.path.join(results_dir, filename)
+        out_file = os.path.join(plots_dir, filename)
 
         # colour value range of the plots
         vmin = 0 if metrics == "correlation" else -5

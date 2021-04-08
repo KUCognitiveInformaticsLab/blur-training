@@ -104,8 +104,6 @@ def load_compute_mean_rdms(
     # mean_rdms["target_id"] = target_id
 
     for layer in alexnet_layers:
-        print(in_dir)
-        print(layer)
         rdms = []
         # compute RDM for each image (with some filters applied)
         for image_id in range(num_images):
