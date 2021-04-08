@@ -12,13 +12,13 @@ from scipy.spatial.distance import squareform, pdist
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
-from src.analysis.rsa.rsa import alexnet_layers, AlexNetRSA
+from src.analysis.rsa.rsa import alexnet_layers
 from src.analysis.rsa.activations import load_activations
 from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
 
 
 def compute_mean_rdms_with_bandpass(
-    model,
+    RSA,
     data_loader: iter,
     filters: dict,
     device: torch.device,
@@ -31,11 +31,9 @@ def compute_mean_rdms_with_bandpass(
         num_images: number of images
     Returns: Mean RDMs (Dict)
     """
-    RSA = AlexNetRSA(model)
-
     mean_rdms = {}
     mean_rdms["num_filters"] = len(filters)
-    mean_rdms["num_images"] = len(data_loader)
+    # mean_rdms["num_images"] = len(data_loader)
     # mean_rdms["target_id"] = target_id
 
     for layer in alexnet_layers:
