@@ -87,9 +87,9 @@ def compute_bandpass_acc(
             if model.num_classes == 1000 and test_loader.num_classes == 16:
                 outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
                 # get model_decision (str) by mappig outputs from 1,000 to 16
-                model_decision = mapping.probabilities_to_decision(
-                    outputs[i].detach().cpu().numpy()  # 一個ずつじゃ無いとダメ？
-                )
+                # model_decision = mapping.probabilities_to_decision(
+                #     outputs[i].detach().cpu().numpy()  # 一個ずつじゃ無いとダメ？
+                # )
                 pass
                 # map outputs from 1000 to 16
             acc1 = accuracy(outputs, labels, topk=(1,))
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     epoch = 60
     batch_size = 64
     imagenet_path = "/Users/sou/lab1-mnt/data1/ImageNet/ILSVRC2012/"
-    dataset = "imagenet16"  # dataset to use
+    dataset = "imagenet16"  # test_dataset to use
     num_filters = 6
 
     models_dir = "/Users/sou/lab1-mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
