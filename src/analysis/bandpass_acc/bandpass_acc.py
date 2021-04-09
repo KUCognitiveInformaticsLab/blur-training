@@ -82,7 +82,7 @@ def compute_bandpass_acc(
             outputs = model(inputs)
             if model.num_classes == 1000 and test_loader.num_classes == 16:
                 outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
-                # get model_decision (str) by mappig outputs from 1,000 to 16
+                # get model_decision (str) by mapping outputs from 1,000 to 16
                 # model_decision = mapping.probabilities_to_decision(
                 #     outputs[i].detach().cpu().numpy()  # 一個ずつじゃ無いとダメ？
                 # )
