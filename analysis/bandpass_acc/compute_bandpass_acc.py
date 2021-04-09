@@ -25,7 +25,7 @@ if __name__ == "__main__":
     epoch = 60
     batch_size = 64
 
-    imagenet_path = "/Users/sou/lab1-mnt/data1/ImageNet/ILSVRC2012/"
+    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     test_dataset = "imagenet16"  # test_dataset to use
 
@@ -38,10 +38,10 @@ if __name__ == "__main__":
     print("test_dataset:", test_dataset)
     print()
 
-    models_dir = "/Users/sou/lab1-mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"/Users/sou/work/blur-training/analysis/bandpass_acc/results/{num_classes}-class/{arch}/"
+    results_dir = f"./results/{num_classes}-class/{arch}/"
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)

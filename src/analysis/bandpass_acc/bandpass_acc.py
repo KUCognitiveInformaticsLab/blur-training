@@ -43,7 +43,7 @@ def test_performance(model, test_loader, bandpass_filters, device, out_file):
 
     # make dataframe and save
     df = pd.DataFrame(
-        np.array(acc1_list).reshape(1, -1), index=[model_name], columns=bandpass_sigmas
+        np.array(acc1_list).reshape(1, -1), columns=bandpass_sigmas
     )
     df.to_csv(out_file)
 
