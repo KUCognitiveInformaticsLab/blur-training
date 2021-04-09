@@ -23,13 +23,16 @@ def compute_mean_rdms_with_bandpass(
     filters: dict,
     device: torch.device,
     metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
+    add_noise: bool = True,
 ) -> dict:
     """Computes RDM for each image and return mean RDMs.
     Args:
         in_dir: path to input directory
         num_filters: number of band-pass filter
         num_images: number of images
-    Returns: Mean RDMs (Dict)
+
+    Returns:
+        Mean RDMs (Dict)
     """
     mean_rdms = {}
     mean_rdms["num_filters"] = len(filters)
@@ -45,8 +48,13 @@ def compute_mean_rdms_with_bandpass(
             label (torch.Tensor): e.g. tensor([0])
             """
             activations = compute_activations_with_bandpass(
-                RSA=RSA, image=image, label=label, filters=filters, device=device
+                RSA=RSA, image=image, filters=filters, device=device, add_noise=add_noise,
             )
+
+            # add parameter settings of this analysis
+            activations["label_id"] = label.item()
+            activations["num_filters"] = len(filters)
+
             # save (This file size is very big with iterations!)
             # file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
             # file_path = os.path.join(out_dir, file_name)
@@ -61,8 +69,7 @@ def compute_mean_rdms_with_bandpass(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v: -np.average(
-                            (u - np.average(u)) * (v - np.average(v))
+                        lambda u, v: - np.average((u - np.average(u)) * (v - np.average(v))
                         ),
                     )  # - cov.
                 )
@@ -70,8 +77,7 @@ def compute_mean_rdms_with_bandpass(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v: 1
-                        - np.average((u - np.average(u)) * (v - np.average(v))),
+                        lambda u, v: 1 - np.average((u - np.average(u)) * (v - np.average(v))),
                     )  # 1 - cov.
                 )
             rdms.append(rdm)

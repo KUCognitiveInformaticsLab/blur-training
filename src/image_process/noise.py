@@ -17,7 +17,7 @@ def gaussian_noise(
     return_torch = False
     if type(image) == torch.Tensor:
         return_torch = True
-        image = image.numpy().transpose(1, 2, 0)  # (C, H, W) to (H, W, C)
+        image = image.numpy().transpose(1, 2, 0)  # (C, H, W) -> (H, W, C)
     row, col, ch = image.shape
 
     sigma = var ** 0.5
@@ -27,6 +27,6 @@ def gaussian_noise(
     noisy = image + gauss
 
     if return_torch:
-        noisy = noisy.transpose(2, 0, 1)  # (H, W, C) to (C, H, W)
+        noisy = noisy.transpose(2, 0, 1)  # (H, W, C) -> (C, H, W)
         return torch.from_numpy(noisy)
     return noisy

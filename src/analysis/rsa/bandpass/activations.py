@@ -22,6 +22,7 @@ from src.image_process.bandpass_filter import (
     make_bandpass_filters,
     apply_bandpass_filter,
 )
+from src.image_process.noise import gaussian_noise
 
 
 def main(
@@ -104,26 +105,31 @@ def compute_save(
 def compute_activations_with_bandpass(
     RSA,
     image: torch.Tensor,
-    label: torch.Tensor,
     filters: dict,
     device: torch.device,
+    add_noise: bool = False,
 ):
     """Computes activations of a single image with band-pass filters applied.
-    image (torch.Tensor): torch.Size([1, 3, 375, 500])
-    label (torch.Tensor): e.g. tensor([0])
+    Args:
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+
+    Returns:
+        activations (Dict)
     """
     test_images = torch.zeros([len(filters) + 1, 1, num_channels, height, width])
+
     test_images[0] = image  # add raw images
+
     for i, (s1, s2) in enumerate(filters.values(), 1):
         test_images[i] = apply_bandpass_filter(images=image, sigma1=s1, sigma2=s2)
 
+        if add_noise:
+            test_images[i] = gaussian_noise(image=image, mean=0, var=0.1)  # for smoothing high-freq activations.
+
     # change the order of num_images and num_filters(+1)
-    test_images = test_images.transpose(1, 0)  # (1, F+1, C, H, W)
+    test_images = test_images.transpose(1, 0)  # (F+1, 1, C, H, W) -> (1, F+1, C, H, W)
 
     activations = RSA.compute_activations(test_images[0].to(device))
-
-    # add parameter settings of this analysis
-    activations["label_id"] = label.item()
-    activations["num_filters"] = len(filters)
 
     return activations

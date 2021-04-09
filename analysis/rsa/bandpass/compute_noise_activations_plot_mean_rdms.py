@@ -20,6 +20,7 @@ from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
 
+
 if __name__ == "__main__":
     # ===== args =====
     arch = "alexnet"
@@ -32,11 +33,11 @@ if __name__ == "__main__":
     metrics = "correlation"  # "1-covariance", "negative-covariance"
 
     # I/O settings
-    models_dir = "/Users/sou/lab1-mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f".results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
-    plots_dir = f"./plots/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
+    results_dir = f"./results/mean_rdms_{metrics}_noise/{num_classes}-class-{arch}/"
+    plots_dir = f"./plots/mean_rdms_{metrics}_noise/{num_classes}-class-{arch}/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
@@ -48,9 +49,9 @@ if __name__ == "__main__":
         # f"{arch}_multi-steps",
     ]
     modes = [
-        f"{arch}_all",
-        f"{arch}_mix",
-        f"{arch}_random-mix",
+        # f"{arch}_all",
+        # f"{arch}_mix",
+        # f"{arch}_random-mix",
         # f"{arch}_single-step",
         # f"{arch}_fixed-single-step",
         # f"{arch}_reversed-single-step",
@@ -72,6 +73,7 @@ if __name__ == "__main__":
             for sigma in range(1, 5):
                 model_names += [f"{mode}_s{sigma:02d}"]
 
+    # ===== main =====
     seed = 42
     # random seed settings
     np.random.seed(seed)
