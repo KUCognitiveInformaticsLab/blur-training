@@ -9,11 +9,11 @@ def GaussianBlurAll(imgs, sigma, kernel_size=(0, 0)) -> torch.Tensor:
     """
     Args:
         imgs: Images (torch.Tensor)
-            size: (N, 3, 224, 224)
+            size: (N, C, H, W)
         sigma: Standard deviation of Gaussian kernel.
         kernel_size: This size will be automatically adjusted.
     Returns: Blurred images (torch.Tensor)
-            size: (N, 3, 224, 224)
+            size: (N, C, H, W)
     """
     if sigma == 0:
         return imgs  # do nothing

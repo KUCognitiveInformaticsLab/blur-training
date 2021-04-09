@@ -30,3 +30,24 @@ def gaussian_noise(
         noisy = noisy.transpose(2, 0, 1)  # (H, W, C) -> (C, H, W)
         return torch.from_numpy(noisy)
     return noisy
+
+
+def torch_gaussian_noise(
+    images: torch.Tensor, mean=0, var=0.1
+) -> Union[np.array, torch.Tensor]:
+    """Adds Gaussian noise to input image.
+    Args:
+        images (torch.Tensor): images. shape==(N, C, H, W)
+    Return:
+        noisy_images (torch.Tensor): noisy images. shape==(N, C, H, W)
+    """
+    n, row, col, ch = images.shape
+
+    sigma = var ** 0.5
+    gauss = np.random.normal(mean, sigma, (n, row, col, ch))
+
+    noisy = images + gauss
+
+    print(type(noisy))
+
+    return noisy

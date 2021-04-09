@@ -22,7 +22,7 @@ from src.image_process.bandpass_filter import (
     make_bandpass_filters,
     apply_bandpass_filter,
 )
-from src.image_process.noise import gaussian_noise
+from src.image_process.noise import torch_gaussian_noise, gaussian_noise
 
 
 def main(
@@ -124,8 +124,11 @@ def compute_activations_with_bandpass(
     for i, (s1, s2) in enumerate(filters.values(), 1):
         test_images[i] = apply_bandpass_filter(images=image, sigma1=s1, sigma2=s2)
 
-        if add_noise:
-            test_images[i] = gaussian_noise(image=image, mean=0, var=0.1)  # for smoothing high-freq activations.
+        if add_noise:  # for smoothing high-freq. activations
+            test_images[i] = torch_gaussian_noise(images=image, mean=0, var=0.1)
+            # * dim: image[0].shape == (C, H, W)
+            # * dim: [None, ...] changes dim -> (1, C, H, W)
+            # test_images[i] = gaussian_noise(image=image[0], mean=0, var=0.1)[None, ...]
 
     # change the order of num_images and num_filters(+1)
     test_images = test_images.transpose(1, 0)  # (F+1, 1, C, H, W) -> (1, F+1, C, H, W)

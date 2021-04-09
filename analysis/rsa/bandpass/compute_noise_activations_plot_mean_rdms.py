@@ -140,3 +140,5 @@ if __name__ == "__main__":
             out_file=out_file,
             show_plot=False,
         )
+
+        print(model_names, "DONE.")
