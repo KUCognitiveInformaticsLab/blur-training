@@ -106,8 +106,10 @@ def compute_activations_with_bandpass(
     RSA,
     image: torch.Tensor,
     filters: dict,
-    device: torch.device,
     add_noise: bool = False,
+    mean: float = 0.,
+    var: float = 0.1,
+    device: torch.device = torch.device("cuda:0"),
 ):
     """Computes activations of a single image with band-pass filters applied.
     Args:
@@ -125,7 +127,7 @@ def compute_activations_with_bandpass(
         test_images[i] = apply_bandpass_filter(images=image, sigma1=s1, sigma2=s2)
 
         if add_noise:  # for smoothing high-freq. activations
-            test_images[i] = gaussian_noise(images=image, mean=0, var=0.1)
+            test_images[i] = gaussian_noise(images=image, mean=mean, var=var)
 
     # change the order of num_images and num_filters(+1)
     test_images = test_images.transpose(1, 0)  # (F+1, 1, C, H, W) -> (1, F+1, C, H, W)

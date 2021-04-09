@@ -30,6 +30,8 @@ if __name__ == "__main__":
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     num_filters = 6
+    add_noise = True
+    mean, var = 0, 0.1  # gaussian noise parameters
     metrics = "correlation"  # "1-covariance", "negative-covariance"
 
     # I/O settings
@@ -105,8 +107,11 @@ if __name__ == "__main__":
             RSA=RSA,
             data_loader=test_loader,
             filters=filters,
-            device=device,
+            add_noise=True,
+            mean=mean,
+            var=var,
             metrics=metrics,
+            device=device,
         )
 
         # save mean RDMs
