@@ -88,6 +88,8 @@ def compute_mean_rdms_with_bandpass(
 
         mean_rdms[layer] = rdms.mean(0)
 
+        print(layer, "DONE")
+
     return mean_rdms
 
 

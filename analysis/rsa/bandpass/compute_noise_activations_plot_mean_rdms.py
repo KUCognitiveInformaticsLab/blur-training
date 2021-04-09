@@ -99,6 +99,7 @@ if __name__ == "__main__":
         ).to(device)
 
         # ===== compute RDM =====
+        print(model_name, "computing RDM ...")
         # make RSA instance
         RSA = AlexNetRSA(model)
 
@@ -115,11 +116,15 @@ if __name__ == "__main__":
         )
 
         # save mean RDMs
+        print("saving RDM...")
         result_file = f"{model_name}_e{epoch:02d}.pkl"
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
 
+        print(model_name, "computing RDM is DONE!")
+
         # ===== plot RDM =====
+        print("plotting ...")
         # get analysis parameters.
         # num_images = mean_rdms["num_images"]
         num_filters = mean_rdms["num_filters"]
@@ -146,4 +151,4 @@ if __name__ == "__main__":
             show_plot=False,
         )
 
-        print(model_names, "DONE.")
+        print(model_names, "plotting is DONE!")
