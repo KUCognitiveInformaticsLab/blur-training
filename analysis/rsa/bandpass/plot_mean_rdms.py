@@ -6,7 +6,7 @@ import sys
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../"))
 
-from src.analysis.rsa.rdm import load_rdms
+from src.analysis.rsa.utils import load_rdms
 from src.analysis.rsa.bandpass.mean_rdms import plot_bandpass_rdms
 
 if __name__ == "__main__":

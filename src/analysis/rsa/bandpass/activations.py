@@ -11,7 +11,7 @@ sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.model.utils import load_model
 from src.analysis.rsa.rsa import AlexNetRSA
-from src.analysis.rsa.activations import save_activations
+from src.analysis.rsa.utils import save_activations
 from src.dataset.imagenet16 import (
     load_imagenet16,
     num_channels,

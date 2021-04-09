@@ -9,7 +9,7 @@ from sklearn import linear_model
 sys.path.append("../../../../")
 
 from src.analysis.rsa.rsa import alexnet_layers
-from src.analysis.rsa.activations import load_activations
+from src.analysis.rsa.utils import load_activations
 
 
 def compute_slr(

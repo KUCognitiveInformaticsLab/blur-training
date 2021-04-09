@@ -15,7 +15,7 @@ from src.analysis.rsa.bandpass.mean_rdms import (
     plot_bandpass_rdms,
 )
 from src.analysis.rsa.rsa import AlexNetRSA
-from src.analysis.rsa.rdm import save_rdms
+from src.analysis.rsa.utils import save_rdms
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model

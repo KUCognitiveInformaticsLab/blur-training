@@ -12,8 +12,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.analysis.rsa.rsa import alexnet_layers
-from src.analysis.rsa.activations import load_activations
-from src.analysis.rsa.rdm import save_rdms
+from src.analysis.rsa.utils import save_rdms, load_activations
 
 
 def compute_mean_rdms(

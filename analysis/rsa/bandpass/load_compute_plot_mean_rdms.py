@@ -10,7 +10,7 @@ from src.analysis.rsa.bandpass.mean_rdms import (
     load_compute_mean_rdms,
     plot_bandpass_rdms,
 )
-from src.analysis.rsa.rdm import save_rdms
+from src.analysis.rsa.utils import save_rdms
 
 if __name__ == "__main__":
     arch = "alexnet"
