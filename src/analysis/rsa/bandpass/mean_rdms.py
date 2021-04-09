@@ -42,10 +42,12 @@ def compute_mean_rdms_with_bandpass(
     # mean_rdms["num_images"] = len(data_loader)
     # mean_rdms["target_id"] = target_id
 
-    for layer in tqdm(alexnet_layers):
+    for layer in tqdm(alexnet_layers, desc="layers"):
         rdms = []
         # compute RDM for each image (with some filters applied)
-        for image_id, (image, label) in tqdm(enumerate(data_loader)):
+        for image_id, (image, label) in tqdm(
+            enumerate(data_loader), desc="test images", leave=False
+        ):
             """Note that data_loader SHOULD return a single image for each loop.
             image (torch.Tensor): torch.Size([1, 3, 375, 500])
             label (torch.Tensor): e.g. tensor([0])
