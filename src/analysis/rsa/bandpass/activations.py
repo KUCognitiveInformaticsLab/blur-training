@@ -107,7 +107,7 @@ def compute_activations_with_bandpass(
     image: torch.Tensor,
     filters: dict,
     add_noise: bool = False,
-    mean: float = 0.,
+    mean: float = 0.0,
     var: float = 0.1,
     device: torch.device = torch.device("cuda:0"),
 ):

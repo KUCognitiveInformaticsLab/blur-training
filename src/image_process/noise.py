@@ -48,5 +48,3 @@ def gaussian_noise_bak(
         noisy = noisy.transpose(2, 0, 1)  # (H, W, C) -> (C, H, W)
         return torch.from_numpy(noisy)
     return noisy
-
-

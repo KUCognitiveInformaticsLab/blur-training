@@ -34,14 +34,13 @@ if __name__ == "__main__":
     mean, var = 0, 0.1  # gaussian noise parameters
     metrics = "correlation"  # "1-covariance", "negative-covariance"
 
-    print("===== parameters =====")
+    print("===== arguments =====")
     print("num_classes:", num_classes)
     print("num_filters:", num_filters)
     print("add_noise:", add_noise)
     print("mean, var:", mean, var)
     print("metrics:", metrics)
     print()
-
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
@@ -59,7 +58,6 @@ if __name__ == "__main__":
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
     print()
-
 
     # models to compare
     model_names = [
@@ -96,6 +94,8 @@ if __name__ == "__main__":
     print()
 
     # ===== main =====
+    print("===== main =====")
+
     seed = 42
     # random seed settings
     np.random.seed(seed)
@@ -171,4 +171,4 @@ if __name__ == "__main__":
             show_plot=False,
         )
 
-        print(model_names, "plotting is DONE!", end="\n\n")
+        print(model_name, "plotting is DONE!", end="\n\n")

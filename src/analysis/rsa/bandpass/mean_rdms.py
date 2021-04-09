@@ -22,7 +22,7 @@ def compute_mean_rdms_with_bandpass(
     data_loader: iter,
     filters: dict,
     add_noise: bool = True,
-    mean: float = 0.,
+    mean: float = 0.0,
     var: float = 0.1,
     metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
     device: torch.device = torch.device("cuda:0"),
@@ -50,7 +50,13 @@ def compute_mean_rdms_with_bandpass(
             label (torch.Tensor): e.g. tensor([0])
             """
             activations = compute_activations_with_bandpass(
-                RSA=RSA, image=image, filters=filters, device=device, add_noise=add_noise, mean=mean, var=var,
+                RSA=RSA,
+                image=image,
+                filters=filters,
+                device=device,
+                add_noise=add_noise,
+                mean=mean,
+                var=var,
             )
 
             # add parameter settings of this analysis
@@ -71,7 +77,8 @@ def compute_mean_rdms_with_bandpass(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v: - np.average((u - np.average(u)) * (v - np.average(v))
+                        lambda u, v: -np.average(
+                            (u - np.average(u)) * (v - np.average(v))
                         ),
                     )  # - cov.
                 )
@@ -79,7 +86,8 @@ def compute_mean_rdms_with_bandpass(
                 rdm = squareform(
                     pdist(
                         activation,
-                        lambda u, v: 1 - np.average((u - np.average(u)) * (v - np.average(v))),
+                        lambda u, v: 1
+                        - np.average((u - np.average(u)) * (v - np.average(v))),
                     )  # 1 - cov.
                 )
             rdms.append(rdm)
