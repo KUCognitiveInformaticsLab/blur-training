@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 import torch
 
-
+# Ref: https://www.javaer101.com/ja/article/3437291.html
 def gaussian_noise(
     images: Union[np.array, torch.Tensor], mean=0, var=0.1
 ) -> Union[np.array, torch.Tensor]:
