@@ -120,7 +120,7 @@ if __name__ == "__main__":
         ).to(device)
 
         # ===== compute RDM =====
-        print(model_name, "computing RDM ...")
+        print(model_name, "computing RDM...")
         # make RSA instance
         RSA = AlexNetRSA(model)
 
@@ -142,19 +142,19 @@ if __name__ == "__main__":
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
 
-        print(model_name, "computing RDM is DONE!")
+        print(model_name, "computing RDM is done!")
 
         # ===== plot RDM =====
-        print("plotting ...")
+        print("plotting RDM...")
         # get analysis parameters.
         # num_images = mean_rdms["num_images"]
         num_filters = mean_rdms["num_filters"]
 
         # (optional) set title
-        title = f"RDM ({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
+        title = f"RDM ({metrics}) with Gaussian noise (mean={mean}, var={var}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set filename
-        filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
+        filename = f"mean_rdms_noise_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
         out_file = os.path.join(plots_dir, filename)
 
         # colour value range of the plots
@@ -172,4 +172,6 @@ if __name__ == "__main__":
             show_plot=False,
         )
 
-        print(model_name, "plotting is DONE!", end="\n\n")
+        print(model_name, "plotting RDM is done!", end="\n\n")
+
+    print("All done!!")

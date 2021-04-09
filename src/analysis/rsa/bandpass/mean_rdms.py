@@ -7,6 +7,7 @@ import seaborn as sns
 import torch
 from matplotlib import pyplot as plt
 from scipy.spatial.distance import squareform, pdist
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -41,10 +42,10 @@ def compute_mean_rdms_with_bandpass(
     # mean_rdms["num_images"] = len(data_loader)
     # mean_rdms["target_id"] = target_id
 
-    for layer in alexnet_layers:
+    for layer in tqdm(alexnet_layers):
         rdms = []
         # compute RDM for each image (with some filters applied)
-        for image_id, (image, label) in enumerate(data_loader):
+        for image_id, (image, label) in tqdm(enumerate(data_loader)):
             """Note that data_loader SHOULD return a single image for each loop.
             image (torch.Tensor): torch.Size([1, 3, 375, 500])
             label (torch.Tensor): e.g. tensor([0])
@@ -95,8 +96,6 @@ def compute_mean_rdms_with_bandpass(
         rdms = np.array(rdms)
 
         mean_rdms[layer] = rdms.mean(0)
-
-        print(layer, "DONE")
 
     return mean_rdms
 
