@@ -148,10 +148,8 @@ if __name__ == "__main__":
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
 
-        print(f"{model_name}: computing RDM is done!")
-
         # ===== plot RDM =====
-        print(f"{model_name}: plotting RDM...")
+        # print(f"{model_name}: plotting RDM...")
         # get analysis parameters.
         # num_images = mean_rdms["num_images"]
         num_filters = mean_rdms["num_filters"]
@@ -177,7 +175,5 @@ if __name__ == "__main__":
             out_file=out_file,
             show_plot=False,
         )
-
-        print(f"{model_name}: plotting RDM is done!", end="\n\n")
 
     print("All done!!")
