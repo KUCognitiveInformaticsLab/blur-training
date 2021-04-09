@@ -16,7 +16,9 @@ if __name__ == "__main__":
     arch = "alexnet"
     num_classes = 16
     epoch = 60
-    metrics = "negative-covariance"  # ("correlation", "1-covariance", "negative-covariance")
+    metrics = (
+        "negative-covariance"  # ("correlation", "1-covariance", "negative-covariance")
+    )
 
     # I/O settings
     analysis_dir = "./"

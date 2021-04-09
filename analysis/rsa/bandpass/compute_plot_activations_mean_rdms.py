@@ -88,7 +88,6 @@ if __name__ == "__main__":
     # make filters
     filters = make_bandpass_filters(num_filters=num_filters)
 
-
     for model_name in model_names:
         model_path = os.path.join(models_dir, model_name, f"epoch_{epoch:02d}.pth.tar")
         model = load_model(
@@ -101,7 +100,11 @@ if __name__ == "__main__":
 
         # compute mean RDMs
         mean_rdms = compute_mean_rdms_with_bandpass(
-            RSA=RSA, data_loader=test_loader, filters=filters, device=device, metrics=metrics
+            RSA=RSA,
+            data_loader=test_loader,
+            filters=filters,
+            device=device,
+            metrics=metrics,
         )
 
         # save mean RDMs
