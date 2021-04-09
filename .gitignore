@@ -6,13 +6,16 @@ results/
 plots/
 test-images/
 
-# for developing new features
+# for development
 dev/
+test.log
 
 # for using tools from others
 tools/
 
 __pycache__/
+
+./idea
 
 .ipynb_checkpoints/
 
