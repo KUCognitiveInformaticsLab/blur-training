@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -116,7 +117,9 @@ if __name__ == "__main__":
     # make bandpass bandpass_filters
     bandpass_filters = make_bandpass_filters(num_filters=num_filters)
 
-    for model_name in model_names:
+    for model_name in tqdm(model_names, desc="models"):
+        print()
+        print(f"{model_name}: computing bandpass acc...")
         # load model
         model_path = os.path.join(
             models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
