@@ -4,8 +4,26 @@ import numpy as np
 import torch
 
 
-# Ref: https://www.javaer101.com/ja/article/3437291.html
 def gaussian_noise(
+    images: Union[np.array, torch.Tensor], mean=0, var=0.1
+) -> Union[np.array, torch.Tensor]:
+    """Adds Gaussian noise to input image.
+    Args:
+        image (np.array or torch.Tensor): an image.
+    Return:
+        noisy (np.array or torch.Tensor): a noisy image.
+    """
+
+    sigma = var ** 0.5
+    gauss = np.random.normal(loc=mean, scale=sigma, size=images.shape)
+
+    noisy = images + gauss
+
+    return noisy
+
+
+# Ref: https://www.javaer101.com/ja/article/3437291.html
+def gaussian_noise_bak(
     image: Union[np.array, torch.Tensor], mean=0, var=0.1
 ) -> Union[np.array, torch.Tensor]:
     """Adds Gaussian noise to input image.
@@ -32,22 +50,3 @@ def gaussian_noise(
     return noisy
 
 
-def torch_gaussian_noise(
-    images: torch.Tensor, mean=0, var=0.1
-) -> Union[np.array, torch.Tensor]:
-    """Adds Gaussian noise to input image.
-    Args:
-        images (torch.Tensor): images. shape==(N, C, H, W)
-    Return:
-        noisy_images (torch.Tensor): noisy images. shape==(N, C, H, W)
-    """
-    n, row, col, ch = images.shape
-
-    sigma = var ** 0.5
-    gauss = np.random.normal(mean, sigma, (n, row, col, ch))
-
-    noisy = images + gauss
-
-    print(type(noisy))
-
-    return noisy
