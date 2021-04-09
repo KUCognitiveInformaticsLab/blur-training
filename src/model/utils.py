@@ -9,7 +9,7 @@ import torchvision.models as models
 def load_model(
     arch: str,
     num_classes: int = 16,
-    paralell: bool = False,
+    parallel: bool = False,
     model_path: str = "",
     device: str = "cuda:0",
 ):
@@ -18,7 +18,7 @@ def load_model(
     Args:
         arch (str): name of architecture.
         num_classes (int): number of last layer's units.
-        paralell (bool): use a parallel model or not.
+        parallel (bool): use a parallel model or not.
         model_path (str): path to trained model's weights.
         device (str): device for map_location for loading weights. (e.g. "cuda:0")
     Returns: model (torch.model)
@@ -32,7 +32,7 @@ def load_model(
         except RuntimeError:
             model.features = torch.nn.DataParallel(model.features)
             model.load_state_dict(checkpoint["state_dict"])
-            if not paralell:
+            if not parallel:
                 model.features = model.features.module
                 # TODO: This part is different when a model is "resnet".
         return model
