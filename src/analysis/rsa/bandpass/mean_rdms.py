@@ -42,7 +42,7 @@ def compute_mean_rdms_with_bandpass(
     # mean_rdms["num_images"] = len(data_loader)
     # mean_rdms["target_id"] = target_id
 
-    for layer in tqdm(alexnet_layers, desc="layers"):
+    for layer in tqdm(alexnet_layers, desc="layers", leave=False):
         rdms = []
         # compute RDM for each image (with some filters applied)
         for image_id, (image, label) in tqdm(

@@ -3,7 +3,7 @@ import pathlib
 import sys
 
 import numpy as np
-
+from tqdm import tqdm
 import torch
 
 # add the path to load src module
@@ -66,8 +66,8 @@ if __name__ == "__main__":
         # f"{arch}_multi-steps",
     ]
     modes = [
-        # f"{arch}_all",
-        # f"{arch}_mix",
+        f"{arch}_all",
+        f"{arch}_mix",
         # f"{arch}_random-mix",
         # f"{arch}_single-step",
         # f"{arch}_fixed-single-step",
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     # make filters
     filters = make_bandpass_filters(num_filters=num_filters)
 
-    for model_name in model_names:
+    for model_name in tqdm(model_names, desc="models"):
         model_path = os.path.join(models_dir, model_name, f"epoch_{epoch:02d}.pth.tar")
         model = load_model(
             arch=arch, num_classes=num_classes, model_path=model_path
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         )
 
         # save mean RDMs
-        print("saving RDM...")
+        # print("saving RDM...")
         result_file = f"{model_name}_e{epoch:02d}.pkl"
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         title = f"RDM ({metrics}) with Gaussian noise (mean={mean}, var={var}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set filename
-        filename = f"mean_rdms_noise_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
+        filename = f"mean_rdms_noise_mean{mean}_var{var}_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
         out_file = os.path.join(plots_dir, filename)
 
         # colour value range of the plots
