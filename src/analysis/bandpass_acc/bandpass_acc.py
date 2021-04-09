@@ -11,11 +11,13 @@ from tqdm import tqdm
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../"))
 
+from src.dataset.imagenet16 import label_map
 from src.image_process.bandpass_filter import (
     apply_bandpass_filter,
 )
 from src.utils.accuracy import AverageMeter, accuracy
 from src.utils.mapping import probabilities_to_decision
+from src.utils.dictionary import get_key_from_value
 
 
 def test_performance(model, test_loader, bandpass_filters, device, out_file):
@@ -29,22 +31,20 @@ def test_performance(model, test_loader, bandpass_filters, device, out_file):
     acc1 = compute_bandpass_acc(
         model=model, test_loader=test_loader, device=device, raw=True
     )
-    acc1_list.append(acc1.item())
+    acc1_list.append(acc1)
 
     # acc. of bandpass test images
     for s1, s2 in tqdm(bandpass_filters.values(), desc="bandpass filters", leave=False):
         acc1 = compute_bandpass_acc(
             model=model, test_loader=test_loader, sigma1=s1, sigma2=s2, device=device
         )
-        acc1_list.append(acc1.item())
+        acc1_list.append(acc1)
 
     # range of sigma
     bandpass_sigmas = ["0"] + [f"{s1}-{s2}" for s1, s2 in bandpass_filters.values()]
 
     # make dataframe and save
-    df = pd.DataFrame(
-        np.array(acc1_list).reshape(1, -1), columns=bandpass_sigmas
-    )
+    df = pd.DataFrame(np.array(acc1_list).reshape(1, -1), columns=bandpass_sigmas)
     df.to_csv(out_file)
 
 
@@ -73,22 +73,35 @@ def compute_bandpass_acc(
     model.eval()
     with torch.no_grad():
         for data in tqdm(test_loader, desc="test images", leave=False):
-            inputs, labels = data[0], data[1].to(device)
+            inputs, targets = data[0], data[1].to(device)
             if not raw:
                 inputs = apply_bandpass_filter(
                     images=inputs, sigma1=sigma1, sigma2=sigma2
                 )
             inputs = inputs.to(device)
-            outputs = model(inputs)
+            outputs = model(inputs)  # torch.Size([batch_size, num_labels])
             if model.num_classes == 1000 and test_loader.num_classes == 16:
                 outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
-                # get model_decision (str) by mapping outputs from 1,000 to 16
-                # model_decision = mapping.probabilities_to_decision(
-                #     outputs[i].detach().cpu().numpy()  # 一個ずつじゃ無いとダメ？
-                # )
-                pass
-                # map outputs from 1000 to 16
-            acc1 = accuracy(outputs, labels, topk=(1,))
-            top1.update(acc1[0], inputs.size(0))
+
+                correct = 0
+                for i in range(outputs.shape[0]):
+                    # get model_decision (str) by mapping outputs from 1,000 to 16
+                    model_decision = mapping.probabilities_to_decision(
+                        outputs[i]
+                        .detach()
+                        .cpu()
+                        .numpy()  # It needs to be a single output.
+                    )  # Returns: label name (str)
+
+                    # label name (str) -> label id (int)
+                    model_decision_id = get_key_from_value(label_map, model_decision)
+                    correct += float(model_decision_id == targets[i])
+
+                acc1 = (correct / outputs.shape[0]) * 100
+                top1.update(acc1, outputs.shape[0])
+
+            else:
+                acc1 = accuracy(outputs, targets, topk=(1,))
+                top1.update(acc1[0].item(), outputs.shape[0])
 
     return top1.avg

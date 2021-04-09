@@ -54,9 +54,9 @@ if __name__ == "__main__":
     # models to compare
     modes = [
         "normal",
-        "all",
-        "mix",
-        "random-mix",
+        # "all",
+        # "mix",
+        # "random-mix",
         # "single-step",
         # "fixed-single-step",
         # "reversed-single-step",
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # make bandpass bandpass_filters
     bandpass_filters = make_bandpass_filters(num_filters=num_filters)
 
-    for model_name in tqdm(model_names, desc="models"):
+    for model_name in tqdm(model_names, desc="models", leave=False):
         print()
         print(f"{model_name}: computing bandpass acc...")
         # load model
@@ -143,3 +143,5 @@ if __name__ == "__main__":
             device=device,
             out_file=out_file,
         )
+
+    print("All done!!")
