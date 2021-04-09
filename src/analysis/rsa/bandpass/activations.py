@@ -102,7 +102,7 @@ def compute_activations_with_bandpass(
     filters: dict,
     device: torch.device,
 ):
-    """Computes activations of a sigle image with band-pass filters applied.
+    """Computes activations of a single image with band-pass filters applied.
     image (torch.Tensor): torch.Size([1, 3, 375, 500])
     label (torch.Tensor): e.g. tensor([0])
     """
