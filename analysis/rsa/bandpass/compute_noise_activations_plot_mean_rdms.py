@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print("add_noise:", add_noise)
     print("mean, var:", mean, var)
     print("metrics:", metrics)
-    print("==========", end="\n\n")
+    print()
 
 
     # I/O settings
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     print("IN, models_dir:", models_dir)
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
-    print("==========", end="\n\n")
+    print()
 
 
     # models to compare
@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
     print("===== models to analyze =====")
     print(model_names)
-    print("==========", end="\n\n")
+    print()
 
     # ===== main =====
     seed = 42
