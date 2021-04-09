@@ -34,6 +34,15 @@ if __name__ == "__main__":
     mean, var = 0, 0.1  # gaussian noise parameters
     metrics = "correlation"  # "1-covariance", "negative-covariance"
 
+    print("===== parameters =====")
+    print("num_classes:", num_classes)
+    print("num_filters:", num_filters)
+    print("add_noise:", add_noise)
+    print("mean, var:", mean, var)
+    print("metrics:", metrics)
+    print("==========", end="\n\n")
+
+
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
@@ -44,6 +53,13 @@ if __name__ == "__main__":
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
+
+    print("===== I/O settings =====")
+    print("IN, models_dir:", models_dir)
+    print("OUT, results_dir:", results_dir)
+    print("OUT, plots_dir:", plots_dir)
+    print("==========", end="\n\n")
+
 
     # models to compare
     model_names = [
@@ -74,6 +90,10 @@ if __name__ == "__main__":
         else:
             for sigma in range(1, 5):
                 model_names += [f"{mode}_s{sigma:02d}"]
+
+    print("===== models to analyze =====")
+    print(model_names)
+    print("==========", end="\n\n")
 
     # ===== main =====
     seed = 42
@@ -151,4 +171,4 @@ if __name__ == "__main__":
             show_plot=False,
         )
 
-        print(model_names, "plotting is DONE!")
+        print(model_names, "plotting is DONE!", end="\n\n")
