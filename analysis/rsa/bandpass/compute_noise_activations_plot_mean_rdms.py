@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     num_filters = 6
     add_noise = True
-    mean, var = 0, 0.1  # gaussian noise parameters
+    mean, var = 0, 0.01  # gaussian noise parameters
     metrics = "correlation"  # "1-covariance", "negative-covariance"
 
     print("===== arguments =====")
@@ -62,33 +62,38 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        f"{arch}_normal",
-        # f"{arch}_multi-steps",
+        "alexnet_normal",
+        "alexnet_all_s04",
+        "alexnet_mix_s04",
     ]
-    modes = [
-        f"{arch}_all",
-        f"{arch}_mix",
-        # f"{arch}_random-mix",
-        # f"{arch}_single-step",
-        # f"{arch}_fixed-single-step",
-        # f"{arch}_reversed-single-step",
-    ]
-
-    # sigmas to compare
-    sigmas_mix = [s for s in range(1, 6)] + [10]
-    sigmas_random_mix = ["00-05", "00-10"]
-
-    # add sigma to compare to the model names
-    for mode in modes:
-        if mode == f"{arch}_random-mix":
-            for min_max in sigmas_random_mix:
-                model_names += [f"{mode}_s{min_max}"]
-        elif mode == f"{arch}_mix":
-            for sigma in sigmas_mix:
-                model_names += [f"{mode}_s{sigma:02d}"]
-        else:
-            for sigma in range(1, 5):
-                model_names += [f"{mode}_s{sigma:02d}"]
+    # model_names = [
+    #     f"{arch}_normal",
+    #     # f"{arch}_multi-steps",
+    # ]
+    # modes = [
+    #     f"{arch}_all",
+    #     f"{arch}_mix",
+    #     # f"{arch}_random-mix",
+    #     # f"{arch}_single-step",
+    #     # f"{arch}_fixed-single-step",
+    #     # f"{arch}_reversed-single-step",
+    # ]
+    #
+    # # sigmas to compare
+    # sigmas_mix = [s for s in range(1, 6)] + [10]
+    # sigmas_random_mix = ["00-05", "00-10"]
+    #
+    # # add sigma to compare to the model names
+    # for mode in modes:
+    #     if mode == f"{arch}_random-mix":
+    #         for min_max in sigmas_random_mix:
+    #             model_names += [f"{mode}_s{min_max}"]
+    #     elif mode == f"{arch}_mix":
+    #         for sigma in sigmas_mix:
+    #             model_names += [f"{mode}_s{sigma:02d}"]
+    #     else:
+    #         for sigma in range(1, 5):
+    #             model_names += [f"{mode}_s{sigma:02d}"]
 
     print("===== models to analyze =====")
     print(model_names)
