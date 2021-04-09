@@ -1,9 +1,13 @@
 from typing import Union
+
 import numpy as np
 import torch
 
+
 # Ref: https://www.javaer101.com/ja/article/3437291.html
-def gaussian_noise(image: Union[np.array, torch.Tensor], mean=0, var=0.1) -> Union[np.array, torch.Tensor]:
+def gaussian_noise(
+    image: Union[np.array, torch.Tensor], mean=0, var=0.1
+) -> Union[np.array, torch.Tensor]:
     """Adds Gaussian noise to input image.
     Args:
         image: an image. np.array=(H, W, C) or torch.Tensor=(C, H, W)

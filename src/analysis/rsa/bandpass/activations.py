@@ -68,7 +68,13 @@ def main(
         out_dir = os.path.join(results_dir, f"{model_name}_e{epoch:02d}")
         os.makedirs(out_dir, exist_ok=True)
 
-        compute_save(model, device=device, data_loader=test_loader, filters=filters, out_dir=out_dir)
+        compute_save(
+            model,
+            device=device,
+            data_loader=test_loader,
+            filters=filters,
+            out_dir=out_dir,
+        )
 
 
 def compute_save(
