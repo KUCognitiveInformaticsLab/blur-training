@@ -38,7 +38,8 @@ if __name__ == "__main__":
     print("num_classes:", num_classes)
     print("num_filters:", num_filters)
     print("add_noise:", add_noise)
-    print("mean, var:", mean, var)
+    print("mean:", mean)
+    print("var:", var)
     print("metrics:", metrics)
     print()
 
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
 
-    print("===== I/O settings =====")
+    print("===== I/O =====")
     print("IN, models_dir:", models_dir)
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
