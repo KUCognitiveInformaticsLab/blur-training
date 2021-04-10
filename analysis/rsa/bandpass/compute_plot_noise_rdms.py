@@ -32,8 +32,8 @@ if __name__ == "__main__":
     num_filters = 6
     add_noise = True
     args = sys.argv
-    mean = args[1]  # gaussian noise parameters
-    var = args[2]
+    mean = float(args[1])  # gaussian noise parameters
+    var = float(args[2])
     metrics = "correlation"  # "1-covariance", "negative-covariance"
 
     # I/O settings
