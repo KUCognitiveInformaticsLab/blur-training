@@ -63,8 +63,8 @@ if __name__ == "__main__":
     # models to compare
     model_names = [
         "alexnet_normal",
-        # "alexnet_all_s04",
-        # "alexnet_mix_s04",
+        "alexnet_all_s04",
+        "alexnet_mix_s04",
     ]
     # model_names = [
     #     f"{arch}_normal",
@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     seed = 42
     # random seed settings
-    np.random.seed(seed)
+    # np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)

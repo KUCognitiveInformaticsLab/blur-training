@@ -19,11 +19,9 @@ def gaussian_noise(
 
     noisy = images + gauss
 
-    print("image:", type(images))
-    print("gauss:", type(gauss))
-    print("noisy:", type(noisy))
-
-    hoge
+    # print("image:", type(images))
+    # print("gauss:", type(gauss))
+    # print("noisy:", type(noisy))
 
     return noisy
 
