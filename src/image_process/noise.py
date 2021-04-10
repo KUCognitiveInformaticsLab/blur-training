@@ -18,11 +18,13 @@ def gaussian_noise(
     gauss = np.random.normal(loc=mean, scale=sigma, size=images.shape)
 
     noisy = images + gauss
+    # noisy = images.numpy() + gauss  # It may be better (depending on the version of pytorch).
 
     # print("image:", type(images))
     # print("gauss:", type(gauss))
     # print("noisy:", type(noisy))
 
+    # noisy = torch.from_numpy(noisy)  # It may be better.
     return noisy
 
 
