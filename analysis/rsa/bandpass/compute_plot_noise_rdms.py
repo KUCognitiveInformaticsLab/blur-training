@@ -104,12 +104,12 @@ if __name__ == "__main__":
     # ===== main =====
     print("===== main =====")
 
-    seed = 42
+    # seed = 42
     # random seed settings
     # np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
+    # torch.manual_seed(seed)
+    # if torch.cuda.is_available():
+    #     torch.cuda.manual_seed(seed)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
