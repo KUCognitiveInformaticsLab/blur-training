@@ -9,7 +9,7 @@ def gaussian_noise(
 ) -> Union[np.array, torch.Tensor]:
     """Adds Gaussian noise to input image.
     Args:
-        image (np.array or torch.Tensor): an image.
+        images (np.array or torch.Tensor): an image.
     Return:
         noisy (np.array or torch.Tensor): a noisy image.
     """
@@ -18,6 +18,9 @@ def gaussian_noise(
     gauss = np.random.normal(loc=mean, scale=sigma, size=images.shape)
 
     noisy = images + gauss
+
+    print(type(images))
+    print(type(gauss))
 
     return noisy
 

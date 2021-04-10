@@ -63,8 +63,8 @@ if __name__ == "__main__":
     # models to compare
     model_names = [
         "alexnet_normal",
-        "alexnet_all_s04",
-        "alexnet_mix_s04",
+        # "alexnet_all_s04",
+        # "alexnet_mix_s04",
     ]
     # model_names = [
     #     f"{arch}_normal",

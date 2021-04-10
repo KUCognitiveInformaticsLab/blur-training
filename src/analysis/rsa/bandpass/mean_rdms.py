@@ -49,7 +49,7 @@ def compute_mean_rdms_with_bandpass(
             enumerate(data_loader), desc="test images", leave=False
         ):
             """Note that data_loader SHOULD return a single image for each loop.
-            image (torch.Tensor): torch.Size([1, 3, 375, 500])
+            image (torch.Tensor): torch.Size([1, C, H, W])
             label (torch.Tensor): e.g. tensor([0])
             """
             activations = compute_activations_with_bandpass(
