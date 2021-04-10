@@ -47,8 +47,8 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/mean_rdms_noise_{metrics}/{num_classes}-class-{arch}/"
-    plots_dir = f"./plots/mean_rdms_noise_{metrics}/{num_classes}-class-{arch}/"
+    results_dir = f"./results/mean_rdms_bandpass-noise_no-np-random_{metrics}/{num_classes}-class-{arch}/"
+    plots_dir = f"./plots/mean_rdms_noise_bandpass-noise_no-np-random_{metrics}/{num_classes}-class-{arch}/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)

@@ -21,7 +21,7 @@ from src.analysis.bandpass_acc.bandpass_acc import test_performance
 if __name__ == "__main__":
     # ===== args =====
     arch = "alexnet"
-    num_classes = 16  # number of last output of the models
+    num_classes = 1000  # number of last output of the models
     epoch = 60
     batch_size = 64
 
@@ -54,10 +54,10 @@ if __name__ == "__main__":
     # models to compare
     modes = [
         "normal",
-        # "all",
-        # "mix",
-        # "random-mix",
-        # "single-step",
+        "all",
+        "mix",
+        "random-mix",
+        "single-step",
         # "fixed-single-step",
         # "reversed-single-step",
         # "multi-steps",
