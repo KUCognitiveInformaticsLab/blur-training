@@ -31,8 +31,21 @@ if __name__ == "__main__":
 
     num_filters = 6
     add_noise = True
-    mean, var = 0, 0.01  # gaussian noise parameters
+    args = sys.argv
+    mean = args[1]  # gaussian noise parameters
+    var = args[2]
     metrics = "correlation"  # "1-covariance", "negative-covariance"
+
+    # I/O settings
+    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+    )
+    results_dir = f"./results/mean_rdms_bandpass-noise_no-all-random_{metrics}/{num_classes}-class-{arch}/"
+    plots_dir = f"./plots/mean_rdms_noise_bandpass-noise_no-all-random_{metrics}/{num_classes}-class-{arch}/"
+
+    assert os.path.exists(models_dir), f"{models_dir} does not exist."
+    os.makedirs(results_dir, exist_ok=True)
+    os.makedirs(plots_dir, exist_ok=True)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -42,17 +55,6 @@ if __name__ == "__main__":
     print("var:", var)
     print("metrics:", metrics)
     print()
-
-    # I/O settings
-    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
-    )
-    results_dir = f"./results/mean_rdms_bandpass-noise_no-np-random_{metrics}/{num_classes}-class-{arch}/"
-    plots_dir = f"./plots/mean_rdms_noise_bandpass-noise_no-np-random_{metrics}/{num_classes}-class-{arch}/"
-
-    assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    os.makedirs(results_dir, exist_ok=True)
-    os.makedirs(plots_dir, exist_ok=True)
 
     print("===== I/O =====")
     print("IN, models_dir:", models_dir)
