@@ -130,14 +130,14 @@ if __name__ == "__main__":
         vmax = 2 if metrics == "correlation" else 5
 
         # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)
-        plot_bandpass_rdms(
-            rdms=mean_rdms,
-            num_filters=num_filters,
-            vmin=vmin,
-            vmax=vmax,
-            title=title,
-            out_file=out_file,
-            show_plot=False,
-        )
+        # plot_bandpass_rdms(
+        #     rdms=mean_rdms,
+        #     num_filters=num_filters,
+        #     vmin=vmin,
+        #     vmax=vmax,
+        #     title=title,
+        #     out_file=out_file,
+        #     show_plot=False,
+        # )
 
     print("All done!!")
