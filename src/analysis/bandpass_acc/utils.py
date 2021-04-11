@@ -8,6 +8,6 @@ def load_result(file_path):
 
 def load_model_acc1(model_path):
     """Return top-1 accuracy from saved model"""
-    checkpoint = torch.load(model_path, map_location='cpu')
+    checkpoint = torch.load(model_path, map_location="cpu")
 
-    return checkpoint['val_acc'].item()
+    return checkpoint["val_acc"].item()
