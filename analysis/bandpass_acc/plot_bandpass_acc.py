@@ -30,14 +30,14 @@ if __name__ == "__main__":
         f"{num_classes}-class-{arch}_normal",
         f"{num_classes}-class-{arch}_all_s04",
         f"{num_classes}-class-{arch}_mix_s04",
-        f"{num_classes}-class-{arch}_mix_s10",
+        # f"{num_classes}-class-{arch}_mix_s10",
         # f"{num_classes}-class-{arch}_random-mix_s00-05"
         # f"{num_classes}-class-{arch}_random-mix_s00-10"
     ]
 
     # set plot file name.
     plot_file = (
-        f"bandpass-acc1_{num_classes}-class-{arch}_e{epoch}_normal_all-s04_mix-s04_mix-s10.png"
+        f"bandpass-acc1_{num_classes}-class-{arch}_e{epoch}_normal_all-s04_mix-s04.png"
     )
 
     colors = {
