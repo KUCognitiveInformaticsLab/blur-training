@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
         # set path to output
         out_file = os.path.join(
-            results_dir, f"{num_classes}-class_{model_name}_e{epoch}_acc1.csv"
+            results_dir, f"{num_classes}-class-{model_name}_e{epoch}_acc1.csv"
         )
 
         test_performance(
