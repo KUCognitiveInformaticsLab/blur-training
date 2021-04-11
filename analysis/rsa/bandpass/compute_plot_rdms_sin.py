@@ -60,7 +60,7 @@ if __name__ == "__main__":
     model_names += [
         # "vone_alexnet",
     ]
-    model_names += sin_names[arch]
+    model_names += [sin_names[arch]]
 
     # sigmas to compare
     sigmas_mix = [s for s in range(1, 6)] + [10]

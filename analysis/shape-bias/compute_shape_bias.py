@@ -67,7 +67,7 @@ if __name__ == "__main__":
         "vgg16": "vgg16_trained_on_SIN",
         "resnet50": "resnet50_trained_on_SIN",
     }
-    model_names += sin_names[arch]
+    model_names += [sin_names[arch]]
 
     for model_name in model_names:
         print(model_name)
