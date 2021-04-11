@@ -28,7 +28,7 @@ def load_sin_model(model_name):
     if "resnet50" in model_name:
         print("Using the ResNet50 architecture.")
         model = torchvision.models.resnet50(pretrained=False)
-        model = torch.nn.DataParallel(model).cuda()
+        # model = torch.nn.DataParallel(model).cuda()
         checkpoint = model_zoo.load_url(model_urls[model_name])
     elif "vgg16" in model_name:
         print("Using the VGG-16 architecture.")
@@ -41,14 +41,14 @@ def load_sin_model(model_name):
         ), "Please download the VGG model yourself from the following link and save it locally: https://drive.google.com/drive/folders/1A0vUWyU6fTuc-xWgwQQeBvzbwi6geYQK (too large to be downloaded automatically like the other models)"
 
         model = torchvision.models.vgg16(pretrained=False)
-        model.features = torch.nn.DataParallel(model.features)
+        # model.features = torch.nn.DataParallel(model.features)
         model.cuda()
         checkpoint = torch.load(filepath)
 
     elif "alexnet" in model_name:
         print("Using the AlexNet architecture.")
         model = torchvision.models.alexnet(pretrained=False)
-        model.features = torch.nn.DataParallel(model.features)
+        # model.features = torch.nn.DataParallel(model.features)
         model.cuda()
         checkpoint = model_zoo.load_url(model_urls[model_name])
     else:
