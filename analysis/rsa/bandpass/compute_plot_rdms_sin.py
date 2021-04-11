@@ -127,11 +127,12 @@ if __name__ == "__main__":
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             RSA = VOneNetAlexNetRSA(model)
         else:
-            model_path = os.path.join(models_dir, model_name, f"epoch_{epoch:02d}.pth.tar")
+            model_path = os.path.join(
+                models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
+            )
             model = load_model(
                 arch=arch, num_classes=num_classes, model_path=model_path
             ).to(device)
-
 
         # ===== compute RDM =====
         print()
