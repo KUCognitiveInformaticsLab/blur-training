@@ -121,7 +121,7 @@ if __name__ == "__main__":
     for model_name in tqdm(model_names, desc="models"):
         if "SIN" in model_name:
             # Stylized-ImageNet
-            load_sin_model(model_name).to(device)
+            model = load_sin_model(model_name).to(device)
             RSA = AlexNetRSA(model)
         elif "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
@@ -133,6 +133,7 @@ if __name__ == "__main__":
             model = load_model(
                 arch=arch, num_classes=num_classes, model_path=model_path
             ).to(device)
+            RSA = AlexNetRSA(model)
 
         # ===== compute RDM =====
         print()
