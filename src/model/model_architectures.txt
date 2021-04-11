@@ -25,3 +25,86 @@ AlexNet(
     (6): Linear(in_features=4096, out_features=1000, bias=True)
   )
 )
+
+Model:  VOneAlexNet
+DataParallel(
+  (module): Sequential(
+    (vone_block): VOneBlock(
+      (simple_conv_q0): GFB()
+      (simple_conv_q1): GFB()
+      (simple): ReLU(inplace=True)
+      (complex): Identity()
+      (gabors): Identity()
+      (noise): ReLU(inplace=True)
+      (output): Identity()
+    )
+    (bottleneck): Conv2d(512, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    (model): AlexNetBackEnd(
+      (features): Sequential(
+        (0): Conv2d(64, 192, kernel_size=(5, 5), stride=(2, 2), padding=(2, 2))
+        (1): ReLU(inplace=True)
+        (2): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+        (3): Conv2d(192, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (4): ReLU(inplace=True)
+        (5): Conv2d(384, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (6): ReLU(inplace=True)
+        (7): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (8): ReLU(inplace=True)
+        (9): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+      )
+      (avgpool): AdaptiveAvgPool2d(output_size=(7, 7))
+      (classifier): Sequential(
+        (0): Dropout(p=0.5, inplace=False)
+        (1): Linear(in_features=12544, out_features=4096, bias=True)
+        (2): ReLU(inplace=True)
+        (3): Dropout(p=0.5, inplace=False)
+        (4): Linear(in_features=4096, out_features=4096, bias=True)
+        (5): ReLU(inplace=True)
+        (6): Linear(in_features=4096, out_features=1000, bias=True)
+      )
+    )
+  )
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+               GFB-1          [-1, 512, 56, 56]         960,000
+               GFB-2          [-1, 512, 56, 56]         960,000
+          Identity-3          [-1, 256, 56, 56]               0
+              ReLU-4          [-1, 256, 56, 56]               0
+          Identity-5          [-1, 512, 56, 56]               0
+              ReLU-6          [-1, 512, 56, 56]               0
+          Identity-7          [-1, 512, 56, 56]               0
+         VOneBlock-8          [-1, 512, 56, 56]               0
+            Conv2d-9           [-1, 64, 56, 56]          32,768
+           Conv2d-10          [-1, 192, 28, 28]         307,392
+             ReLU-11          [-1, 192, 28, 28]               0
+        MaxPool2d-12          [-1, 192, 14, 14]               0
+           Conv2d-13          [-1, 384, 14, 14]         663,936
+             ReLU-14          [-1, 384, 14, 14]               0
+           Conv2d-15          [-1, 256, 14, 14]         884,992
+             ReLU-16          [-1, 256, 14, 14]               0
+           Conv2d-17          [-1, 256, 14, 14]         590,080
+             ReLU-18          [-1, 256, 14, 14]               0
+        MaxPool2d-19            [-1, 256, 7, 7]               0
+AdaptiveAvgPool2d-20            [-1, 256, 7, 7]               0
+          Dropout-21                [-1, 12544]               0
+           Linear-22                 [-1, 4096]      51,384,320
+             ReLU-23                 [-1, 4096]               0
+          Dropout-24                 [-1, 4096]               0
+           Linear-25                 [-1, 4096]      16,781,312
+             ReLU-26                 [-1, 4096]               0
+           Linear-27                 [-1, 1000]       4,097,000
+   AlexNetBackEnd-28                 [-1, 1000]               0
+================================================================
+Total params: 76,661,800
+Trainable params: 74,741,800
+Non-trainable params: 1,920,000
+----------------------------------------------------------------
+Input size (MB): 0.57
+Forward/backward pass size (MB): 93.00
+Params size (MB): 292.44
+Estimated Total Size (MB): 386.02
+----------------------------------------------------------------
+1
+​

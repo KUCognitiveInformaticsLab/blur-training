@@ -14,6 +14,17 @@ alexnet_layers = [
     "last-outputs",
 ]
 
+vone_alexnet_layers = [
+    "vone_block",
+    "conv-relu-1",
+    "conv-relu-2",
+    "conv-relu-3",
+    "conv-relu-4",
+    "fc-relu-1",
+    "fc-relu-2",
+    "fc-relu-3",
+]
+
 
 class AlexNetRSA:
     def __init__(self, model):
@@ -101,3 +112,59 @@ class AlexNetRSA:
             mean_rdms[layer] = rdms.mean(0)
 
         return mean_rdms
+
+
+class VOneNetAlexNetRSA:
+    def __init__(self, model):
+        """
+        Args:
+            model: VOneAlexnet model (PyTorch)
+        """
+        self.layers = vone_alexnet_layers
+
+        self.activations = {}
+
+        self.model.module.bottlenect.register_forward_hook(
+            self._get_activations(self.layers[0])
+        )
+        self.model.module.model.features[1].register_forward_hook(
+            self._get_activations(self.layers[1])
+        )
+        self.model.module.model.features[4].register_forward_hook(
+            self._get_activations(self.layers[2])
+        )
+        self.model.module.model.features[6].register_forward_hook(
+            self._get_activations(self.layers[3])
+        )
+        self.model.module.model.features[8].register_forward_hook(
+            self._get_activations(self.layers[4])
+        )
+        self.model.module.model.classifier[2].register_forward_hook(
+            self._get_activations(self.layers[5])
+        )
+        self.model.module.model.classifier[5].register_forward_hook(
+            self._get_activations(self.layers[6])
+        )
+        self.model.module.model.classifier[6].register_forward_hook(
+            self._get_activations(self.layers[7])
+        )
+
+    # Ref:
+    #  https://discuss.pytorch.org/t/extract-features-from-layer-of-submodule-of-a-model/20181
+    def _get_activations(self, name):
+        def hook(model, input, output):
+            self.activations[name] = output.detach().cpu().numpy()
+
+        return hook
+
+    def compute_activations(self, images: torch.Tensor) -> dict:
+        """Computes activations of units in a model.
+        Args:
+            images: images to test the model with. shape=(N, C, H, W)
+
+        Returns: activations
+        """
+
+        _ = self.model(images)
+
+        return self.activations
