@@ -180,7 +180,12 @@ def plot_bandpass_rdms(
             yticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
             cmap="coolwarm",
             cbar=False,
-            # cbar_ax=cbar_ax,
+            # --- show values ---
+            # annot=True,
+            # fmt="1.2f",
+            # annot_kws={'size': 3}
+            # ---  ---
+            # cbar_ax=cbar_ax,  # show color bar
         )
 
         ax.hlines(
