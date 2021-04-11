@@ -8,6 +8,13 @@ import torchvision
 import torchvision.models
 from torch.utils import model_zoo
 
+# Stylized-ImageNet
+sin_names = {
+    "alexnet": "alexnet_trained_on_SIN",
+    "vgg16": "vgg16_trained_on_SIN",
+    "resnet50": "resnet50_trained_on_SIN",
+}
+
 
 def load_sin_model(model_name):
 
