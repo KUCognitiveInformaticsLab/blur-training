@@ -121,12 +121,13 @@ class VOneNetAlexNetRSA:
             model: VOneAlexnet model (PyTorch)
         """
         self.model = model
+        print(model)
 
         self.layers = vone_alexnet_layers
 
         self.activations = {}
 
-        self.model.module.bottlenect.register_forward_hook(
+        self.model.module.vone_block.register_forward_hook(
             self._get_activations(self.layers[0])
         )
         self.model.module.model.features[1].register_forward_hook(
