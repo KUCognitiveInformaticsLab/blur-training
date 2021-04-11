@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
         # save mean RDMs
         # print("saving RDM...")
-        result_file = f"{model_name}_e{epoch:02d}.pkl"
+        result_file = f"mean_rdms_noise_mean{mean}_var{var}_{model_name}_e{epoch:02d}.pkl"
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
 

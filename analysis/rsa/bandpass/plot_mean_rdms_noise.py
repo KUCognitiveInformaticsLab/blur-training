@@ -14,10 +14,13 @@ if __name__ == "__main__":
     num_classes = 16
     epoch = 60
 
+    mean = 0
+    var = 0.01
+
     metrics = "correlation"  # ("correlation", "1-covariance", "negative-covariance")
 
-    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
-    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/mean_rdms_{metrics}/{num_classes}-class-{arch}"
+    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_bandpass-noise_no-all-random_correlation/{num_classes}-class-{arch}/"
+    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/mean_rdms_noise_bandpass-noise_no-all-random_correlation_annot/{num_classes}-class-{arch}/"
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -76,10 +79,10 @@ if __name__ == "__main__":
         num_filters = rdms["num_filters"]
 
         # (optional) set title
-        title = f"RDM ({metrics}), {num_classes}-class, {model_name}, epoch={epoch}"
+        title = f"RDM ({metrics}) with Gaussian noise (mean={mean}, var={var}), {num_classes}-class, {model_name}, epoch={epoch}"
 
         # set filename
-        filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
+        filename = f"mean_rdms_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}_mean{mean}_var{var}.png"
         out_file = os.path.join(out_dir, filename)
 
         # colour value range of the plots
