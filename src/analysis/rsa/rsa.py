@@ -121,7 +121,6 @@ class VOneNetAlexNetRSA:
             model: VOneAlexnet model (PyTorch)
         """
         self.model = model
-        print(model)
 
         self.layers = vone_alexnet_layers
 
