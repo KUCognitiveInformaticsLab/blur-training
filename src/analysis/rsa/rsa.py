@@ -120,6 +120,8 @@ class VOneNetAlexNetRSA:
         Args:
             model: VOneAlexnet model (PyTorch)
         """
+        self.model = model
+
         self.layers = vone_alexnet_layers
 
         self.activations = {}
