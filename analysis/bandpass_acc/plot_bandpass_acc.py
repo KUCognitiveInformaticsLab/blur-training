@@ -15,7 +15,7 @@ from src.analysis.bandpass_acc.utils import load_result
 if __name__ == "__main__":
     arch = "alexnet"
     epoch = 60
-    num_classes = 1000  # number of last output of the models
+    num_classes = 16  # number of last output of the models
 
     # directories and model settings
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class-{arch}/"
@@ -30,25 +30,21 @@ if __name__ == "__main__":
         f"{num_classes}-class-{arch}_normal",
         f"{num_classes}-class-{arch}_all_s04",
         f"{num_classes}-class-{arch}_mix_s04",
+        f"{num_classes}-class-{arch}_mix_s10",
+        # f"{num_classes}-class-{arch}_random-mix_s00-05"
+        # f"{num_classes}-class-{arch}_random-mix_s00-10"
     ]
 
     # set plot file name.
     plot_file = (
-        f"bandpass-acc1_{num_classes}-class-{arch}_e{epoch}_normal_all-s04_mix-s04.png"
+        f"bandpass-acc1_{num_classes}-class-{arch}_e{epoch}_normal_all-s04_mix-s04_mix-s10.png"
     )
-
-    # read band-pass accuracy results
-    value = "acc1"
-    acc1 = {}
-    for model_name in model_names:
-        file_path = os.path.join(in_dir, f"{model_name}_e{epoch}_{value}.csv")
-        acc1[model_name] = load_result(file_path=file_path).values[0]
 
     colors = {
         f"{num_classes}-class-{arch}_normal": "#1f77b4",
         f"{num_classes}-class-{arch}_all_s04": "darkorange",
         f"{num_classes}-class-{arch}_mix_s04": "limegreen",
-        f"{num_classes}-class_{arch}_mix_s10": "hotpink",
+        f"{num_classes}-class-{arch}_mix_s10": "hotpink",
         f"{num_classes}-class-{arch}_random-mix_s00-05": "green",
         f"{num_classes}-class_{arch}_random-mix_s00-10": "mediumvioletred",
     }
@@ -57,20 +53,28 @@ if __name__ == "__main__":
         f"{num_classes}-class-{arch}_normal": ":",
         f"{num_classes}-class-{arch}_all_s04": "-",
         f"{num_classes}-class-{arch}_mix_s04": "-",
+        f"{num_classes}-class-{arch}_mix_s10": "-",
+        f"{num_classes}-class-{arch}_random-mix_s00-05": "-",
+        f"{num_classes}-class-{arch}_random-mix_s00-10": "-",
     }
 
     x = ["{}-{}".format(2 ** i, 2 ** (i + 1)) for i in range(4)] + ["16-"]
     x.insert(0, "0-1")
     x.insert(0, "0(raw)")
 
+    # read band-pass accuracy results
+    value = "acc1"
+    acc1 = {}
+    for model_name in model_names:
+        file_path = os.path.join(in_dir, f"{model_name}_e{epoch}_{value}.csv")
+        acc1[model_name] = load_result(file_path=file_path).values[0]
+
     fig = plt.figure(dpi=150)
     ax = fig.add_subplot(
         1,
         1,
         1,
-        title="Top-1 Accuracy of Band-Pass Images, {} (16-class)".format(
-            arch.capitalize(),
-        ),
+        title=f"top-1 acc. on band-pass 16-class-imagenet",
         xlabel="Test images",
         ylabel="Top-1 accuracy",
         ylim=(0, 1),
