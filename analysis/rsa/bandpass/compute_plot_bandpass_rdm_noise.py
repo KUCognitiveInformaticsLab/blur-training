@@ -23,7 +23,7 @@ from src.model.utils import load_model
 if __name__ == "__main__":
     # ===== args =====
     arch = "alexnet"
-    num_classes = 16
+    num_classes = 1000
     epoch = 60
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         # save mean RDMs
         # print("saving RDM...")
         result_file = (
-            f"{analysis}_{num_classes}-class_{model_name}_e{epoch}.pkl"
+            f"{analysis}_{num_classes}-class_{model_name}.pkl"
         )
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
@@ -162,7 +162,7 @@ if __name__ == "__main__":
         plot_title = f"{analysis}, {num_classes}-class, {model_name}"
 
         # set plot filename
-        plot_file = f"{analysis}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
+        plot_file = f"{analysis}_{num_classes}-class_{model_name}_f{num_filters}.png"
         plot_path = os.path.join(plots_dir, plot_file)
 
         # colour value range of the plots
