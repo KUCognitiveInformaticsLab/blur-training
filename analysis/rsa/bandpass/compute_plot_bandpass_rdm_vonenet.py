@@ -13,7 +13,6 @@ sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.bandpass_rdm import (
     compute_mean_rdms_with_bandpass,
-    plot_bandpass_rdms,
 )
 from src.analysis.rsa.rsa import VOneNetAlexNetRSA
 from src.analysis.rsa.utils import save_rdms

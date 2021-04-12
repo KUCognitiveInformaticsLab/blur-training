@@ -5,9 +5,8 @@ import sys
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
-from tqdm import tqdm
-
 import vonenet
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
