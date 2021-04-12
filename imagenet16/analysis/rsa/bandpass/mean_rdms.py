@@ -6,7 +6,7 @@ import sys
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
-from src.analysis.rsa.bandpass.mean_rdms import compute_mean_rdms, save_rdms, plot_rdms
+from src.analysis.rsa.bandpass.bandpass_rdm import compute_mean_rdms, save_rdms, plot_rdms
 
 if __name__ == "__main__":
     arch = "alexnet"
