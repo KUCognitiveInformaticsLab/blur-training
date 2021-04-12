@@ -34,13 +34,14 @@ if __name__ == "__main__":
     mean = float(args[1])  # gaussian noise parameters
     var = float(args[2])
     metrics = "correlation"  # "1-covariance", "negative-covariance"
+    analysis = f"bandpass_rdm_{metrics}_noise_mean{mean}_var{var}"
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/mean_rdms_bandpass-noise-torch_no-all-random_{metrics}/{num_classes}-class-{arch}/"
-    plots_dir = f"./plots/mean_rdms_noise_bandpass-noise-torch_no-all-random_{metrics}/{num_classes}-class-{arch}/"
+    results_dir = f"./results/{analysis}/{num_classes}-class-{arch}/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class-{arch}/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
@@ -146,7 +147,7 @@ if __name__ == "__main__":
         # save mean RDMs
         # print("saving RDM...")
         result_file = (
-            f"mean_rdms_noise_mean{mean}_var{var}_{model_name}_e{epoch:02d}.pkl"
+            f"{analysis}_{model_name}_e{epoch}.pkl"
         )
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
@@ -158,11 +159,11 @@ if __name__ == "__main__":
         num_filters = mean_rdms["num_filters"]
 
         # (optional) set title
-        title = f"RDM ({metrics}) with Gaussian noise (mean={mean}, var={var}), {num_classes}-class, {model_name}, epoch={epoch}"
+        plot_title = f"{analysis}, {num_classes}-class, {model_name}"
 
-        # set filename
-        filename = f"mean_rdms_noise_mean{mean}_var{var}_{metrics}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
-        out_file = os.path.join(plots_dir, filename)
+        # set plot filename
+        plot_file = f"{analysis}_{num_classes}-class_{model_name}_e{epoch}_f{num_filters}.png"
+        plot_path = os.path.join(plots_dir, plot_file)
 
         # colour value range of the plots
         vmin = 0 if metrics == "correlation" else -5
@@ -174,8 +175,8 @@ if __name__ == "__main__":
             num_filters=num_filters,
             vmin=vmin,
             vmax=vmax,
-            title=title,
-            out_file=out_file,
+            title=plot_title,
+            out_file=plot_path,
             show_plot=False,
         )
 
