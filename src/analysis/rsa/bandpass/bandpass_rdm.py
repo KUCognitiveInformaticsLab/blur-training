@@ -157,7 +157,14 @@ def load_compute_mean_rdms(
 
 
 def plot_bandpass_rdms(
-    rdms, layers, num_filters, vmin=0, vmax=2, title="", out_file="rdms.png", show_plot=False
+    rdms,
+    layers=alexnet_layers,
+    num_filters=6,
+    vmin=0,
+    vmax=2,
+    title="",
+    out_file="rdms.png",
+    show_plot=False,
 ):
     """Plot several layers RDMs in one figure.
     Args:

@@ -146,9 +146,7 @@ if __name__ == "__main__":
 
         # save mean RDMs
         # print("saving RDM...")
-        result_file = (
-            f"{analysis}_{num_classes}-class_{model_name}.pkl"
-        )
+        result_file = f"{analysis}_{num_classes}-class_{model_name}.pkl"
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
 
@@ -172,6 +170,7 @@ if __name__ == "__main__":
         # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)
         plot_bandpass_rdms(
             rdms=mean_rdms,
+            layers=RSA.layers,
             num_filters=num_filters,
             vmin=vmin,
             vmax=vmax,
