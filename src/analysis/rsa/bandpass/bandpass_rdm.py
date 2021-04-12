@@ -157,7 +157,7 @@ def load_compute_mean_rdms(
 
 
 def plot_bandpass_rdms(
-    rdms, num_filters, vmin=0, vmax=2, title="", out_file="rdms.png", show_plot=False
+    rdms, layers, num_filters, vmin=0, vmax=2, title="", out_file="rdms.png", show_plot=False
 ):
     """Plot several layers RDMs in one figure.
     Args:
@@ -165,7 +165,7 @@ def plot_bandpass_rdms(
     """
     fig = plt.figure(dpi=300)
 
-    for i, layer in enumerate(alexnet_layers):
+    for i, layer in enumerate(layers):
         ax = fig.add_subplot(2, 4, i + 1)
         # sns.set(font_scale=0.5)  # adjust the font size of labels
         ax.set_title(layer)
