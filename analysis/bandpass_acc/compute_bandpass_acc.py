@@ -7,6 +7,8 @@ import torch
 import torch.backends.cudnn as cudnn
 from tqdm import tqdm
 
+import vonenet
+
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
@@ -14,12 +16,14 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
 from src.model.utils import load_model
+from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.analysis.bandpass_acc.bandpass_acc import test_performance
 
 
 if __name__ == "__main__":
     # ===== args =====
+    analysis = "bandpass_acc"
     arch = "alexnet"
     num_classes = 1000  # number of last output of the models
     epoch = 60
@@ -31,33 +35,28 @@ if __name__ == "__main__":
 
     num_filters = 6  # the number of bandpass filters
 
-    print("===== arguments =====")
-    print("num_classes:", num_classes)
-    print("num_filters:", num_filters)
-    print("batch_size:", batch_size)
-    print("test_dataset:", test_dataset)
-    print()
-
+    # I/O
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/{num_classes}-class/{arch}/"
+    results_dir = f"./results/{num_classes}-class/"
+
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
 
-    print("===== I/O =====")
-    print("IN, models_dir:", models_dir)
-    print("OUT, results_dir:", results_dir)
-    print()
-
     # models to compare
+    model_names = [
+        "vone_alexnet",
+    ]  # VOneNet
+    model_names += [sin_names[arch]]  # SIN
+
     modes = [
-        "normal",
-        "all",
-        "mix",
-        "random-mix",
-        "single-step",
+        # "normal",
+        # "all",
+        # "mix",
+        # "random-mix",
+        # "single-step",
         # "fixed-single-step",
         # "reversed-single-step",
         # "multi-steps",
@@ -68,7 +67,7 @@ if __name__ == "__main__":
     sigmas_random_mix = ["00-05", "00-10"]
 
     # make model name list
-    model_names = []
+    # model_names = []
     for mode in modes:
         if mode in ("normal", "multi-steps"):
             model_names += [f"{arch}_{mode}"]
@@ -81,6 +80,18 @@ if __name__ == "__main__":
         else:
             for s in range(4):
                 model_names += [f"{arch}_{mode}_s{s + 1:02d}"]
+
+    print("===== arguments =====")
+    print("num_classes:", num_classes)
+    print("num_filters:", num_filters)
+    print("batch_size:", batch_size)
+    print("test_dataset:", test_dataset)
+    print()
+
+    print("===== I/O =====")
+    print("IN, models_dir:", models_dir)
+    print("OUT, results_dir:", results_dir)
+    print()
 
     print("===== models to analyze =====")
     print(model_names)
@@ -121,19 +132,25 @@ if __name__ == "__main__":
         print()
         print(f"{model_name}: computing bandpass acc...")
         # load model
-        model_path = os.path.join(
-            models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
-        )
-        model = load_model(
-            arch=arch,
-            num_classes=num_classes,
-            model_path=model_path,
-            device="cuda:0" if torch.cuda.is_available() else "cpu",
-        ).to(device)
+        if "SIN" in model_name:
+            # Stylized-ImageNet
+            model = load_sin_model(model_name).to(device)
+        elif "vone" in model_name:
+            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+        else:
+            model_path = os.path.join(
+                models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
+            )
+            model = load_model(
+                arch=arch,
+                num_classes=num_classes,
+                model_path=model_path,
+                device="cuda:0" if torch.cuda.is_available() else "cpu",
+            ).to(device)
 
         # set path to output
         out_file = os.path.join(
-            results_dir, f"{num_classes}-class-{model_name}_e{epoch}_acc1.csv"
+            results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
         )
 
         test_performance(
