@@ -134,8 +134,10 @@ if __name__ == "__main__":
         if "SIN" in model_name:
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
+            model.num_classes = num_classes
         elif "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            model.num_classes = num_classes
         else:
             model_path = os.path.join(
                 models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
@@ -146,6 +148,7 @@ if __name__ == "__main__":
                 model_path=model_path,
                 device="cuda:0" if torch.cuda.is_available() else "cpu",
             ).to(device)
+            model.num_classes = num_classes
 
         # set path to output
         out_file = os.path.join(

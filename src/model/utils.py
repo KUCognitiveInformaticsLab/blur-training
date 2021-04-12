@@ -24,7 +24,7 @@ def load_model(
     Returns: model (torch.model)
     """
     model = models.__dict__[arch]()
-    model.num_classes = num_classes
+
     if num_classes == 1000:
         checkpoint = torch.load(model_path, map_location=device)
         try:
