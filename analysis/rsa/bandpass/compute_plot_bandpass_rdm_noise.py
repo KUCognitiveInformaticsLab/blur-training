@@ -160,7 +160,7 @@ if __name__ == "__main__":
         plot_title = f"{analysis}, {num_classes}-class, {model_name}"
 
         # set plot filename
-        plot_file = f"{analysis}_{num_classes}-class_{model_name}_f{num_filters}.png"
+        plot_file = f"{analysis}_{num_classes}-class_{model_name}.png"
         plot_path = os.path.join(plots_dir, plot_file)
 
         # colour value range of the plots
