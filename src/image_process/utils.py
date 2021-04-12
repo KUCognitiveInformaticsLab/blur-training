@@ -30,6 +30,7 @@ def imshow(
             # clipping
             img = np.where(img > 1, 1, img)
             img = np.where(img < 0, 0, img)
+            img = np.clip(img, 0, 1)
 
             matplotlib.image.imsave(filename, img)  # save the raw image
 
