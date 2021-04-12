@@ -1,25 +1,19 @@
-# https://qiita.com/isso_w/items/a6f4ffa6c788b64fc6ec
+# Ref: https://qiita.com/kenfukaya/items/ea72a352a281abdbebd4
+from PIL import Image
+from PIL import ImageEnhance
 
-import cv2
-import numpy as np
 
-img = cv2.imread("/Users/sou/data/imagenet16/test/airplane/airplane_test_000.jpg")
-cv2.imwrite("in.png", img)
+if __name__ == "__main__":
+    img = Image.open("/Users/sou/data/imagenet16/test/airplane/airplane_test_000.jpg")
+    # img.show()
 
-# コントラスト
-contrast = 128
+    contrast = 0
 
-# コントラスト調整ファクター
-factor = (259 * (contrast + 255)) / (255 * (259 - contrast))
+    con = ImageEnhance.Contrast(img)
+    con_img = con.enhance(contrast)
 
-# float型に変換
-newImage = np.array(img, dtype="float64")
+    # con_img.show()
+    con_img.save(f"out_contrast{contrast}.png")
 
-# コントラスト調整。（0以下 or 255以上）はクリッピング
-newImage = np.clip((newImage - 128) * factor + 128, 0, 255)
-
-# int型に戻す
-newImage = np.array(newImage, dtype="uint8")
-
-# 出力
-cv2.imwrite(f"out_contrast{contrast}.png", newImage)
+    # con_img = np.asarray(con_img) / 255
+    # print(np.array(con_img))
