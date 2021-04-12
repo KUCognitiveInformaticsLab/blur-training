@@ -7,7 +7,7 @@ img = cv2.imread("/Users/sou/data/imagenet16/test/airplane/airplane_test_000.jpg
 cv2.imwrite("in.png", img)
 
 # コントラスト
-contrast = - 128
+contrast = 128
 
 # コントラスト調整ファクター
 factor = (259 * (contrast + 255)) / (255 * (259 - contrast))
