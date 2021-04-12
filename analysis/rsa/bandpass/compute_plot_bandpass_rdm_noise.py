@@ -40,8 +40,8 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/{analysis}/{num_classes}-class-{arch}/"
-    plots_dir = f"./plots/{analysis}/{num_classes}-class-{arch}/"
+    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         # save mean RDMs
         # print("saving RDM...")
         result_file = (
-            f"{analysis}_{model_name}_e{epoch}.pkl"
+            f"{analysis}_{num_classes}-class_{model_name}_e{epoch}.pkl"
         )
         result_path = os.path.join(results_dir, result_file)
         save_rdms(mean_rdms=mean_rdms, file_path=result_path)
