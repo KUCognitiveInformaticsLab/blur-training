@@ -74,25 +74,8 @@ def compute_mean_rdms_with_bandpass(
             # reshape activations for computing rdm
             activation = activations[layer].reshape(len(filters) + 1, -1)
 
-            if metrics == "correlation":
-                rdm = squareform(pdist(activation, metric=metrics))  # 1 - corr.
-            elif metrics == "negative-covariance":
-                rdm = squareform(
-                    pdist(
-                        activation,
-                        lambda u, v: -np.average(
-                            (u - np.average(u)) * (v - np.average(v))
-                        ),
-                    )  # - cov.
-                )
-            elif metrics == "1-covariance":
-                rdm = squareform(
-                    pdist(
-                        activation,
-                        lambda u, v: 1
-                        - np.average((u - np.average(u)) * (v - np.average(v))),
-                    )  # 1 - cov.
-                )
+            rdm = compute_RDM(activation=activation, metrics=metrics)
+
             rdms.append(rdm)
 
         rdms = np.array(rdms)
