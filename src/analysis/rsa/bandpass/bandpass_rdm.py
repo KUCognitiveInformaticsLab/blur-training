@@ -86,14 +86,14 @@ def compute_bandpass_RDMs(
 
 
 def compute_bandpass_RDMs_2(
-        RSA,
-        data_loader: iter,
-        filters: dict,
-        add_noise: bool = True,
-        mean: float = 0.0,
-        var: float = 0.1,
-        metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
-        device: torch.device = torch.device("cuda:0"),
+    RSA,
+    data_loader: iter,
+    filters: dict,
+    add_noise: bool = True,
+    mean: float = 0.0,
+    var: float = 0.1,
+    metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
+    device: torch.device = torch.device("cuda:0"),
 ) -> dict:
     """Computes RDM for each image and return mean RDMs.
     Args:
@@ -110,7 +110,7 @@ def compute_bandpass_RDMs_2(
 
     # compute RDM for each image (with some filters applied)
     for image_id, (image, label) in tqdm(
-            enumerate(data_loader), desc="test images", leave=False
+        enumerate(data_loader), desc="test images", leave=False
     ):
         """Note that data_loader SHOULD return a single image for each loop.
         image (torch.Tensor): torch.Size([1, C, H, W])
