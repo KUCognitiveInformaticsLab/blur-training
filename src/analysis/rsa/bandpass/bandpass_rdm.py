@@ -18,7 +18,7 @@ from src.analysis.rsa.utils import load_activations
 from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
 
 
-def compute_mean_rdms_with_bandpass(
+def compute_bandpass_RDMs(
     RSA,
     data_loader: iter,
     filters: dict,
