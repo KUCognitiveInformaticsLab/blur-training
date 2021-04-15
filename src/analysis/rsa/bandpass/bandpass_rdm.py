@@ -85,6 +85,35 @@ def compute_bandpass_RDMs(
     return mean_rdms
 
 
+def compute_RDM(activation, metrics):
+    """Computes RDM.
+    Args:
+        activation: (N, dim_features)
+            N: number of stimuli
+            dim_features: dimension of features (e.g. height x width of a feature map)
+        metrics: ("correlation", "negative-covariance")
+    Returns: RDM (N, N)
+    """
+    if metrics == "correlation":
+        rdm = squareform(pdist(activation, metric=metrics))  # 1 - corr.
+    elif metrics == "negative-covariance":
+        rdm = squareform(
+            pdist(
+                activation,
+                lambda u, v: -np.average((u - np.average(u)) * (v - np.average(v))),
+            )  # - cov.
+        )  # TODO: compute diagonal coefficients (They are zeros after passed to "squareform()")
+    elif metrics == "1-covariance":
+        rdm = squareform(
+            pdist(
+                activation,
+                lambda u, v: 1 - np.average((u - np.average(u)) * (v - np.average(v))),
+            )  # 1 - cov.
+        )
+
+    return rdm
+
+
 def load_compute_mean_rdms(
     in_dir: str,
     num_filters: int = 6,
