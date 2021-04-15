@@ -133,8 +133,16 @@ if __name__ == "__main__":
         RSA = AlexNetRSA(model)
 
         # compute mean RDMs
-        mean_rdms = compute_bandpass_RDMs(RSA=RSA, data_loader=test_loader, filters=filters, add_noise=add_noise,
-                                          mean=mean, var=var, metrics=metrics, device=device)
+        mean_rdms = compute_bandpass_RDMs(
+            RSA=RSA,
+            data_loader=test_loader,
+            filters=filters,
+            add_noise=add_noise,
+            mean=mean,
+            var=var,
+            metrics=metrics,
+            device=device,
+        )
 
         # save mean RDMs
         # print("saving RDM...")

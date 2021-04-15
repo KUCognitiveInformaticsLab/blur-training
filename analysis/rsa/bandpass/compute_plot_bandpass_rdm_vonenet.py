@@ -96,8 +96,14 @@ if __name__ == "__main__":
         print(f"{model_name}: computing RDM...")
 
         # compute mean RDMs
-        mean_rdms = compute_bandpass_RDMs(RSA=RSA, data_loader=test_loader, filters=filters, add_noise=add_noise,
-                                          metrics=metrics, device=device)
+        mean_rdms = compute_bandpass_RDMs(
+            RSA=RSA,
+            data_loader=test_loader,
+            filters=filters,
+            add_noise=add_noise,
+            metrics=metrics,
+            device=device,
+        )
 
         # save mean RDMs
         # print("saving RDM...")

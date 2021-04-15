@@ -78,7 +78,9 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             file_path = os.path.join(in_dir, f"{analysis}_{model_name}_{value}.csv")
         else:
-            file_path = os.path.join(in_dir, f"{analysis}_{model_name}_e{epoch}_{value}.csv")
+            file_path = os.path.join(
+                in_dir, f"{analysis}_{model_name}_e{epoch}_{value}.csv"
+            )
         acc1[model_name] = load_result(file_path=file_path).values[0]
 
     fig = plt.figure(dpi=150)
