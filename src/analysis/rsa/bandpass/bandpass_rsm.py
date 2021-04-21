@@ -193,6 +193,9 @@ def plot_bandpass_RSMs(
     """
     fig = plt.figure(dpi=300)
 
+    # color bar
+    # cbar_ax = fig.add_axes([.91, .3, .03, .4])
+
     for i, layer in enumerate(layers):
         ax = fig.add_subplot(2, 4, i + 1)
         # sns.set(font_scale=0.5)  # adjust the font size of labels
@@ -206,12 +209,12 @@ def plot_bandpass_RSMs(
             vmax=vmax,
             xticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
             yticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
-            cmap="coolwarm",
+            cmap="coolwarm_r",
             cbar=False,
             # --- show values ---
-            # annot=True,
-            # fmt="1.2f",
-            # annot_kws={'size': 3}
+            annot=True,
+            fmt="1.2f",
+            annot_kws={'size': 3},
             # ---  ---
             # cbar_ax=cbar_ax,  # show color bar
         )
@@ -242,10 +245,10 @@ def plot_bandpass_RSMs(
         )
 
     # show color bar
-    # cbar_ax = fig.add_axes([.91, .3, .03, .4])
-    # sns.heatmap(rsms[layer], cbar=True, cbar_ax=cbar_ax,
-    #             vmin=-1, vmax=1, cmap='coolwarm',
-    #             xticklabels=False, yticklabels=False)
+    cbar_ax = fig.add_axes([.91, .3, .03, .4])
+    sns.heatmap(rsms[layer], cbar=True, cbar_ax=cbar_ax,
+                vmin=vmin, vmax=vmax, cmap='coolwarm_r',
+                xticklabels=False, yticklabels=False)
 
     # sns.set(font_scale=0.5)  # adjust the font size of title
     if title:

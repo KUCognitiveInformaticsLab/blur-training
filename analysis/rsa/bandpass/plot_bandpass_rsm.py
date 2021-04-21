@@ -8,7 +8,6 @@ sys.path.append(os.path.join(str(current_dir), "../../../"))
 
 from src.analysis.rsa.utils import load_rdms
 from src.analysis.rsa.bandpass.bandpass_rsm import plot_bandpass_RSMs
-from src.model.load_sin_pretrained_models import sin_names
 
 if __name__ == "__main__":
     arch = "alexnet"
@@ -30,10 +29,10 @@ if __name__ == "__main__":
     # models to compare
     model_names = [
         f"{arch}_normal",
-        f"{arch}_all_s04",
-        f"{arch}_mix_s04",
-        f"vone_{arch}",
-        sin_names[arch],
+        # f"{arch}_all_s04",
+        # f"{arch}_mix_s04",
+        # f"vone_{arch}",
+        # sin_names[arch],
     ]
 
     # model_names = [
@@ -86,7 +85,7 @@ if __name__ == "__main__":
         rsms["num_filters"] = rdms["num_filters"]
 
         # (optional) set title
-        title = f"RDM, {num_classes}-class, {model_name}"
+        title = f"RSM, {num_classes}-class, {model_name}"
 
         # set filename
         filename = f"{new_analysis}_{model_name}_f{num_filters}.png"
@@ -98,7 +97,7 @@ if __name__ == "__main__":
 
         # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)
         plot_bandpass_RSMs(
-            rdms=rsms,
+            rsms=rsms,
             num_filters=num_filters,
             vmin=vmin,
             vmax=vmax,
