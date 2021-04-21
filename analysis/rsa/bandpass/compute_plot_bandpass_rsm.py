@@ -3,9 +3,8 @@ import pathlib
 import sys
 
 import torch
-from tqdm import tqdm
-
 import vonenet
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -21,7 +20,6 @@ from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
-
 
 
 if __name__ == "__main__":
@@ -71,6 +69,7 @@ if __name__ == "__main__":
         "alexnet_mix_s04",
         sin_names[arch],
         "vone_alexnet",
+        "untrained_alexnet",
     ]
     # model_names = [
     #     f"{arch}_normal",
@@ -138,6 +137,12 @@ if __name__ == "__main__":
         elif "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             RSA = VOneNetAlexNetRSA(model)
+        elif "untrained" in model_name:
+            model_path = ""  # load untrained model
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            ).to(device)
+            RSA = AlexNetRSA(model)
         else:
             model_path = os.path.join(
                 models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
@@ -146,7 +151,6 @@ if __name__ == "__main__":
                 arch=arch, num_classes=num_classes, model_path=model_path
             ).to(device)
             RSA = AlexNetRSA(model)
-
 
         # compute mean RSMs
         mean_rsms = compute_bandpass_RSMs(

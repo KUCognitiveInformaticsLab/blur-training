@@ -203,7 +203,7 @@ def plot_bandpass_rdms(
             # --- show values ---
             annot=True,
             fmt="1.2f",
-            annot_kws={'size': 3}
+            annot_kws={"size": 3}
             # ---  ---
             # cbar_ax=cbar_ax,  # show color bar
         )

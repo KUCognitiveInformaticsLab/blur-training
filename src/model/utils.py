@@ -26,15 +26,16 @@ def load_model(
     model = models.__dict__[arch]()
 
     if num_classes == 1000:
-        checkpoint = torch.load(model_path, map_location=device)
-        try:
-            model.load_state_dict(checkpoint["state_dict"])
-        except RuntimeError:
-            model.features = torch.nn.DataParallel(model.features)
-            model.load_state_dict(checkpoint["state_dict"])
-            if not parallel:
-                model.features = model.features.module
-                # TODO: This part is different when a model is "resnet".
+        if model_path:
+            checkpoint = torch.load(model_path, map_location=device)
+            try:
+                model.load_state_dict(checkpoint["state_dict"])
+            except RuntimeError:
+                model.features = torch.nn.DataParallel(model.features)
+                model.load_state_dict(checkpoint["state_dict"])
+                if not parallel:
+                    model.features = model.features.module
+                    # TODO: This part is different when a model is "resnet".
         return model
     else:  # num_classes == 16
         if (
