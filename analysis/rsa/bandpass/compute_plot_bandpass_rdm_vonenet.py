@@ -21,6 +21,8 @@ from src.image_process.bandpass_filter import make_bandpass_filters
 
 if __name__ == "__main__":
     # ===== args =====
+    num_classes = 1000
+
     # models to compare
     model_names = [
         "vone_alexnet",
@@ -37,8 +39,8 @@ if __name__ == "__main__":
     # models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
     #     16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     # )
-    results_dir = f"./results/{analysis}/{model_names[0]}/"
-    plots_dir = f"./plots/{analysis}/{model_names[0]}/"
+    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     # assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
