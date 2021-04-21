@@ -13,7 +13,6 @@ sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.bandpass_rdm import (
     compute_bandpass_RDMs,
-    compute_bandpass_RDMs_2,
     plot_bandpass_rdms,
 )
 from src.analysis.rsa.rsa import VOneNetAlexNetRSA, AlexNetRSA
@@ -40,8 +39,8 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/test2_{analysis}/{num_classes}-class/"
-    plots_dir = f"./plots/test2_{analysis}/{num_classes}-class/"
+    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     # models to compare
     model_names = [
@@ -142,7 +141,7 @@ if __name__ == "__main__":
         print(f"{model_name}: computing RDM...")
 
         # compute mean RDMs
-        mean_rdms = compute_bandpass_RDMs_2(
+        mean_rdms = compute_bandpass_RDMs(
             RSA=RSA,
             data_loader=test_loader,
             filters=filters,
