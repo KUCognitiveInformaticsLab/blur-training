@@ -14,7 +14,6 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.analysis.rsa.rsa import alexnet_layers
-from src.analysis.rsa.utils import load_activations
 from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
 
 
@@ -22,74 +21,7 @@ def compute_bandpass_RSMs(
     RSA,
     data_loader: iter,
     filters: dict,
-    add_noise: bool = True,
-    mean: float = 0.0,
-    var: float = 0.1,
-    metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
-    device: torch.device = torch.device("cuda:0"),
-) -> dict:
-    """Computes RSM for each image and return mean RSMs.
-    Args:
-        in_dir: path to input directory
-        num_filters: number of band-pass filter
-        num_images: number of images
-
-    Returns:
-        Mean RSMs (Dict)
-    """
-    mean_rsms = {}
-    mean_rsms["num_filters"] = len(filters)
-    # mean_rsms["num_images"] = len(data_loader)
-    # mean_rsms["target_id"] = target_id
-
-    for layer in tqdm(RSA.layers, desc="layers", leave=False):
-        rsms = []
-        # compute RSM for each image (with some filters applied)
-        for image_id, (image, label) in tqdm(
-            enumerate(data_loader), desc="test images", leave=False
-        ):
-            """Note that data_loader SHOULD return a single image for each loop.
-            image (torch.Tensor): torch.Size([1, C, H, W])
-            label (torch.Tensor): e.g. tensor([0])
-            """
-            activations = compute_activations_with_bandpass(
-                RSA=RSA,
-                image=image,
-                filters=filters,
-                device=device,
-                add_noise=add_noise,
-                mean=mean,
-                var=var,
-            )
-
-            # add parameter settings of this analysis
-            activations["label_id"] = label.item()
-            activations["num_filters"] = len(filters)
-
-            # save (This file size is very big with iterations!)
-            # file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
-            # file_path = os.path.join(out_dir, file_name)
-            # save_activations(activations=activations, file_path=file_path)
-
-            # reshape activations for computing rsm
-            activation = activations[layer].reshape(len(filters) + 1, -1)
-
-            rsm = compute_RSM(activation=activation, metrics=metrics)
-
-            rsms.append(rsm)
-
-        rsms = np.array(rsms)
-
-        mean_rsms[layer] = rsms.mean(0)
-
-    return mean_rsms
-
-
-def compute_bandpass_RSMs_2(
-    RSA,
-    data_loader: iter,
-    filters: dict,
-    add_noise: bool = True,
+    add_noise: bool = False,
     mean: float = 0.0,
     var: float = 0.1,
     metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
