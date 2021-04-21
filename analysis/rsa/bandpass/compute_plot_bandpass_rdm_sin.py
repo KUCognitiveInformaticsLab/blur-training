@@ -40,8 +40,8 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/{analysis}/{num_classes}-class/"
-    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
+    results_dir = f"./results/test_{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/test_{analysis}/{num_classes}-class/"
 
     # models to compare
     model_names = [
