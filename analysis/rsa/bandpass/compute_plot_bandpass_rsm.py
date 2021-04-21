@@ -64,11 +64,11 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        "alexnet_normal",
-        "alexnet_all_s04",
-        "alexnet_mix_s04",
-        sin_names[arch],
-        "vone_alexnet",
+        # "alexnet_normal",
+        # "alexnet_all_s04",
+        # "alexnet_mix_s04",
+        # sin_names[arch],
+        # "vone_alexnet",
         "untrained_alexnet",
     ]
     # model_names = [
