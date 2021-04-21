@@ -22,7 +22,7 @@ vone_alexnet_layers = [
     "conv-relu-4",
     "fc-relu-1",
     "fc-relu-2",
-    "fc-relu-3",
+    "last-outputs",
 ]
 
 

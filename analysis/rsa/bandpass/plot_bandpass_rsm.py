@@ -8,10 +8,12 @@ sys.path.append(os.path.join(str(current_dir), "../../../"))
 
 from src.analysis.rsa.utils import load_rdms
 from src.analysis.rsa.bandpass.bandpass_rsm import plot_bandpass_RSMs
+from src.model.load_sin_pretrained_models import sin_names
+from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 16
+    num_classes = 1000
     epoch = 60
 
     metrics = "correlation"  # ("correlation", "1-covariance", "negative-covariance")
@@ -19,8 +21,8 @@ if __name__ == "__main__":
     new_analysis = f"bandpass_rsm_{metrics}"
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
-    # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{new_analysis}/{num_classes}-class/"
-    out_dir = f"plots/{new_analysis}/{num_classes}-class/"
+    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{new_analysis}/{num_classes}-class/"
+    # out_dir = f"plots/{new_analysis}/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -29,10 +31,10 @@ if __name__ == "__main__":
     # models to compare
     model_names = [
         f"{arch}_normal",
-        # f"{arch}_all_s04",
-        # f"{arch}_mix_s04",
-        # f"vone_{arch}",
-        # sin_names[arch],
+        f"{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"vone_{arch}",
+        sin_names[arch],
     ]
 
     # model_names = [
@@ -64,20 +66,21 @@ if __name__ == "__main__":
     #         for sigma in range(1, 5):
     #             model_names += [f"{mode}_s{sigma:02d}"]
 
-    from src.analysis.rsa.rsa import alexnet_layers
-
-    min_list = []
-    max_list = []
-
     for model_name in model_names:
         in_file = os.path.join(in_dir, f"{analysis}_{model_name}.pkl")
         rdms = load_rdms(file_path=in_file)
 
+        # RDM -> RSM
         rsms = {}
-        for layer in alexnet_layers:
-            rsms[layer] = 1 - rdms[layer]
-            min_list.append((rsms[layer].min()))
-            max_list.append((rsms[layer].max()))
+        if "vone" in model_name:
+            for layer in vone_alexnet_layers:
+                if layer == "last-outputs":
+                    rsms[layer] = 1 - rdms["fc-relu-3"]
+                else:
+                    rsms[layer] = 1 - rdms[layer]
+        else:
+            for layer in alexnet_layers:
+                rsms[layer] = 1 - rdms[layer]
 
         # get analysis parameters.
         # num_images = rdms["num_images"]
@@ -98,6 +101,7 @@ if __name__ == "__main__":
         # plot_rdms(rdms=diff_rdms, out_file=out_file, plot_show=True)
         plot_bandpass_RSMs(
             rsms=rsms,
+            layers=vone_alexnet_layers if "vone" in model_name else alexnet_layers,
             num_filters=num_filters,
             vmin=vmin,
             vmax=vmax,
@@ -105,8 +109,3 @@ if __name__ == "__main__":
             out_file=out_file,
             show_plot=False,
         )
-
-    import numpy as np
-
-    print(np.array(min_list).min())
-    print(np.array(max_list).max())
