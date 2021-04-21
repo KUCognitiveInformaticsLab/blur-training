@@ -129,12 +129,12 @@ if __name__ == "__main__":
         print(f"{model_name}: computing RSM...")
         # make RSA instance
 
-        if "SIN" in model_name:
+        if num_classes == 1000 and "SIN" in model_name:
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.features = model.features.module
             RSA = AlexNetRSA(model)
-        elif "vone" in model_name:
+        elif num_classes == 1000 and "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             RSA = VOneNetAlexNetRSA(model)
         elif "untrained" in model_name:
