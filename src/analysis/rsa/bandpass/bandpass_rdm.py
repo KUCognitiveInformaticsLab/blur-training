@@ -22,7 +22,7 @@ def compute_bandpass_RDMs(
     RSA,
     data_loader: iter,
     filters: dict,
-    add_noise: bool = True,
+    add_noise: bool = False,
     mean: float = 0.0,
     var: float = 0.1,
     metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
