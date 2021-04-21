@@ -268,9 +268,9 @@ def plot_bandpass_rdms(
             cmap="coolwarm",
             cbar=False,
             # --- show values ---
-            # annot=True,
-            # fmt="1.2f",
-            # annot_kws={'size': 3}
+            annot=True,
+            fmt="1.2f",
+            annot_kws={'size': 3}
             # ---  ---
             # cbar_ax=cbar_ax,  # show color bar
         )
