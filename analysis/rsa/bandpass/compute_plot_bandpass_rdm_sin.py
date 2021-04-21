@@ -12,7 +12,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.bandpass_rdm import (
-    compute_bandpass_RDMs,
+    compute_bandpass_RDMs_2,
     plot_bandpass_rdms,
 )
 from src.analysis.rsa.rsa import VOneNetAlexNetRSA, AlexNetRSA
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         print(f"{model_name}: computing RDM...")
 
         # compute mean RDMs
-        mean_rdms = compute_bandpass_RDMs(
+        mean_rdms = compute_bandpass_RDMs_2(
             RSA=RSA,
             data_loader=test_loader,
             filters=filters,
