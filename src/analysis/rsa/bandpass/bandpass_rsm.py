@@ -84,6 +84,77 @@ def compute_bandpass_RSMs(
 
     return mean_rsms
 
+def compute_noise_RSMs(
+    RSA,
+    data_loader: iter,
+    mean: float = 0.0,
+    var: float = 0.1,
+    metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
+    device: torch.device = torch.device("cuda:0"),
+) -> dict:
+    """TODO: Computes RSM with independent noises and return mean RSMs.
+    Args:
+
+    Returns:
+        Mean RSMs (Dict)
+    """
+    rsms = {}
+    for layer in RSA.layers:
+        rsms[layer] = []
+
+    # compute RSM with independent noises
+    for image_id, (image, label) in tqdm(
+        enumerate(data_loader), desc="test images", leave=False
+    ):
+        """Note that data_loader SHOULD return a single image for each loop.
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+        """
+
+        # compute activations with noise
+        """
+        activations = compute_activations_with_bandpass(
+            RSA=RSA,
+            image=image,
+            device=device,
+            mean=mean,
+            var=var,
+        )
+        """
+
+        # add parameter settings of this analysis
+        # activations["label_id"] = label.item()
+        # activations["num_filters"] = len(filters)
+
+        # save (This file size is very big with iterations!)
+        # file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
+        # file_path = os.path.join(out_dir, file_name)
+        # save_activations(activations=activations, file_path=file_path)
+
+        # compute RSM
+        """
+        for layer in RSA.layers:
+            # reshape activations for computing rsm
+            activation = activations[layer].reshape(len(filters) + 1, -1)
+
+            rsms[layer] += [compute_RSM(activation=activation, metrics=metrics)]
+        """
+
+
+    # compute mean RSM
+    mean_rsms = {}
+    """
+    mean_rsms["num_filters"] = len(filters)
+    # mean_rsms["num_images"] = len(data_loader)
+    # mean_rsms["target_id"] = target_id
+    for layer in RSA.layers:
+        all_rsms = np.array(rsms[layer])
+
+        mean_rsms[layer] = all_rsms.mean(0)
+    """
+
+    return mean_rsms
+
 
 def compute_RSM(activation, metrics):
     """Computes RSM.
