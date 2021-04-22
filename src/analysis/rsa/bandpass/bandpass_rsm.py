@@ -112,6 +112,7 @@ def compute_noise_RSMs(
         """
 
         # compute activations with noise
+        # TODO: compute_activations_with_noise()
         """
         activations = compute_activations_with_bandpass(
             RSA=RSA,
