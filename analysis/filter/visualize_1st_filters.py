@@ -7,7 +7,7 @@ import sys
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(os.path.join(str(current_dir), "../../../"))
+sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
