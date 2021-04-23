@@ -48,7 +48,7 @@ if __name__ == "__main__":
             model.features = model.features.module
         # elif num_classes == 1000 and "vone" in model_name:
         #     model = vonenet.get_model(model_arch=arch, pretrained=True)
-        if (num_classes == 16) and ("SIN" in model_name) or ("vone" in model_name):
+        elif (num_classes == 16) and ("SIN" in model_name) or ("vone" in model_name):
             continue
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
