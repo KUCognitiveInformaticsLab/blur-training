@@ -84,6 +84,7 @@ def compute_bandpass_RSMs(
 
     return mean_rsms
 
+
 def compute_noise_RSMs(
     RSA,
     data_loader: iter,
@@ -140,7 +141,6 @@ def compute_noise_RSMs(
 
             rsms[layer] += [compute_RSM(activation=activation, metrics=metrics)]
         """
-
 
     # compute mean RSM
     mean_rsms = {}
