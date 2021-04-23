@@ -8,7 +8,7 @@ import torch.nn as nn
 from torchvision import models
 
 
-def plot_filters_multi_channel(t, file_name):
+def plot_filters_multi_channel(t, title, file_name):
     # get the number of kernals
     num_kernels = t.shape[0]
 
@@ -39,6 +39,8 @@ def plot_filters_multi_channel(t, file_name):
         ax1.set_xticklabels([])
         ax1.set_yticklabels([])
 
+    if title:
+        fig.suptitle(title)
     plt.tight_layout()
     # mappable = ScalarMappable(cmap='viridis')  # for colorbar. default: 'viridis'
     # plt.colorbar(mappable)
@@ -47,7 +49,7 @@ def plot_filters_multi_channel(t, file_name):
     plt.close()
 
 
-def plot_filters(model, layer_num, file_name):
+def plot_filters(model, layer_num, title, file_name):
     # extracting the model features at the particular layer number
     layer = model.features[layer_num]
     # checking whether the layer is convolution layer or not
@@ -56,7 +58,9 @@ def plot_filters(model, layer_num, file_name):
         weight_tensor = layer.weight.data
 
         if weight_tensor.shape[1] == 3:
-            plot_filters_multi_channel(weight_tensor, file_name)
+            plot_filters_multi_channel(
+                t=weight_tensor, title=title, file_name=file_name
+            )
         else:
             print(
                 "Can only plot weights with three channels with single channel = False"

@@ -42,12 +42,14 @@ if __name__ == "__main__":
 
     for model_name in model_names:
         # load model
-        if num_classes == 1000 and "SIN" in model_name:
+        if (num_classes == 1000) and ("SIN" in model_name):
             # Stylized-ImageNet
             model = load_sin_model(model_name).cpu()
             model.features = model.features.module
         # elif num_classes == 1000 and "vone" in model_name:
         #     model = vonenet.get_model(model_arch=arch, pretrained=True)
+        if (num_classes == 16) and ("SIN" in model_name) or ("vone" in model_name):
+            continue
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(
@@ -61,8 +63,15 @@ if __name__ == "__main__":
                 arch=arch, num_classes=num_classes, model_path=model_path
             ).cpu()
 
-        # visualization of 1st layer filters
+        # (optional) set title
+        plot_title = f"{num_classes}-class, {model_name}"
+
+        # plot file path
         output_path = os.path.join(
             plots_dir, f"{analysis}_{num_classes}-class_{model_name}.jpg"
         )
-        plot_filters(model=model, layer_num=layer_num, file_name=output_path)
+
+        # visualization of 1st layer filters
+        plot_filters(
+            model=model, layer_num=layer_num, title=plot_title, file_name=output_path
+        )
