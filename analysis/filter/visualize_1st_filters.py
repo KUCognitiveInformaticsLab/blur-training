@@ -14,26 +14,6 @@ from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 from src.analysis.filter.filter_visualization import plot_filters
 
 
-def visualize_filters(model_name):
-    """Visualize 1st Conv filters every 10 epochs"""
-
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-    for epoch in range(10, 70, 10):
-        # make paths
-        model_path = os.path.join(
-            models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
-        )
-        print(model_path)
-        output_file = model_name + "_e{}.jpg".format(epoch)  # file name
-        output_file_path = os.path.join(output_path, output_file)  # file path
-
-        # load model
-        model = load_model(model_path)
-        # visualization of 1st layer filters
-        plot_filters(model, layer_num, output_file_path)
-
-
 if __name__ == "__main__":
     arch = "alexnet"
     num_classes = 1000  # number of last output of the models
@@ -64,7 +44,7 @@ if __name__ == "__main__":
         # load model
         if num_classes == 1000 and "SIN" in model_name:
             # Stylized-ImageNet
-            model = load_sin_model(model_name)
+            model = load_sin_model(model_name).cpu()
             model.features = model.features.module
         # elif num_classes == 1000 and "vone" in model_name:
         #     model = vonenet.get_model(model_arch=arch, pretrained=True)
@@ -72,14 +52,14 @@ if __name__ == "__main__":
             model_path = ""  # load untrained model
             model = load_model(
                 arch=arch, num_classes=num_classes, model_path=model_path
-            )
+            ).cpu()
         else:
             model_path = os.path.join(
                 models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
             )
             model = load_model(
                 arch=arch, num_classes=num_classes, model_path=model_path
-            )
+            ).cpu()
 
         # visualization of 1st layer filters
         output_path = os.path.join(
