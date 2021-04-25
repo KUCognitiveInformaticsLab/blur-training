@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import pandas as pd
 import torch
+from sklearn.metrics import confusion_matrix
 from tqdm import tqdm
 
 # add the path to load src module
@@ -105,3 +106,59 @@ def compute_bandpass_acc(
                 top1.update(acc1[0].item(), outputs.shape[0])
 
     return top1.avg
+
+
+def compute_confusion_matrix(
+    model,
+    test_loader: iter,
+    sigma1: int = 0,
+    sigma2: int = 1,
+    raw: bool = False,
+    device=torch.device("cuda:0"),
+):
+    """
+    Args:
+        model: model to test
+        sigma1, sigma2: bandpass images are made by subtracting
+            GaussianBlur(sigma1) - GaussianBlur(sigma2)
+        raw: if True, calculate accuracy of raw images
+    return: accuracy of bandpass images
+        :: when raw == True, return accuracy of raw images
+    """
+    model.eval()
+    pred = []
+    targets = []
+    with torch.no_grad():
+        for data in tqdm(test_loader, desc="test images", leave=False):
+            inputs, labels = data[0], data[1]
+
+            # add target ids
+            targets += [labels.numpy()]
+
+            if not raw:
+                inputs = apply_bandpass_filter(
+                    images=inputs, sigma1=sigma1, sigma2=sigma2
+                )
+            inputs = inputs.to(device)
+
+            outputs = model(inputs)  # torch.Size([batch_size, num_labels])
+
+            if model.num_classes == 1000 and test_loader.num_classes == 16:
+                outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
+                # get model_decision (str) by mapping outputs from 1,000 to 16
+                correct = 0
+                for i in range(outputs.shape[0]):
+                    model_decision = mapping.probabilities_to_decision(
+                        outputs[i].detach().cpu().numpy()  # 一個ずつじゃ無いとダメ？
+                    )
+                    model_decision_id = get_key_from_value(label_map, model_decision)
+                    pred += [model_decision_id]
+            else:
+                pred += [outputs.topk(1)[1].view(-1).cpu().numpy()]
+
+    targets = np.array(targets).reshape(-1)
+    pred = np.array(pred).reshape(-1)
+
+    conf_matrix = confusion_matrix(targets, pred)
+
+    return conf_matrix
