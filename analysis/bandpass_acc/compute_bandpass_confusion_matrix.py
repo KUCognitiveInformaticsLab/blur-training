@@ -54,7 +54,7 @@ if __name__ == "__main__":
         "alexnet_all_s04",
         "alexnet_mix_s04",
         "vone_alexnet",
-        [sin_names[arch]],  # SIN
+        sin_names[arch],  # SIN
     ]
 
     modes = [
