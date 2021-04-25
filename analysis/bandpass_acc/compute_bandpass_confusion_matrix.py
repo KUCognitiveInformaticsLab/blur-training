@@ -138,13 +138,16 @@ if __name__ == "__main__":
         print()
         print(f"{model_name}: computing bandpass acc...")
         # load model
-        if "SIN" in model_name:
+        if (num_classes == 1000) and ("SIN" in model_name):
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
-            model.num_classes = num_classes
-        elif "vone" in model_name:
+        elif (num_classes == 1000) and ("vone" in model_name):
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            model.num_classes = num_classes
+        elif "untrained" in model_name:
+            model_path = ""  # load untrained model
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            )
         else:
             model_path = os.path.join(
                 models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
@@ -155,8 +158,8 @@ if __name__ == "__main__":
                 model_path=model_path,
                 device="cuda:0" if torch.cuda.is_available() else "cpu",
             ).to(device)
-            model.num_classes = num_classes
 
+        model.num_classes = num_classes
 
         # confusion matrix with raw images
         conf_matrix = compute_confusion_matrix(
@@ -166,7 +169,7 @@ if __name__ == "__main__":
         # save confusion matrix
         result_name = f"{num_classes}-class_{model_name}_{analysis}_f0.png"
         result_path = os.path.join(results_dir, result_name)
-        np.savetxt(result_path, conf_matrix, delimiter=',')
+        np.savetxt(result_path, conf_matrix, delimiter=",")
 
         # plot confusion matrix
         title = f"{analysis} f0, {num_classes}-class, {model_name}"
@@ -177,7 +180,11 @@ if __name__ == "__main__":
         plt.savefig(plot_path)
         plt.close()
 
-        for f, (s1, s2) in tqdm(enumerate(bandpass_filters.values(), 1), desc="bandpass filters", leave=False):
+        for f, (s1, s2) in tqdm(
+            enumerate(bandpass_filters.values(), 1),
+            desc="bandpass filters",
+            leave=False,
+        ):
             conf_matrix = compute_confusion_matrix(
                 model=model,
                 test_loader=test_loader,
@@ -189,7 +196,7 @@ if __name__ == "__main__":
             # save confusion matrix
             result_name = f"{num_classes}-class_{model_name}_{analysis}_f{f}.png"
             result_path = os.path.join(results_dir, result_name)
-            np.savetxt(result_path, conf_matrix, delimiter=',')
+            np.savetxt(result_path, conf_matrix, delimiter=",")
 
             # plot confusion matrix
             sns.heatmap(conf_matrix)
@@ -199,6 +206,5 @@ if __name__ == "__main__":
             plot_path = os.path.join(plots_dir, plot_name)
             plt.savefig(plot_path)
             plt.close()
-
 
     print("All done!!")
