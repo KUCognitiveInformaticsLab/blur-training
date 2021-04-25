@@ -147,7 +147,7 @@ if __name__ == "__main__":
             model_path = ""  # load untrained model
             model = load_model(
                 arch=arch, num_classes=num_classes, model_path=model_path
-            )
+            ).to(device)
         else:
             model_path = os.path.join(
                 models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
