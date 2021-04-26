@@ -50,3 +50,12 @@ def get_model_names(arch):
     #             model_names += [f"{mode}_s{sigma:02d}"]
 
     return model_names
+
+
+def rename_model_name(model_name: str):
+    model_name = model_name.replace("normal", "S")
+    model_name = model_name.replace("mix", "S+B")
+    model_name = model_name.replace("all", "B")
+    model_name = model_name.replace("_", " ")
+
+    return model_name
