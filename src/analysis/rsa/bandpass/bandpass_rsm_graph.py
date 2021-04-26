@@ -17,7 +17,7 @@ def compute_bandpass_values(
     r3_count = 0
     r4_count = 0
     r5_count = 0
-    
+
     l1_count = 0
     l2_count = 0
     l3_count = 0
@@ -35,7 +35,7 @@ def compute_bandpass_values(
     for xy in r2:
         r2_count += rsm[xy]
     r2_avr = r2_count / len(r2)
-    
+
     for xy in l2:
         l2_count += rsm[xy]
     l2_avr = l2_count / len(l2)
@@ -43,7 +43,7 @@ def compute_bandpass_values(
     for xy in r3:
         r3_count += rsm[xy]
     r3_avr = r3_count / len(r3)
-    
+
     for xy in l3:
         l3_count += rsm[xy]
     l3_avr = l3_count / len(l3)
