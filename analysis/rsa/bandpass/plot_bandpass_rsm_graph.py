@@ -14,7 +14,7 @@ from src.analysis.rsa.bandpass.bandpass_rsm_graph import compute_bandpass_values
 from src.model.load_sin_pretrained_models import sin_names
 from src.model.model_names import rename_model_name
 from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
-from src.analysis.plot import colors, lines
+from src.model.plot import colors, lines
 
 if __name__ == "__main__":
     arch = "alexnet"
