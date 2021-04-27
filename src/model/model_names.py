@@ -1,5 +1,6 @@
 import os
 import pathlib
+import re
 import sys
 
 # add the path to load src module
@@ -52,10 +53,20 @@ def get_model_names(arch):
     return model_names
 
 
-def rename_model_name(model_name: str):
-    model_name = model_name.replace("normal", "S")
-    model_name = model_name.replace("mix", "S+B")
-    model_name = model_name.replace("all", "B")
+def rename_model_name(model_name: str, arch: str = "alexnet"):
+    model_name = model_name.replace(f"untrained", f"Untrained")
+
+    model_name = model_name.replace(f"{arch}_normal", f"S {arch}")
+    model_name = model_name.replace(f"{arch}_all", f"B {arch}")
+    model_name = model_name.replace(f"{arch}_mix", f"S+B {arch}")
+    model_name = re.sub("(s[0-9]+)", r"(\1)", model_name)  # sigma value
+
+    model_name = model_name.replace(sin_names[arch], f"SIN trained {arch}")
+    model_name = model_name.replace(f"vone_{arch}", f"VOne{arch}")
+
+    model_name = model_name.replace("alexnet", "AlexNet")
+    model_name = model_name.replace("vgg", "VGG")
+    model_name = model_name.replace("resnet", "ResNet")
     model_name = model_name.replace("_", " ")
 
     return model_name

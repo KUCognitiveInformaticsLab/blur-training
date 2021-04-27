@@ -23,11 +23,12 @@ if __name__ == "__main__":
 
     metrics = "correlation"  # ("correlation", "1-covariance", "negative-covariance")
     analysis = f"bandpass_rsm_{metrics}"
+    legend = True
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
-    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
+    # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
     # in_dir = f"./results/{analysis}/{num_classes}-class/"
-    # out_dir = f"./plots/{analysis}_graph/{num_classes}-class/"
+    out_dir = f"./plots/{analysis}_graph/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -48,7 +49,11 @@ if __name__ == "__main__":
 
     # set filename
     num_filters = 6
-    filename = f"{analysis}_graph-one-side_{num_classes}-class_f{num_filters}.png"
+    filename = (
+        f"{analysis}_graph-one-side_{num_classes}-class_f{num_filters}_legend.png"
+        if legend
+        else f"{analysis}_graph-one-side_{num_classes}-class_f{num_filters}.png"
+    )
     out_file = os.path.join(out_dir, filename)
 
     fig = plt.figure(dpi=300)
@@ -63,7 +68,7 @@ if __name__ == "__main__":
         else:
             rsms["layers"] = alexnet_layers
 
-        renamed_model_name = rename_model_name(model_name)
+        renamed_model_name = rename_model_name(model_name=model_name, arch=arch)
 
         for i, layer in enumerate(rsms["layers"]):
             y = compute_bandpass_values(rsms[layer])
@@ -92,9 +97,13 @@ if __name__ == "__main__":
 
             # if i == 3:
             #     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-            # if i == 7:
-            #     plt.legend(bbox_to_anchor=(0, -0.2), loc='upper left', borderaxespad=0,
-            #                fontsize=8)
+            if i == 7 and legend:
+                plt.legend(
+                    bbox_to_anchor=(0, -0.2),
+                    loc="upper left",
+                    borderaxespad=0,
+                    fontsize=8,
+                )
 
     # fig.legend(
     #     bbox_to_anchor=(0, -0.1),
