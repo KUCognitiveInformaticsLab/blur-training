@@ -16,6 +16,7 @@ sys.path.append(os.path.join(str(current_dir), "../../../../"))
 from src.analysis.rsa.rsa import alexnet_layers
 from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
 
+
 def compute_bandpass_tSNE(
     RSA,
     num_images: int,
@@ -61,7 +62,9 @@ def compute_bandpass_tSNE(
             var=var,
         )
 
-        for layer_id, layer in tqdm(enumerate(RSA.layers), desc="t-SNE layers", leave=False):
+        for layer_id, layer in tqdm(
+            enumerate(RSA.layers), desc="t-SNE layers", leave=False
+        ):
             X = activations[layer].reshape(num_filters + 1, -1)  # (7, -1)
             # X_embedded += [tsne.fit_transform(X)]  # (7, 2)
             embedded_activations[image_id, layer_id] = tsne.fit_transform(X)  # (7, 2)
@@ -81,7 +84,7 @@ def plot_tSNE(embedded_activations, layers):
                     x=embedded_activations[image_id, layer_id, filter_id, 0],
                     y=embedded_activations[image_id, layer_id, filter_id, 1],
                     label=filter_id,
-                    color=colors[filter_id]
+                    color=colors[filter_id],
                 )
             if image_id == 0:
                 plt.legend(fontsize=30)
