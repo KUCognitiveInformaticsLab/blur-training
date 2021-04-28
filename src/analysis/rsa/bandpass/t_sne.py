@@ -75,9 +75,7 @@ def plot_tSNE(
     for layer_id, layer in tqdm(enumerate(layers), desc="plotting layers", leave=False):
         fig = plt.figure(dpi=150)
 
-        for image_id in tqdm(
-            range(num_images), desc="plotting images", leave=False
-        ):
+        for image_id in tqdm(range(num_images), desc="plotting images", leave=False):
             for filter_id in range(num_filters + 1):
                 target = embedded_activations[layer_id, image_id, filter_id]
                 if num_dim == 2:

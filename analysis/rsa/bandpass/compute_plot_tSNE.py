@@ -131,19 +131,19 @@ if __name__ == "__main__":
         )
 
         # save t-SNE embedded activations
-        result_file = (
-            f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_{num_dim}d.npy"
-        )
+        result_file = f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_{num_dim}d.npy"
         result_path = os.path.join(results_dir, result_file)
         np.save(result_path, embedded_activations)
 
         # plot t-SNE
         colors = ["k", "r", "g", "b", "c", "m", "y"]
-        for layer_id, layer in tqdm(enumerate(RSA.layers), desc="plotting layers", leave=False):
+        for layer_id, layer in tqdm(
+            enumerate(RSA.layers), desc="plotting layers", leave=False
+        ):
             fig = plt.figure(dpi=150)
 
             for image_id in tqdm(
-                    range(test_loader.num_images), desc="plotting images", leave=False
+                range(test_loader.num_images), desc="plotting images", leave=False
             ):
                 for filter_id in range(num_filters + 1):
                     target = embedded_activations[layer_id, image_id, filter_id]
@@ -165,6 +165,8 @@ if __name__ == "__main__":
 
             plt.title(f"{num_classes}-class, {model_name}, {layer}", fontsize=10)
             # fig.tight_layout()
-            filename = f"{num_classes}-class_{model_name}_{layer}_{analysis}_{num_dim}d.png"
+            filename = (
+                f"{num_classes}-class_{model_name}_{layer}_{analysis}_{num_dim}d.png"
+            )
             out_file = os.path.join(plots_dir, filename)
             fig.savefig(out_file)
