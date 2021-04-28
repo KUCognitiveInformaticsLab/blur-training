@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     analysis = f"bandpass_activations_tSNE"
     num_filters = 6
-    num_dim = sys.argv[1]
+    num_dim = int(sys.argv[1])
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
