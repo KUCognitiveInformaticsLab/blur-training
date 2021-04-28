@@ -22,7 +22,7 @@ def compute_bandpass_tSNE(
     filters: dict,
     num_dim: int,
     device: torch.device = torch.device("cuda:0"),
-) -> dict:
+) -> np.ndarray:
     """Computes RSM for each image and return mean RSMs.
     Args:
         num_filters: number of band-pass filter

@@ -138,7 +138,7 @@ if __name__ == "__main__":
         # plot t-SNE
         plot_tSNE(
             embedded_activations=embedded_activations,
-            layers=RSA,
+            layers=RSA.layers,
             model_name=model_name,
             out_dir=plots_dir,
         )
