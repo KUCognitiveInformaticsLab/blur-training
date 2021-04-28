@@ -7,6 +7,8 @@ import torch
 import vonenet
 from tqdm import tqdm
 
+from matplotlib import pyplot as plt
+
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
@@ -130,15 +132,39 @@ if __name__ == "__main__":
 
         # save t-SNE embedded activations
         result_file = (
-            f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_dim{num_dim}.npy"
+            f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_{num_dim}d.npy"
         )
         result_path = os.path.join(results_dir, result_file)
         np.save(result_path, embedded_activations)
 
         # plot t-SNE
-        plot_tSNE(
-            embedded_activations=embedded_activations,
-            layers=RSA.layers,
-            model_name=model_name,
-            out_dir=plots_dir,
-        )
+        colors = ["k", "r", "g", "b", "c", "m", "y"]
+        for layer_id, layer in tqdm(enumerate(RSA.layers), desc="plotting layers", leave=False):
+            fig = plt.figure(dpi=150)
+
+            for image_id in tqdm(
+                    range(test_loader.num_images), desc="plotting images", leave=False
+            ):
+                for filter_id in range(num_filters + 1):
+                    target = embedded_activations[layer_id, image_id, filter_id]
+                    if num_dim == 2:
+                        plt.scatter(
+                            x=target[0],
+                            y=target[1],
+                            label=f"f{filter_id}",
+                            color=colors[filter_id],
+                            alpha=0.5,
+                        )
+                if image_id == 0:
+                    fig.legend(
+                        bbox_to_anchor=(0.91, 0.88),
+                        loc="upper left",
+                        borderaxespad=0,
+                        fontsize=8,
+                    )
+
+            plt.title(f"{num_classes}-class, {model_name}, {layer}", fontsize=10)
+            # fig.tight_layout()
+            filename = f"{num_classes}-class_{model_name}_{layer}_{analysis}_{num_dim}d.png"
+            out_file = os.path.join(plots_dir, filename)
+            fig.savefig(out_file)

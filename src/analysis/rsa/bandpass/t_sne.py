@@ -76,16 +76,18 @@ def plot_tSNE(
         fig = plt.figure(dpi=150)
 
         for image_id in tqdm(
-            range(num_images - 1500), desc="plotting images", leave=False
+            range(num_images), desc="plotting images", leave=False
         ):
             for filter_id in range(num_filters + 1):
-                plt.scatter(
-                    x=embedded_activations[layer_id, image_id, filter_id, 0],
-                    y=embedded_activations[layer_id, image_id, filter_id, 1],
-                    label=f"f{filter_id}",
-                    color=colors[filter_id],
-                    alpha=0.5,
-                )
+                target = embedded_activations[layer_id, image_id, filter_id]
+                if num_dim == 2:
+                    plt.scatter(
+                        x=target[0],
+                        y=target[1],
+                        label=f"f{filter_id}",
+                        color=colors[filter_id],
+                        alpha=0.5,
+                    )
             if image_id == 0:
                 fig.legend(
                     bbox_to_anchor=(0.91, 0.88),
@@ -96,6 +98,6 @@ def plot_tSNE(
 
         plt.title(layer, fontsize=10)
         # fig.tight_layout()
-        filename = f"{model_name}_{layer}.png"
+        filename = f"{model_name}_{layer}_{num_dim}d.png"
         out_file = os.path.join(out_dir, filename)
         fig.savefig(out_file)
