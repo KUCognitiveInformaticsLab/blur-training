@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
         # save t-SNE embedded activations
         result_file = (
-            f"{analysis}_embedded_activations_{num_classes}-class_{model_name}.npy"
+            f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_dim{num_dim}.npy"
         )
         result_path = os.path.join(results_dir, result_file)
         np.save(result_path, embedded_activations)

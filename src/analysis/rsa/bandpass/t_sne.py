@@ -55,9 +55,7 @@ def compute_bandpass_tSNE(
             add_noise=False,
         )
 
-        for layer_id, layer in tqdm(
-            enumerate(RSA.layers), desc="t-SNE layers", leave=False
-        ):
+        for layer_id, layer in enumerate(RSA.layers):
             X = activations[layer].reshape(num_filters + 1, -1)  # (7, -1)
             embedded_activations[layer_id, image_id] = tsne.fit_transform(X)  # (7, 2)
 
