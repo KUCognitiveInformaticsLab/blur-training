@@ -78,6 +78,9 @@ def load_imagenet16(
     train_loader.num_classes = 16
     test_loader.num_classes = 16
 
+    train_loader.num_images = 40517
+    test_loader.num_images = 1600
+
     return train_loader, test_loader
 
 
