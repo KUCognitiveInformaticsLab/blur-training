@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     analysis = f"bandpass_activations_tSNE"
     num_filters = 6
-    num_dim = 2
+    num_dim = 3
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
@@ -132,6 +132,8 @@ if __name__ == "__main__":
         result_file = f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_{num_dim}d.npy"
         result_path = os.path.join(results_dir, result_file)
         np.save(result_path, embedded_activations)
+
+        hoge
 
         # plot t-SNE
         colors = ["k", "r", "g", "b", "c", "m", "y"]
