@@ -5,9 +5,8 @@ import sys
 import numpy as np
 import torch
 import vonenet
-from tqdm import tqdm
-
 from matplotlib import pyplot as plt
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -15,13 +14,12 @@ sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.t_sne import (
     compute_bandpass_tSNE,
-    plot_tSNE,
 )
 from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
+from src.model.load_sin_pretrained_models import load_sin_model
 
 if __name__ == "__main__":
     # ===== args =====
