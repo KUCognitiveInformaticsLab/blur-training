@@ -2,6 +2,7 @@ import os
 import pathlib
 import sys
 
+import numpy as np
 import torch
 import vonenet
 from tqdm import tqdm
@@ -19,8 +20,7 @@ from src.analysis.rsa.utils import save_rsms
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
-
+from src.model.load_sin_pretrained_models import load_sin_model
 
 if __name__ == "__main__":
     # ===== args =====
@@ -107,12 +107,12 @@ if __name__ == "__main__":
     # ===== main =====
     print("===== main =====")
 
-    # seed = 42
     # random seed settings
-    # np.random.seed(seed)
-    # torch.manual_seed(seed)
-    # if torch.cuda.is_available():
-    #     torch.cuda.manual_seed(seed)
+    seed = 42
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
