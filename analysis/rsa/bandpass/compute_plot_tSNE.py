@@ -63,8 +63,6 @@ if __name__ == "__main__":
     # ===== args =====
     args = parser.parse_args()
 
-    print(args.model_names)
-
     arch = args.arch
     num_classes = args.num_classes
     epoch = args.epoch
