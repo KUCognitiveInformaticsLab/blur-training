@@ -128,7 +128,9 @@ if __name__ == "__main__":
     # make Dataloader
     # ** batch_size must be 1 **
     # _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=1)
-    test_loader = make_local_in16_test_loader(data_path=in16_test_path, batch_size=1, shuffle=False)
+    test_loader = make_local_in16_test_loader(
+        data_path=in16_test_path, batch_size=1, shuffle=False
+    )
 
     # make filters
     filters = make_bandpass_filters(num_filters=num_filters)
@@ -218,8 +220,6 @@ if __name__ == "__main__":
                 fontsize=10,
             )
             # fig.tight_layout()
-            plot_file = (
-                f"{analysis}_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}_{layer}.png"
-            )
+            plot_file = f"{analysis}_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}_{layer}.png"
             plot_path = os.path.join(plots_dir, plot_file)
             fig.savefig(plot_path)
