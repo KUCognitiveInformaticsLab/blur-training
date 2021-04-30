@@ -5,6 +5,7 @@ import torch
 import torchvision.transforms as transforms
 from robustness import datasets
 from robustness.tools.imagenet_helpers import common_superclass_wnid, ImageNetHierarchy
+from torchvision.datasets import ImageFolder
 
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 
@@ -82,6 +83,45 @@ def load_imagenet16(
     test_loader.num_images = 1600
 
     return train_loader, test_loader
+
+
+def make_local_in16_test_loader(
+    data_path: str = "/mnt/data/imagenet16/test/", batch_size: int = 32
+):
+    """
+    Args:
+        data_path: path to the directory that contains imagenet16
+        batch_size: the size of each batch set
+
+    Returns: test_loader
+    """
+    # standard ImageNet normalization:
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+    )
+
+    # data augmentations for imagenet in the `robustness` library is here:
+    # https://github.com/MadryLab/robustness/blob/master/robustness/data_augmentation.py
+    dataset = ImageFolder(
+        data_path,
+        transforms.Compose(
+            [
+                # transforms.Resize(256),
+                # transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                # normalize,
+            ]
+        ),
+    )
+
+    test_loader = torch.utils.data.DataLoader(
+        dataset, batch_size=batch_size, shuffle=False, num_workers=5, pin_memory=True
+    )
+
+    test_loader.num_classes = 16
+    test_loader.num_images = 1600
+
+    return test_loader
 
 
 def make_test_images_by_class(
