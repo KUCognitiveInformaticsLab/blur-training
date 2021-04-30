@@ -17,7 +17,7 @@ from src.analysis.rsa.bandpass.t_sne import (
     compute_bandpass_tSNE,
 )
 from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
-from src.dataset.imagenet16 import load_imagenet16
+from src.dataset.imagenet16 import load_imagenet16, make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
 from src.model.model_names import rename_model_name
@@ -68,6 +68,7 @@ if __name__ == "__main__":
     epoch = args.epoch
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
+    in16_test_path = "/mnt/data1/imatenet16/test/"
 
     analysis = f"bandpass_activations_tSNE"
     num_filters = args.num_filters
@@ -126,7 +127,8 @@ if __name__ == "__main__":
 
     # make Dataloader
     # ** batch_size must be 1 **
-    _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=1)
+    # _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=1)
+    test_loader = make_local_in16_test_loader(data_path=in16_test_path, batch_size=1, shuffle=False)
 
     # make filters
     filters = make_bandpass_filters(num_filters=num_filters)
@@ -172,7 +174,7 @@ if __name__ == "__main__":
         )
 
         # save t-SNE embedded activations
-        result_file = f"{analysis}_embedded_activations_{num_dim}d_{num_classes}-class_{model_name}.npy"
+        result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
         np.save(result_path, embedded_activations)
 
@@ -217,7 +219,7 @@ if __name__ == "__main__":
             )
             # fig.tight_layout()
             plot_file = (
-                f"{analysis}_{num_dim}d_{num_classes}-class_{model_name}_{layer}.png"
+                f"{analysis}_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}_{layer}.png"
             )
             plot_path = os.path.join(plots_dir, plot_file)
             fig.savefig(plot_path)
