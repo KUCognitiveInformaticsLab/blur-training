@@ -86,7 +86,7 @@ def load_imagenet16(
 
 
 def make_local_in16_test_loader(
-    data_path: str = "/mnt/data/imagenet16/test/", batch_size: int = 32
+    data_path: str = "/mnt/data/imagenet16/test/", batch_size: int = 32, normalization: bool = True
 ):
     """
     Args:
@@ -109,7 +109,7 @@ def make_local_in16_test_loader(
                 transforms.Resize(256),
                 transforms.CenterCrop(224),
                 transforms.ToTensor(),
-                normalize,
+                normalize if normalization else None,
             ]
         ),
     )
