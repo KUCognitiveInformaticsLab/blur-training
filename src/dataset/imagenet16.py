@@ -112,10 +112,13 @@ def make_local_in16_test_loader(
                 transforms.Resize(256),
                 transforms.CenterCrop(224),
                 transforms.ToTensor(),
-                normalize if normalization else None,
+                normalize,
             ]
         ),
     )
+
+    if normalization:
+        dataset.transforms.append(normalize)
 
     test_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, shuffle=shuffle, num_workers=5, pin_memory=True
