@@ -103,22 +103,21 @@ def make_local_in16_test_loader(
         mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
     )
 
+    transform_list = [
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+    ]
+
+    if normalization:
+        transform_list.append(normalize)
+
     # data augmentations for imagenet in the `robustness` library is here:
     # https://github.com/MadryLab/robustness/blob/master/robustness/data_augmentation.py
     dataset = ImageFolder(
         data_path,
-        transforms.Compose(
-            [
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                normalize,
-            ]
-        ),
+        transforms.Compose(transform_list),
     )
-
-    if normalization:
-        dataset.transforms.append(normalize)
 
     test_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, shuffle=shuffle, num_workers=5, pin_memory=True
