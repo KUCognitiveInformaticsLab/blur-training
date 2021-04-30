@@ -68,7 +68,7 @@ if __name__ == "__main__":
     epoch = args.epoch
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
-    in16_test_path = "/mnt/data1/imatenet16/test/"
+    in16_test_path = "/mnt/data1/imagenet16/test/"
 
     analysis = f"bandpass_activations_tSNE"
     num_filters = args.num_filters
