@@ -180,7 +180,7 @@ if __name__ == "__main__":
         embedded_activations = np.load(result_path)
         colors = ["k", "r", "g", "b", "c", "m", "y"]
 
-        for layer_id, layer in enumerate(RSA.layers):
+        for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
             fig = plt.figure(dpi=150)
             for image_id in range(test_loader.num_images):
                 for filter_id in range(num_filters + 1):
