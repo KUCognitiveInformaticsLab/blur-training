@@ -113,9 +113,7 @@ if __name__ == "__main__":
 
     # loading data
     if test_dataset == "imagenet16":
-        _, test_loader = load_imagenet16(
-            imagenet_path=imagenet_path, batch_size=batch_size
-        )
+        _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=batch_size)
     elif test_dataset == "imagenet":
         _, _, test_loader = load_imagenet(
             imagenet_path=imagenet_path,

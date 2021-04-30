@@ -41,7 +41,7 @@ def load_imagenet16(
     imagenet_path: str = "/mnt/data/ImageNet/ILSVRC2012/",
     batch_size: int = 32,
     info_path: str = str(current_dir) + "/info/",
-    normalize: bool = True,
+    normalization: bool = True,
 ):
     """
     load 16-class-ImageNet
@@ -50,7 +50,7 @@ def load_imagenet16(
         imagenet_path (str): the path to ImageNet
         info_path (str): the path to the directory that contains
                     imagenet_class_index.json, wordnet.is_a.txt, words.txt
-        normalize (bool): Use normalization on images or nor. (default: True)
+        normalization (bool): Use normalization on images or nor. (default: True)
     Returns: train_loader, test_loader
     """
 
@@ -63,7 +63,7 @@ def load_imagenet16(
     # data augumentation for imagenet in robustness library is:
     # https://github.com/MadryLab/robustness/blob/master/robustness/data_augmentation.py
 
-    if normalize:
+    if normalization:
         # standard ImageNet normalization
         normalize = transforms.Normalize(
             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
@@ -109,7 +109,7 @@ def make_local_in16_test_loader(
                 transforms.Resize(256),
                 transforms.CenterCrop(224),
                 transforms.ToTensor(),
-                # normalize,
+                normalize,
             ]
         ),
     )
