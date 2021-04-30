@@ -21,6 +21,9 @@ def compute_bandpass_tSNE(
     data_loader: iter,
     filters: dict,
     num_dim: int,
+    random_state: int = 0,
+    perplexity: int = 30,
+    n_iter: int = 1000,
     device: torch.device = torch.device("cuda:0"),
 ) -> np.ndarray:
     """Computes RSM for each image and return mean RSMs.
@@ -37,7 +40,12 @@ def compute_bandpass_tSNE(
 
     embedded_activations = np.zeros((num_layers, num_images, num_filters + 1, num_dim))
 
-    tsne = TSNE(n_components=num_dim, random_state=0, perplexity=30, n_iter=1000)
+    tsne = TSNE(
+        n_components=num_dim,
+        random_state=random_state,
+        perplexity=perplexity,
+        n_iter=n_iter,
+    )
 
     # compute RSM for each image (with some filters applied)
     for image_id, (image, label) in tqdm(

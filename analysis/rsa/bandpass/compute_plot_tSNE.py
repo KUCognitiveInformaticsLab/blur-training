@@ -1,3 +1,4 @@
+import argparse
 import os
 import pathlib
 import sys
@@ -19,19 +20,61 @@ from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
+from src.model.model_names import rename_model_name
 from src.model.load_sin_pretrained_models import load_sin_model
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "-a",
+    "--arch",
+    metavar="ARCH",
+    default="alexnet",
+)
+parser.add_argument(
+    "--num_classes",
+    default=1000,
+    type=int,
+)
+parser.add_argument(
+    "--epoch",
+    default=60,
+    type=int,
+)
+parser.add_argument("--model_names", nargs="+", type=str)
+parser.add_argument(
+    "--num_filters",
+    default=6,
+    type=int,
+)
+parser.add_argument(
+    "--num_dim",
+    default=2,
+    type=int,
+)
+parser.add_argument(
+    "--perplexity",
+    default=30,
+    type=int,
+)
+
 
 if __name__ == "__main__":
     # ===== args =====
-    arch = "alexnet"
-    num_classes = 1000
-    epoch = 60
+    args = parser.parse_args()
+
+    print(args.model_names)
+
+    arch = args.arch
+    num_classes = args.num_classes
+    epoch = args.epoch
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     analysis = f"bandpass_activations_tSNE"
-    num_filters = 6
-    num_dim = 3
+    num_filters = args.num_filters
+    num_dim = args.num_dim
+    perplexity = args.perplexity
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
@@ -59,6 +102,7 @@ if __name__ == "__main__":
     print("num_classes:", num_classes)
     print("num_filters:", num_filters)
     print("num_dim:", num_dim)
+    print("perplexity:", perplexity)
 
     print("===== I/O =====")
     print("IN, models_dir:", models_dir)
@@ -92,7 +136,7 @@ if __name__ == "__main__":
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
         print()
-        print(f"{model_name}: computing RSM...")
+        print(f"{model_name} computing...")
         # make RSA instance
 
         if num_classes == 1000 and "SIN" in model_name:
@@ -125,32 +169,37 @@ if __name__ == "__main__":
             data_loader=test_loader,
             filters=filters,
             num_dim=num_dim,
+            perplexity=perplexity,
             device=device,
         )
 
         # save t-SNE embedded activations
-        result_file = f"{num_classes}-class_{model_name}_{analysis}_embedded_activations_{num_dim}d.npy"
+        result_file = f"{analysis}_embedded_activations_{num_dim}d_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
         np.save(result_path, embedded_activations)
 
-        hoge
-
         # plot t-SNE
+        embedded_activations = np.load(result_path)
         colors = ["k", "r", "g", "b", "c", "m", "y"]
-        for layer_id, layer in tqdm(
-            enumerate(RSA.layers), desc="plotting layers", leave=False
-        ):
-            fig = plt.figure(dpi=150)
 
-            for image_id in tqdm(
-                range(test_loader.num_images), desc="plotting images", leave=False
-            ):
+        for layer_id, layer in enumerate(RSA.layers):
+            fig = plt.figure(dpi=150)
+            for image_id in range(test_loader.num_images):
                 for filter_id in range(num_filters + 1):
                     target = embedded_activations[layer_id, image_id, filter_id]
                     if num_dim == 2:
                         plt.scatter(
                             x=target[0],
                             y=target[1],
+                            label=f"f{filter_id}",
+                            color=colors[filter_id],
+                            alpha=0.5,
+                        )
+                    else:
+                        fig.scatter(
+                            xs=target[0],
+                            ys=target[1],
+                            zs=target[2],
                             label=f"f{filter_id}",
                             color=colors[filter_id],
                             alpha=0.5,
@@ -163,10 +212,14 @@ if __name__ == "__main__":
                         fontsize=8,
                     )
 
-            plt.title(f"{num_classes}-class, {model_name}, {layer}", fontsize=10)
-            # fig.tight_layout()
-            filename = (
-                f"{num_classes}-class_{model_name}_{layer}_{analysis}_{num_dim}d.png"
+            # fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=10)
+            plt.title(
+                f"{analysis}, p={perplexity}, {num_classes}, {rename_model_name(model_name)}, {layer}",
+                fontsize=10,
             )
-            out_file = os.path.join(plots_dir, filename)
-            fig.savefig(out_file)
+            # fig.tight_layout()
+            plot_file = (
+                f"{analysis}_{num_dim}d_{num_classes}-class_{model_name}_{layer}.png"
+            )
+            plot_path = os.path.join(plots_dir, plot_file)
+            fig.savefig(plot_path)
