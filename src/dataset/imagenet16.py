@@ -86,7 +86,10 @@ def load_imagenet16(
 
 
 def make_local_in16_test_loader(
-    data_path: str = "/mnt/data/imagenet16/test/", batch_size: int = 32, normalization: bool = True
+    data_path: str = "/mnt/data/imagenet16/test/",
+    batch_size: int = 32,
+    normalization: bool = True,
+    shuffle: bool = False,
 ):
     """
     Args:
@@ -115,7 +118,7 @@ def make_local_in16_test_loader(
     )
 
     test_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=batch_size, shuffle=False, num_workers=5, pin_memory=True
+        dataset, batch_size=batch_size, shuffle=shuffle, num_workers=5, pin_memory=True
     )
 
     test_loader.num_classes = 16
