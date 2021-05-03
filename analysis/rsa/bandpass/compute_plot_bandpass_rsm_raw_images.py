@@ -100,7 +100,7 @@ if __name__ == "__main__":
         result_path = os.path.join(results_dir, result_file)
         save_rsms(mean_rsms=mean_rsm, file_path=result_path)
 
-        # # ===== plot RSM =====
+        # ===== plot RSM =====
         # print(f"{model_name}: plotting RSM...")
         # get analysis parameters.
         # num_images = mean_rsms["num_images"]
