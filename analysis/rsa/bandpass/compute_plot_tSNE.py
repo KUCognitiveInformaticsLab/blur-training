@@ -57,6 +57,11 @@ parser.add_argument(
     default=30,
     type=int,
 )
+parser.add_argument(
+    "--compute",
+    default=True,
+    type=bool,
+)
 
 
 if __name__ == "__main__":
@@ -71,6 +76,7 @@ if __name__ == "__main__":
     in16_test_path = "/mnt/data1/imagenet16/test/"
 
     analysis = f"bandpass_activations_tSNE"
+    compute = args.compute
     num_filters = args.num_filters
     num_dim = args.num_dim
     perplexity = args.perplexity
@@ -98,13 +104,16 @@ if __name__ == "__main__":
 
     print("===== arguments =====")
     print("analysis:", analysis)
-    print("num_classes:", num_classes)
-    print("num_filters:", num_filters)
-    print("num_dim:", num_dim)
-    print("perplexity:", perplexity)
+    print("compute:", compute)
+    if compute:
+        print("num_classes:", num_classes)
+        print("num_filters:", num_filters)
+        print("num_dim:", num_dim)
+        print("perplexity:", perplexity)
 
     print("===== I/O =====")
-    print("IN, models_dir:", models_dir)
+    if compute:
+        print("IN, models_dir:", models_dir)
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
     print()
@@ -115,6 +124,7 @@ if __name__ == "__main__":
 
     # ===== main =====
     print("===== main =====")
+    print()
 
     # random seed settings
     seed = 42
@@ -137,10 +147,7 @@ if __name__ == "__main__":
 
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
-        print()
-        print(f"{model_name} computing...")
         # make RSA instance
-
         if num_classes == 1000 and "SIN" in model_name:
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
@@ -165,24 +172,29 @@ if __name__ == "__main__":
             RSA = AlexNetRSA(model)
 
         # compute bandpass tSNE
-        embedded_activations = compute_bandpass_tSNE(
-            RSA=RSA,
-            num_images=test_loader.num_images,
-            data_loader=test_loader,
-            filters=filters,
-            num_dim=num_dim,
-            perplexity=perplexity,
-            device=device,
-        )
+        if compute:
+            print(f"{model_name} computing...")
+            embedded_activations = compute_bandpass_tSNE(
+                RSA=RSA,
+                num_images=test_loader.num_images,
+                data_loader=test_loader,
+                filters=filters,
+                num_dim=num_dim,
+                perplexity=perplexity,
+                device=device,
+            )
 
-        # save t-SNE embedded activations
         result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
-        np.save(result_path, embedded_activations)
 
-        # plot t-SNE
-        embedded_activations = np.load(result_path)
+        if compute:
+            # save t-SNE embedded activations
+            np.save(result_path, embedded_activations)
+
+        # === plot t-SNE ===
         colors = ["k", "r", "g", "b", "c", "m", "y"]
+
+        embedded_activations = np.load(result_path)
 
         for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
             for image_id in range(test_loader.num_images):
