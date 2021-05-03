@@ -46,6 +46,7 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
+        "untrained_alexnet",
         # "vone_alexnet",
     ]  # VOneNet
     # model_names += [sin_names[arch]]  # SIN
@@ -137,6 +138,12 @@ if __name__ == "__main__":
             model.num_classes = num_classes
         elif "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            model.num_classes = num_classes
+        elif "untrained" in model_name:
+            model_path = ""  # load untrained model
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            ).to(device)
             model.num_classes = num_classes
         else:
             model_path = os.path.join(
