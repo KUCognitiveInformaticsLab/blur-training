@@ -105,11 +105,10 @@ if __name__ == "__main__":
     print("===== arguments =====")
     print("analysis:", analysis)
     print("compute:", compute)
-    if compute:
-        print("num_classes:", num_classes)
-        print("num_filters:", num_filters)
-        print("num_dim:", num_dim)
-        print("perplexity:", perplexity)
+    print("num_classes:", num_classes)
+    print("num_filters:", num_filters)
+    print("num_dim:", num_dim)
+    print("perplexity:", perplexity)
 
     print("===== I/O =====")
     print("IN, models_dir:", models_dir)
