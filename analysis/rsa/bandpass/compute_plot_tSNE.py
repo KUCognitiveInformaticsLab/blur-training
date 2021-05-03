@@ -76,7 +76,7 @@ if __name__ == "__main__":
     in16_test_path = "/mnt/data1/imagenet16/test/"
 
     analysis = f"bandpass_activations_tSNE"
-    compute = strtobool(args.compute)
+    compute = args.compute
     num_filters = args.num_filters
     num_dim = args.num_dim
     perplexity = args.perplexity
