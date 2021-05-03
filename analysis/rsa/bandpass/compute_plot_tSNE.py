@@ -236,5 +236,5 @@ if __name__ == "__main__":
             # fig.tight_layout()
             plot_file = f"{analysis}_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}_{layer}.png"
             plot_path = os.path.join(plots_dir, plot_file)
-            fig.savefig(plot_path)
+            plt.savefig(plot_path)
             plt.close()
