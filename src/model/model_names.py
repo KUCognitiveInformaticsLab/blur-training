@@ -22,6 +22,7 @@ def get_model_names(arch):
     # ]
 
     model_names = [
+        f"untrained_{arch}",
         f"{arch}_normal",
         f"{arch}_multi-steps",
         # f"vone_{arch}",
