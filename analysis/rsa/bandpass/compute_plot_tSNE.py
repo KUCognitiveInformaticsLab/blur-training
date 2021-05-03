@@ -195,9 +195,13 @@ if __name__ == "__main__":
         embedded_activations = np.load(result_path)
 
         for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
+            if num_dim == 2:
+                fig = plt.figure(dpi=150)
+            elif num_dim == 30:
+                fig = plt.figure(dpi=150).gca(projection="3d")
+
             for image_id in range(test_loader.num_images):
                 for filter_id in range(num_filters + 1):
-                    fig = plt.figure(dpi=150)
                     target = embedded_activations[layer_id, image_id, filter_id]
                     if num_dim == 2:
                         plt.scatter(
@@ -207,8 +211,7 @@ if __name__ == "__main__":
                             color=colors[filter_id],
                             alpha=0.5,
                         )
-                    else:
-                        fig = plt.figure(dpi=150).gca(projection="3d")
+                    elif num_dim == 30:
                         fig.scatter(
                             xs=target[0],
                             ys=target[1],
