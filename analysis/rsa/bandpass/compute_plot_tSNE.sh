@@ -45,7 +45,7 @@ python compute_plot_tSNE.py \
   --num_classes 1000 \
   --compute False \
   --num_dim 3 \
-  --perplexity 30 
+  --perplexity 20
   
 python compute_plot_tSNE.py \
   --num_classes 1000 \
