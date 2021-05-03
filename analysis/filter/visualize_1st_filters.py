@@ -31,14 +31,16 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        "untrained_alexnet",
-        "alexnet_normal",
-        "alexnet_all_s04",
-        "alexnet_mix_s04",
-        sin_names[arch],
-        # "vone_alexnet",
-    ]
+    # model_names = [
+    #     "untrained_alexnet",
+    #     "alexnet_normal",
+    #     "alexnet_all_s04",
+    #     "alexnet_mix_s04",
+    #     sin_names[arch],
+    #     # "vone_alexnet",
+    # ]
+    from src.model.model_names import get_model_names
+    model_names = get_model_names(arch=arch)
 
     for model_name in model_names:
         # load model
