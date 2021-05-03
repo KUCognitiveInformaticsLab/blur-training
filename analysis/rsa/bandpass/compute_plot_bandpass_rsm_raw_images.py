@@ -100,7 +100,7 @@ if __name__ == "__main__":
         result_path = os.path.join(results_dir, result_file)
         save_rsms(mean_rsms=mean_rsm, file_path=result_path)
 
-        # ===== plot RSM =====
+        # # ===== plot RSM =====
         # print(f"{model_name}: plotting RSM...")
         # get analysis parameters.
         # num_images = mean_rsms["num_images"]
@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
         # plot_rsms(rsms=diff_rsms, out_file=out_file, plot_show=True)
         plot_bandpass_RSM_raw_images(
-            rsm=mean_rsm,
+            rsm=mean_rsm["raw"],
             num_filters=num_filters,
             vmin=vmin,
             vmax=vmax,
