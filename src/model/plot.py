@@ -1,4 +1,5 @@
 colors = {
+    f"raw_images": "black",
     f"untrained_alexnet": "gray",
     f"alexnet_normal": "#1f77b4",
     f"alexnet_all_s04": "darkorange",
@@ -11,6 +12,7 @@ colors = {
 }
 
 lines = {
+    f"raw_images": "--",
     f"untrained_alexnet": ":",
     f"alexnet_normal": ":",
     f"alexnet_all_s04": "-",

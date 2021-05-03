@@ -54,7 +54,7 @@ def get_model_names(arch):
 
 
 def rename_model_name(model_name: str, arch: str = "alexnet"):
-    model_name = model_name.replace(f"untrained", f"Untrained")
+    # model_name = model_name.replace(f"untrained", f"Untrained")
 
     model_name = model_name.replace(f"{arch}_normal", f"S {arch}")
     model_name = model_name.replace(f"{arch}_all", f"B {arch}")
