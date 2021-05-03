@@ -210,7 +210,7 @@ if __name__ == "__main__":
                             alpha=0.5,
                         )
                     else:
-                        fig = plt.figure(dpi=150).gca(projection='3d')
+                        fig = plt.figure(dpi=150).gca(projection="3d")
                         fig.scatter(
                             xs=target[0],
                             ys=target[1],
@@ -236,3 +236,4 @@ if __name__ == "__main__":
             plot_file = f"{analysis}_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}_{layer}.png"
             plot_path = os.path.join(plots_dir, plot_file)
             fig.savefig(plot_path)
+            plt.close()

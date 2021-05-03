@@ -183,7 +183,7 @@ if __name__ == "__main__":
                             alpha=0.5,
                         )
                     else:
-                        fig = plt.figure(dpi=150).gca(projection='3d')
+                        fig = plt.figure(dpi=150).gca(projection="3d")
                         fig.scatter(
                             xs=target[0],
                             ys=target[1],
