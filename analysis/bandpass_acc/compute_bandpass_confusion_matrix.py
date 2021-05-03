@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # ===== args =====
     analysis = "bandpass_confusion_matrix"
     arch = "alexnet"
-    num_classes = 1000  # number of last output of the models
+    num_classes = 16  # number of last output of the models
     epoch = 60
     batch_size = 64
 

@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # ===== args =====
     analysis = "bandpass_acc"
     arch = "alexnet"
-    num_classes = 1000  # number of last output of the models
+    num_classes = 16  # number of last output of the models
     epoch = 60
     batch_size = 64
 
@@ -52,14 +52,14 @@ if __name__ == "__main__":
     # model_names += [sin_names[arch]]  # SIN
 
     modes = [
-        # "normal",
-        # "all",
-        # "mix",
-        # "random-mix",
-        # "single-step",
+        "normal",
+        "all",
+        "mix",
+        "random-mix",
+        "single-step",
         "fixed-single-step",
-        # "reversed-single-step",
-        # "multi-steps",
+        "reversed-single-step",
+        "multi-steps",
     ]
 
     # sigmas to compare
