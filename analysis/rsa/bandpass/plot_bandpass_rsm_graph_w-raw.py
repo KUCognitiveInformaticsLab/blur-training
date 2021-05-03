@@ -26,9 +26,9 @@ if __name__ == "__main__":
     legend = True
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
-    # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
+    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
     # in_dir = f"./results/{analysis}/{num_classes}-class/"
-    out_dir = f"./plots/{analysis}_graph/{num_classes}-class/"
+    # out_dir = f"./plots/{analysis}_graph/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -111,9 +111,9 @@ if __name__ == "__main__":
             #     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
             if i == 7 and legend:
                 plt.legend(
-                    bbox_to_anchor=(0, -0.25),
+                    bbox_to_anchor=(-0.2, -0.25),
                     loc="upper left",
-                    borderaxespad=0,
+                    # borderaxespad=0,
                     fontsize=8,
                 )
 
