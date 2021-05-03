@@ -197,7 +197,7 @@ if __name__ == "__main__":
         for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
             if num_dim == 2:
                 fig = plt.figure(dpi=150)
-            elif num_dim == 30:
+            elif num_dim == 3:
                 fig = plt.figure(dpi=150).gca(projection="3d")
 
             for image_id in range(test_loader.num_images):
@@ -211,7 +211,7 @@ if __name__ == "__main__":
                             color=colors[filter_id],
                             alpha=0.5,
                         )
-                    elif num_dim == 30:
+                    elif num_dim == 3:
                         fig.scatter(
                             xs=target[0],
                             ys=target[1],
