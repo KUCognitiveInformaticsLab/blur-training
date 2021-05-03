@@ -60,7 +60,6 @@ if __name__ == "__main__":
     fig = plt.figure(dpi=300)
 
     for model_name in model_names:
-        print(model_name)
         if model_name == "raw_images":
             in_file = os.path.join(
                 pathlib.Path(in_dir).parent, f"{analysis}_{model_name}.pkl"
