@@ -18,7 +18,7 @@ from src.analysis.rsa.bandpass.t_sne import (
     compute_bandpass_tSNE,
 )
 from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
-from src.dataset.imagenet16 import load_imagenet16, make_local_in16_test_loader
+from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
 from src.model.model_names import rename_model_name
@@ -220,13 +220,22 @@ if __name__ == "__main__":
                             color=colors[filter_id],
                             alpha=0.5,
                         )
+
                 if image_id == 0:
-                    fig.legend(
-                        bbox_to_anchor=(0.91, 0.88),
-                        loc="upper left",
-                        borderaxespad=0,
-                        fontsize=8,
-                    )
+                    if num_dim == 2:
+                        fig.legend(
+                            bbox_to_anchor=(0.91, 0.88),
+                            loc="upper left",
+                            borderaxespad=0,
+                            fontsize=8,
+                        )
+                    elif num_dim == 3:
+                        fig.legend(
+                            bbox_to_anchor=(0.01, 0.92),
+                            loc="upper left",
+                            borderaxespad=0,
+                            fontsize=6,
+                        )
 
             # fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=10)
             plt.title(
