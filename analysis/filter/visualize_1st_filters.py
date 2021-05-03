@@ -39,7 +39,9 @@ if __name__ == "__main__":
     #     sin_names[arch],
     #     # "vone_alexnet",
     # ]
+
     from src.model.model_names import get_model_names
+
     model_names = get_model_names(arch=arch)
 
     for model_name in model_names:
