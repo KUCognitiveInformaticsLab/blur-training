@@ -48,25 +48,29 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        "untrained_alexnet",
-        "alexnet_normal",
-        "alexnet_all_s04",
-        "alexnet_mix_s04",
-        "vone_alexnet",
-        sin_names[arch],  # SIN
-    ]
+    # model_names = [
+    #     "untrained_alexnet",
+    #     "alexnet_normal",
+    #     "alexnet_all_s04",
+    #     "alexnet_mix_s04",
+    #     "vone_alexnet",
+    #     sin_names[arch],  # SIN
+    # ]
 
-    modes = [
-        # "normal",
-        "all",
-        "mix",
-        "random-mix",
-        "single-step",
-        "fixed-single-step",
-        "reversed-single-step",
-        "multi-steps",
-    ]
+    from src.model.model_names import get_model_names
+
+    model_names = get_model_names(arch=arch)
+
+    # modes = [
+    #     # "normal",
+    #     "all",
+    #     "mix",
+    #     "random-mix",
+    #     "single-step",
+    #     "fixed-single-step",
+    #     "reversed-single-step",
+    #     "multi-steps",
+    # ]
 
     # # sigmas to compare
     # sigmas_mix = [s for s in range(1, 6)] + [10]
