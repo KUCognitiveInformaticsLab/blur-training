@@ -5,12 +5,14 @@ import os
 import pathlib
 import sys
 
+from tqdm import tqdm
+
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
+from src.model.load_sin_pretrained_models import load_sin_model
 from src.analysis.filter.filter_visualization import plot_filters
 
 
@@ -44,7 +46,7 @@ if __name__ == "__main__":
 
     model_names = get_model_names(arch=arch)
 
-    for model_name in model_names:
+    for model_name in tqdm(model_names, desc="models", leave=False):
         # load model
         if (num_classes == 1000) and ("SIN" in model_name):
             # Stylized-ImageNet
