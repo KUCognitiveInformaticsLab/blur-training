@@ -2,6 +2,7 @@ import argparse
 import os
 import pathlib
 import sys
+from distutils.util import strtobool
 
 import numpy as np
 import torch
@@ -59,7 +60,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--compute",
-    action="store_true",
+    type=strtobool,
 )
 
 
@@ -75,7 +76,7 @@ if __name__ == "__main__":
     in16_test_path = "/mnt/data1/imagenet16/test/"
 
     analysis = f"bandpass_activations_tSNE"
-    compute = args.compute
+    compute = strtobool(args.compute)
     num_filters = args.num_filters
     num_dim = args.num_dim
     perplexity = args.perplexity
