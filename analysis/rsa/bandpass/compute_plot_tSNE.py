@@ -50,7 +50,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--num_dim",
-    default=2,
+    default=3,
     type=int,
 )
 parser.add_argument(
@@ -59,8 +59,14 @@ parser.add_argument(
     type=int,
 )
 parser.add_argument(
+    "--n_iter",
+    default=1000,
+    type=int,
+)
+parser.add_argument(
     "--compute",
     type=strtobool,
+    default=1,
 )
 
 
@@ -80,6 +86,7 @@ if __name__ == "__main__":
     num_filters = args.num_filters
     num_dim = args.num_dim
     perplexity = args.perplexity
+    n_iter = args.n_iter
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
@@ -109,6 +116,7 @@ if __name__ == "__main__":
     print("num_filters:", num_filters)
     print("num_dim:", num_dim)
     print("perplexity:", perplexity)
+    print("n_iter:", n_iter)
 
     print("===== I/O =====")
     print("IN, models_dir:", models_dir)
@@ -179,10 +187,11 @@ if __name__ == "__main__":
                 filters=filters,
                 num_dim=num_dim,
                 perplexity=perplexity,
+                n_iter=n_iter,
                 device=device,
             )
 
-        result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}.npy"
+        result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
 
         if compute:
@@ -239,11 +248,11 @@ if __name__ == "__main__":
 
             # fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=10)
             plt.title(
-                f"{analysis}, p={perplexity}, {num_classes}, {rename_model_name(model_name)}, {layer}",
-                fontsize=10,
+                f"{analysis}, p={perplexity}, iter={n_iter}, {num_classes}, {rename_model_name(model_name)}, {layer}",
+                fontsize=8,
             )
             # fig.tight_layout()
-            plot_file = f"{analysis}_{num_dim}d_p{perplexity}_{num_classes}-class_{model_name}_{layer}.png"
+            plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
             plot_path = os.path.join(plots_dir, plot_file)
             plt.savefig(plot_path)
             plt.close()
