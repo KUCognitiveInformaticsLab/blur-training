@@ -21,7 +21,7 @@ if __name__ == "__main__":
     num_classes = 1000
     epoch = 60
 
-    metrics = "correlation"  # ("correlation", "1-covariance", "negative-covariance")
+    metrics = "correlation"  # ("correlation", "1-covariance",   "negative-covariance")
     analysis = f"bandpass_rsm_{metrics}"
     legend = True
 
