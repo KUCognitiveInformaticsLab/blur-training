@@ -95,7 +95,7 @@ if __name__ == "__main__":
                 marker=".",
                 markersize=3,
                 ls=lines[model_name],
-                linewidth=.8,
+                linewidth=0.8,
                 color=colors[model_name],
             )
 
