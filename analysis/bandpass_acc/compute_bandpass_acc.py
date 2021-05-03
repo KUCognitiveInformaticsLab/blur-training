@@ -46,9 +46,9 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        "vone_alexnet",
+        # "vone_alexnet",
     ]  # VOneNet
-    model_names += [sin_names[arch]]  # SIN
+    # model_names += [sin_names[arch]]  # SIN
 
     modes = [
         # "normal",
