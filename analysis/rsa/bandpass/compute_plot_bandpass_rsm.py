@@ -25,14 +25,14 @@ from src.model.load_sin_pretrained_models import load_sin_model
 if __name__ == "__main__":
     # ===== args =====
     arch = "alexnet"
-    num_classes = 1000
+    args = sys.argv
+    num_classes = int(args[1])
     epoch = 60
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     num_filters = 6
     add_noise = False
-    args = sys.argv
     metrics = "correlation"  # "1-covariance", "negative-covariance"
     analysis = f"bandpass_rsm_{metrics}"
 
@@ -63,42 +63,22 @@ if __name__ == "__main__":
     print()
 
     # models to compare
-    model_names = [
-        # "alexnet_normal",
-        # "alexnet_all_s04",
-        # "alexnet_mix_s04",
-        # sin_names[arch],
-        # "vone_alexnet",
-        "untrained_alexnet",
-    ]
+    # model_names = [
+    #     # "alexnet_normal",
+    #     # "alexnet_all_s04",
+    #     # "alexnet_mix_s04",
+    #     # sin_names[arch],
+    #     # "vone_alexnet",
+    #     "untrained_alexnet",
+    # ]
     # model_names = [
     #     f"{arch}_normal",
     #     # f"{arch}_multi-steps",
     # ]
-    # modes = [
-    #     f"{arch}_all",
-    #     f"{arch}_mix",
-    #     # f"{arch}_random-mix",
-    #     # f"{arch}_single-step",
-    #     # f"{arch}_fixed-single-step",
-    #     # f"{arch}_reversed-single-step",
-    # ]
-    #
-    # # sigmas to compare
-    # sigmas_mix = [s for s in range(1, 6)] + [10]
-    # sigmas_random_mix = ["00-05", "00-10"]
-    #
-    # # add sigma to compare to the model names
-    # for mode in modes:
-    #     if mode == f"{arch}_random-mix":
-    #         for min_max in sigmas_random_mix:
-    #             model_names += [f"{mode}_s{min_max}"]
-    #     elif mode == f"{arch}_mix":
-    #         for sigma in sigmas_mix:
-    #             model_names += [f"{mode}_s{sigma:02d}"]
-    #     else:
-    #         for sigma in range(1, 5):
-    #             model_names += [f"{mode}_s{sigma:02d}"]
+
+    from src.model.model_names import get_model_names
+
+    model_names = get_model_names(arch=arch)
 
     print("===== models to analyze =====")
     print(model_names)
