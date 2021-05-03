@@ -29,11 +29,11 @@
 #  --perplexity 50
 
 ## dim = 3
-python compute_plot_tSNE.py \
-  --num_classes 1000 \
-  --compute False \
-  --num_dim 3 \
-  --perplexity 30 
+#python compute_plot_tSNE.py \
+#  --num_classes 1000 \
+#  --compute False \
+#  --num_dim 3 \
+#  --perplexity 30
   
 python compute_plot_tSNE.py \
   --num_classes 1000 \
