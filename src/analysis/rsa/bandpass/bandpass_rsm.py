@@ -14,7 +14,10 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.analysis.rsa.rsa import alexnet_layers
-from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
+from src.analysis.rsa.bandpass.activations import (
+    compute_activations_with_bandpass,
+    get_pixel_statics_with_bandpass,
+)
 
 
 def compute_bandpass_RSMs(
@@ -83,6 +86,67 @@ def compute_bandpass_RSMs(
         mean_rsms[layer] = all_rsms.mean(0)
 
     return mean_rsms
+
+
+def compute_raw_RSM(
+    data_loader: iter,
+    filters: dict,
+    add_noise: bool = False,
+    mean: float = 0.0,
+    var: float = 0.1,
+    metrics: str = "correlation",  # ("correlation", "1-covariance", "negative-covariance")
+    device: torch.device = torch.device("cuda:0"),
+) -> dict:
+    """Computes RSM for each image and return mean RSMs.
+    Args:
+        in_dir: path to input directory
+        num_filters: number of band-pass filter
+        num_images: number of images
+
+    Returns:
+        Mean RSM (Dict)
+    """
+    rsms = []
+
+    # compute RSM for each image (with some filters applied)
+    for image_id, (image, label) in tqdm(
+        enumerate(data_loader), desc="test images", leave=False
+    ):
+        """Note that data_loader SHOULD return a single image for each loop.
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+        """
+        statics = get_pixel_statics_with_bandpass(
+            image=image,
+            filters=filters,
+            device=device,
+            add_noise=add_noise,
+            mean=mean,
+            var=var,
+        )  # (1, F+1, C, H, W)
+
+        # add parameter settings of this analysis
+        # activations["label_id"] = label.item()
+        # activations["num_filters"] = len(filters)
+
+        # save (This file size is very big with iterations!)
+        # file_name = f"image{image_id:04d}_f{len(filters):02d}.pkl"
+        # file_path = os.path.join(out_dir, file_name)
+        # save_activations(activations=activations, file_path=file_path)
+
+        statics = statics[0].reshape(len(filters) + 1, -1)
+
+        rsms += [compute_RSM(activation=statics, metrics=metrics)]
+
+    mean_rsm = {}
+    mean_rsm["num_filters"] = len(filters)
+    # mean_rsms["num_images"] = len(data_loader)
+    # mean_rsms["target_id"] = target_id
+    rsms = np.array(rsms)
+
+    mean_rsm["raw"] = rsms.mean(0)
+
+    return mean_rsm
 
 
 def compute_noise_RSMs(
@@ -247,6 +311,94 @@ def plot_bandpass_RSMs(
             linewidth=1,
             colors="gray",
         )
+
+    # show color bar
+    # cbar_ax = fig.add_axes([0.91, 0.3, 0.03, 0.4])
+    # sns.heatmap(
+    #     rsms[layer],
+    #     cbar=True,
+    #     cbar_ax=cbar_ax,
+    #     vmin=vmin,
+    #     vmax=vmax,
+    #     cmap="coolwarm_r",
+    #     xticklabels=False,
+    #     yticklabels=False,
+    # )
+
+    # sns.set(font_scale=0.5)  # adjust the font size of title
+    if title:
+        fig.suptitle(title)
+    # fig.tight_layout(rect=[0, 0, 0.9, 1])
+    fig.tight_layout()
+    plt.savefig(out_file)
+    if show_plot:
+        plt.show()
+    plt.close()
+
+
+def plot_bandpass_RSMs_raw_images(
+    rsm,
+    num_filters=6,
+    vmin=0,
+    vmax=2,
+    title="",
+    out_file="rsms.png",
+    show_plot=False,
+):
+    """Plot several layers RSMs in one figure.
+    Args:
+        model_name: name of the model to examine.
+    """
+    fig = plt.figure(dpi=300)
+
+    # color bar
+    # cbar_ax = fig.add_axes([.91, .3, .03, .4])
+
+    ax = fig.add_subplot(1, 1, 1)
+    # sns.set(font_scale=0.5)  # adjust the font size of labels
+
+    sns.heatmap(
+        rsm,
+        ax=ax,
+        square=True,
+        vmin=vmin,
+        vmax=vmax,
+        xticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
+        yticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
+        cmap="coolwarm_r",
+        cbar=False,
+        # --- show values ---
+        annot=True,
+        fmt="1.2f",
+        annot_kws={"size": 3},
+        # ---  ---
+        # cbar_ax=cbar_ax,  # show color bar
+    )
+
+    ax.hlines(
+        [i for i in range(2, num_filters + 1)],
+        *ax.get_xlim(),
+        linewidth=0.1,
+        colors="gray",
+    )
+    ax.vlines(
+        [i for i in range(2, num_filters + 1)],
+        *ax.get_ylim(),
+        linewidth=0.1,
+        colors="gray",
+    )
+    ax.hlines(
+        1,  # diff. line for separating raw images and bandpass images
+        *ax.get_xlim(),
+        linewidth=1,
+        colors="gray",
+    )
+    ax.vlines(
+        1,  # diff. line for separating raw images and bandpass images
+        *ax.get_xlim(),
+        linewidth=1,
+        colors="gray",
+    )
 
     # show color bar
     # cbar_ax = fig.add_axes([0.91, 0.3, 0.03, 0.4])

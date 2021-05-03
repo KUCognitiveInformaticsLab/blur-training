@@ -117,7 +117,7 @@ def compute_activations_with_bandpass(
         label (torch.Tensor): e.g. tensor([0])
 
     Returns:
-        activations (Dict)
+        activations (Dict): {L: (F+1, C, H, W)}
     """
     test_images = torch.zeros([len(filters) + 1, 1, num_channels, height, width])
 
@@ -135,6 +135,43 @@ def compute_activations_with_bandpass(
     # change the order of num_images and num_filters(+1)
     test_images = test_images.transpose(1, 0)  # (F+1, 1, C, H, W) -> (1, F+1, C, H, W)
 
-    activations = RSA.compute_activations(test_images[0].to(device))
+    activations = RSA.compute_activations(
+        test_images[0].to(device)
+    )  # {L: (F+1, C, H, W)}
 
     return activations
+
+
+def get_pixel_statics_with_bandpass(
+    image: torch.Tensor,
+    filters: dict,
+    add_noise: bool = False,
+    mean: float = 0.0,
+    var: float = 0.1,
+    device: torch.device = torch.device("cuda:0"),
+):
+    """Computes activations of a single image with band-pass filters applied.
+    Args:
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+
+    Returns:
+        statics (activations): (1, F+1, C, H, W)
+    """
+    test_images = torch.zeros([len(filters) + 1, 1, num_channels, height, width])
+
+    test_images[0] = image  # add raw images (f=0)
+
+    if add_noise:  # for smoothing high-freq. activations
+        test_images[0] = gaussian_noise(images=test_images[0], mean=mean, var=var)
+
+    for f, (s1, s2) in enumerate(filters.values(), 1):
+        test_images[f] = apply_bandpass_filter(images=image, sigma1=s1, sigma2=s2)
+
+        if add_noise:  # for smoothing high-freq. activations
+            test_images[f] = gaussian_noise(images=test_images[f], mean=mean, var=var)
+
+    # change the order of num_images and num_filters(+1)
+    statics = test_images.transpose(1, 0)  # (F+1, 1, C, H, W) -> (1, F+1, C, H, W)
+
+    return statics
