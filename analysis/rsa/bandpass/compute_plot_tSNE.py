@@ -112,8 +112,7 @@ if __name__ == "__main__":
         print("perplexity:", perplexity)
 
     print("===== I/O =====")
-    if compute:
-        print("IN, models_dir:", models_dir)
+    print("IN, models_dir:", models_dir)
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
     print()
