@@ -12,7 +12,7 @@ sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.bandpass_rsm import (
     compute_raw_RSM,
-    plot_bandpass_RSMs,
+    plot_bandpass_RSM_raw_images,
 )
 from src.analysis.rsa.utils import save_rsms
 from src.dataset.imagenet16 import load_imagenet16
@@ -118,8 +118,8 @@ if __name__ == "__main__":
         vmax = 1
 
         # plot_rsms(rsms=diff_rsms, out_file=out_file, plot_show=True)
-        plot_bandpass_RSMs(
-            rsms=mean_rsm,
+        plot_bandpass_RSM_raw_images(
+            rsm=mean_rsm,
             num_filters=num_filters,
             vmin=vmin,
             vmax=vmax,

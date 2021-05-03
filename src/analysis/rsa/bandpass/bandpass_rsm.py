@@ -336,7 +336,7 @@ def plot_bandpass_RSMs(
     plt.close()
 
 
-def plot_bandpass_RSMs_raw_images(
+def plot_bandpass_RSM_raw_images(
     rsm,
     num_filters=6,
     vmin=0,
