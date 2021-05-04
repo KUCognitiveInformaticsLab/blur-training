@@ -27,7 +27,7 @@ from src.analysis.lowpass_acc.lowpass_acc import test_performance
 if __name__ == "__main__":
     # ===== args =====
     arch = "alexnet"
-    num_classes = sys.argv[1]  # number of last output of the models
+    num_classes = int(sys.argv[1])  # number of last output of the models
     epoch = 60
     test_dataset = "imagenet"  # test_dataset to use
     batch_size = 64
