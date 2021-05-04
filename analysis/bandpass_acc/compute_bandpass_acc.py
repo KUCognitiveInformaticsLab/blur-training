@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # ===== args =====
     analysis = "bandpass_acc"
     arch = "alexnet"
-    num_classes = 1000  # number of last output of the models
+    num_classes = 16  # number of last output of the models
     epoch = 60
     batch_size = 64
 
@@ -46,19 +46,20 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        "vone_alexnet",
+        "untrained_alexnet",
+        # "vone_alexnet",
     ]  # VOneNet
-    model_names += [sin_names[arch]]  # SIN
+    # model_names += [sin_names[arch]]  # SIN
 
     modes = [
-        # "normal",
-        # "all",
-        # "mix",
-        # "random-mix",
-        # "single-step",
-        # "fixed-single-step",
-        # "reversed-single-step",
-        # "multi-steps",
+        "normal",
+        "all",
+        "mix",
+        "random-mix",
+        "single-step",
+        "fixed-single-step",
+        "reversed-single-step",
+        "multi-steps",
     ]
 
     # sigmas to compare
@@ -137,6 +138,12 @@ if __name__ == "__main__":
             model.num_classes = num_classes
         elif "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            model.num_classes = num_classes
+        elif "untrained" in model_name:
+            model_path = ""  # load untrained model
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            ).to(device)
             model.num_classes = num_classes
         else:
             model_path = os.path.join(
