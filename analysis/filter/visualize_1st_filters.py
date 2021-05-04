@@ -14,7 +14,7 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 from src.analysis.filter.filter_visualization import plot_filters
-
+from src.model.model_names import rename_model_name_vss
 
 if __name__ == "__main__":
     arch = "alexnet"
@@ -33,16 +33,16 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        "untrained_alexnet",
-        "alexnet_normal",
-        sin_names[arch],
-        # "vone_alexnet",
-    ]
+    # model_names = [
+    #     "untrained_alexnet",
+    #     "alexnet_normal",
+    #     sin_names[arch],
+    #     # "vone_alexnet",
+    # ]
 
     from src.model.model_names import get_model_names
 
-    # model_names = get_model_names(arch=arch)
+    model_names = get_model_names(arch=arch)
 
     for model_name in tqdm(model_names, desc="models", leave=False):
         # load model
@@ -68,7 +68,7 @@ if __name__ == "__main__":
             ).cpu()
 
         # (optional) set title
-        plot_title = f"{num_classes}-class, {model_name}"
+        plot_title = f"{num_classes}-class, {rename_model_name_vss(model_name)}"
 
         # plot file path
         output_path = os.path.join(

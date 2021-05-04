@@ -26,7 +26,7 @@ def get_model_names(arch):
         f"{arch}_normal",
         f"{arch}_multi-steps",
         # f"vone_{arch}",
-        # sin_names[arch],
+        sin_names[arch],
     ]
     modes = [
         f"{arch}_all",
