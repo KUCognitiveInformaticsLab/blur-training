@@ -57,7 +57,7 @@ def accuracy(output, target, topk=(1,)):
 
         res = []
         for k in topk:
-            print("correct[:k]", correct[:k].view(-1).shape)
+            print(f"correct[:{k}].reshape(-1)", correct[:k].reshape(-1).shape)
             correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
