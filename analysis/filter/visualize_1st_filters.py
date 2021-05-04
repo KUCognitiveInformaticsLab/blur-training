@@ -18,7 +18,7 @@ from src.analysis.filter.filter_visualization import plot_filters
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 16  # number of last output of the models
+    num_classes = int(sys.argv[1])  # number of last output of the models
     epoch = 60
 
     analysis = "1st-filter_visualization"
