@@ -12,7 +12,7 @@ sys.path.append(os.path.join(str(current_dir), "../../../"))
 from src.analysis.rsa.utils import load_rsms
 from src.analysis.rsa.bandpass.bandpass_rsm_graph import compute_bandpass_values
 from src.model.load_sin_pretrained_models import sin_names
-from src.model.model_names import rename_model_name
+from src.model.model_names import rename_model_name_vss
 from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
 from src.model.plot import colors, lines
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
     # in_dir = f"./results/{analysis}/{num_classes}-class/"
-    out_dir = f"./plots/{analysis}_graph/{num_classes}-class/"
+    out_dir = f"./plots/{analysis}_graph_vss/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -76,7 +76,7 @@ if __name__ == "__main__":
         else:
             rsms["layers"] = alexnet_layers
 
-        renamed_model_name = rename_model_name(model_name=model_name, arch=arch)
+        renamed_model_name = rename_model_name_vss(model_name=model_name, arch=arch)
 
         for i, layer in enumerate(rsms["layers"]):
             if model_name == "raw_images":
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             #     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
             if i == 7 and legend:
                 plt.legend(
-                    bbox_to_anchor=(-0.2, -0.25),
+                    bbox_to_anchor=(-0.2, -0.2),
                     loc="upper left",
                     # borderaxespad=0,
                     fontsize=8,
