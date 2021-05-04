@@ -13,7 +13,7 @@ def plot_filters_multi_channel(t, title, file_name):
     num_kernels = t.shape[0]
 
     # define number of columns for subplots
-    num_cols = 12
+    num_cols = 8
     # rows = num of kernels
     # num_rows = num_kernels
     num_rows = -(-num_kernels // num_cols)  # round down
