@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# !pip install robustness==1.1  # (or 1.1.post2)
+
 import os
 import pathlib
 import sys
@@ -16,29 +21,26 @@ from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
-from src.image_process.bandpass_filter import make_bandpass_filters
-from src.analysis.bandpass_acc.bandpass_acc import test_performance
+from src.analysis.lowpass_acc.lowpass_acc import test_performance
 
 
 if __name__ == "__main__":
     # ===== args =====
-    analysis = "bandpass_acc"
     arch = "alexnet"
     num_classes = 16  # number of last output of the models
     epoch = 60
+    test_dataset = "imagenet"  # test_dataset to use
     batch_size = 64
+    analysis = f"lowpass_acc_{test_dataset}"
+    max_sigma = 20
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
-
-    test_dataset = "imagenet16"  # test_dataset to use
-
-    num_filters = 6  # the number of bandpass filters
 
     # I/O
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/{num_classes}-class/"
+    results_dir = f"./results/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     if not os.path.exists(results_dir):
@@ -49,43 +51,17 @@ if __name__ == "__main__":
         "untrained_alexnet",
         # "vone_alexnet",
     ]  # VOneNet
-    # model_names += [sin_names[arch]]  # SIN
+    model_names += [sin_names[arch]]  # SIN
 
-    modes = [
-        "normal",
-        "all",
-        "mix",
-        "random-mix",
-        "single-step",
-        "fixed-single-step",
-        "reversed-single-step",
-        "multi-steps",
-    ]
+    from src.model.model_names import get_model_names
 
-    # sigmas to compare
-    sigmas_mix = [s for s in range(1, 6)] + [10]
-    sigmas_random_mix = ["00-05", "00-10"]
-
-    # make model name list
-    # model_names = []
-    for mode in modes:
-        if mode in ("normal", "multi-steps"):
-            model_names += [f"{arch}_{mode}"]
-        elif mode == "random-mix":
-            for min_max in sigmas_random_mix:
-                model_names += [f"{arch}_{mode}_s{min_max}"]
-        elif mode == "mix":
-            for sigma in sigmas_mix:
-                model_names += [f"{arch}_{mode}_s{sigma:02d}"]
-        else:
-            for s in range(4):
-                model_names += [f"{arch}_{mode}_s{s + 1:02d}"]
+    model_names = get_model_names(arch=arch)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
-    print("num_filters:", num_filters)
     print("batch_size:", batch_size)
     print("test_dataset:", test_dataset)
+    print("max_sigma:", max_sigma)
     print()
 
     print("===== I/O =====")
@@ -125,9 +101,6 @@ if __name__ == "__main__":
             workers=4,
         )
 
-    # make bandpass bandpass_filters
-    bandpass_filters = make_bandpass_filters(num_filters=num_filters)
-
     for model_name in tqdm(model_names, desc="models", leave=False):
         print()
         print(f"{model_name}: computing bandpass acc...")
@@ -160,14 +133,14 @@ if __name__ == "__main__":
         # set path to output
         out_path = os.path.join(
             results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
-        )
+        )  # acc1&acc5 will be saved (when ImageNet is test dataset)
 
         test_performance(
             model=model,
             test_loader=test_loader,
-            bandpass_filters=bandpass_filters,
+            max_sigma=max_sigma,
+            out_path=out_path,
             device=device,
-            out_file=out_path,
         )
 
     print(f"{analysis}: All done!!")
