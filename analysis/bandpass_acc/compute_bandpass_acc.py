@@ -158,7 +158,7 @@ if __name__ == "__main__":
             model.num_classes = num_classes
 
         # set path to output
-        out_file = os.path.join(
+        out_path = os.path.join(
             results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
         )
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
             test_loader=test_loader,
             bandpass_filters=bandpass_filters,
             device=device,
-            out_file=out_file,
+            out_file=out_path,
         )
 
     print("All done!!")

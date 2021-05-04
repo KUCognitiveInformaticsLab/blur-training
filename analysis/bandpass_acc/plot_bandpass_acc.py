@@ -10,6 +10,8 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.analysis.bandpass_acc.utils import load_result
+from src.model.model_names import rename_model_name_vss
+from src.model.plot import colors, lines
 
 
 if __name__ == "__main__":
@@ -20,8 +22,8 @@ if __name__ == "__main__":
 
     # directories and model settings
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
-    out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/plots/{num_classes}-class/"
-    # out_dir = f"./plots/{num_classes}-class/"
+    # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/plots/{num_classes}-class/"
+    out_dir = f"./plots_vss/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -29,14 +31,15 @@ if __name__ == "__main__":
 
     # models to plot
     model_names = [
-        f"{num_classes}-class_{arch}_normal",
-        f"{num_classes}-class_{arch}_all_s04",
-        f"{num_classes}-class_{arch}_mix_s04",
-        # f"{num_classes}-class_{arch}_mix_s10",
-        # f"{num_classes}-class_{arch}_random-mix_s00-05",
-        # f"{num_classes}-class_{arch}_random-mix_s00-10",
-        f"{num_classes}-class_{arch}_trained_on_SIN",
-        f"{num_classes}-class_vone_{arch}",
+        f"{arch}_normal",
+        f"{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"{arch}_multi-steps",
+        # f"{arch}_mix_s10",
+        # f"{arch}_random-mix_s00-05",
+        # f"{arch}_random-mix_s00-10",
+        f"{arch}_trained_on_SIN",
+        f"vone_{arch}",
     ]
 
     # set plot file name.
@@ -44,43 +47,24 @@ if __name__ == "__main__":
         f"{analysis}_{num_classes}-class_{arch}_normal_all-s04_mix-s04_sin_vone.png"
     )
 
-    colors = {
-        f"{num_classes}-class_{arch}_normal": "#1f77b4",
-        f"{num_classes}-class_{arch}_all_s04": "darkorange",
-        f"{num_classes}-class_{arch}_mix_s04": "limegreen",
-        f"{num_classes}-class_{arch}_mix_s10": "hotpink",
-        f"{num_classes}-class_{arch}_random-mix_s00-05": "green",
-        f"{num_classes}-class_{arch}_random-mix_s00-10": "mediumvioletred",
-        f"{num_classes}-class_{arch}_trained_on_SIN": "mediumvioletred",
-        f"{num_classes}-class_vone_{arch}": "blueviolet",
-    }
-
-    lines = {
-        f"{num_classes}-class_{arch}_normal": ":",
-        f"{num_classes}-class_{arch}_all_s04": "-",
-        f"{num_classes}-class_{arch}_mix_s04": "-",
-        f"{num_classes}-class_{arch}_mix_s10": "-",
-        f"{num_classes}-class_{arch}_random-mix_s00-05": "-",
-        f"{num_classes}-class_{arch}_random-mix_s00-10": "-",
-        f"{num_classes}-class_{arch}_trained_on_SIN": "-",
-        f"{num_classes}-class_vone_{arch}": "-",
-    }
-
     x = ["{}-{}".format(2 ** i, 2 ** (i + 1)) for i in range(4)] + ["16-"]
     x.insert(0, "0-1")
-    x.insert(0, "0(raw)")
+    x.insert(0, "0(original)")
 
     # read band-pass accuracy results
     value = "acc1"
     acc1 = {}
     for model_name in model_names:
-        if "SIN" in model_name or "vone" in model_name:
-            # Stylized-ImageNet
-            file_path = os.path.join(in_dir, f"{analysis}_{model_name}_{value}.csv")
-        else:
-            file_path = os.path.join(
-                in_dir, f"{analysis}_{model_name}_e{epoch}_{value}.csv"
-            )
+        # if "SIN" in model_name or "vone" in model_name:
+        #     # Stylized-ImageNet
+        #     file_path = os.path.join(in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv")
+        # else:
+        #     file_path = os.path.join(
+        #         in_dir, f"{analysis}_{num_classes}-class_{model_name}_e{epoch}_{value}.csv"
+        #     )
+        file_path = os.path.join(
+            in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv"
+        )
         acc1[model_name] = load_result(file_path=file_path).values[0]
 
     fig = plt.figure(dpi=150)
@@ -88,8 +72,8 @@ if __name__ == "__main__":
         1,
         1,
         1,
-        title=f"top-1 acc. on band-pass 16-class-imagenet",
-        xlabel="Test images",
+        title=f"Top-1 acc. on band-pass 16-class-imagenet",
+        xlabel="Test band-pass images",
         ylabel="Top-1 accuracy",
         ylim=(0, 1),
     )
@@ -98,11 +82,12 @@ if __name__ == "__main__":
         ax.plot(
             x[1:],
             acc1[model_name][1:],
-            label=model_name,
+            label=rename_model_name_vss(model_name),
             marker="o",
             ls=lines[model_name],
             color=colors[model_name],
         )
+
     ax.legend()
     # ax.set_xticks(np.arange(0, max_sigma+1, 5))
     plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))
@@ -111,5 +96,6 @@ if __name__ == "__main__":
     ax.grid(which="minor")
     # plt.xlim()
     plt.ylim(0, 100)
+
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file))
