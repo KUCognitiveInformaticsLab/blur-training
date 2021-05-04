@@ -53,11 +53,8 @@ def accuracy(output, target, topk=(1,)):
         pred = pred.t()
         correct = pred.eq(target.view(1, -1).expand_as(pred))
 
-        print(correct.shape)
-
         res = []
         for k in topk:
-            print(f"correct[:{k}].reshape(-1)", correct[:k].reshape(-1).shape)
             correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
