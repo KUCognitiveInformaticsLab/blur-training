@@ -41,6 +41,7 @@ if __name__ == "__main__":
         f"{arch}_normal",
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
+        f"{arch}_multi-steps",
         f"vone_{arch}",
         sin_names[arch],
     ]
@@ -97,6 +98,7 @@ if __name__ == "__main__":
                 ls=lines[model_name],
                 linewidth=0.8,
                 color=colors[model_name],
+                alpha=0.8,
             )
 
             # sns.set(font_scale=0.5)  # adjust the font size of labels
