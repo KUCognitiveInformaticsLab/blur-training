@@ -6,6 +6,8 @@ results/
 plots/
 test-images/
 
+plots_vss/
+
 # for development
 dev/
 test.log
@@ -20,5 +22,6 @@ __pycache__/
 .ipynb_checkpoints/
 
 .DS_Store
+
 
 ._.DS_Store
