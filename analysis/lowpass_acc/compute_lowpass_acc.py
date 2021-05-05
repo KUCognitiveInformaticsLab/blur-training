@@ -48,14 +48,17 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        "untrained_alexnet",
-        # "vone_alexnet",
-    ]  # VOneNet
-    model_names += [sin_names[arch]]  # SIN
+        f"untrained_{arch}",
+        f"{arch}_normal",
+        f"{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"vone_{arch}",
+        sin_names[arch],
+    ]
 
     from src.model.model_names import get_model_names
 
-    model_names = get_model_names(arch=arch)
+    # model_names = get_model_names(arch=arch)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)

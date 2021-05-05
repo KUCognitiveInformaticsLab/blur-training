@@ -38,11 +38,11 @@ def test_performance(
     s = [i for i in range(max_sigma + 1)]
 
     # save acc1
-    df = pd.DataFrame(np.array(acc1_list).reshape(1, -1), index=[model_name], columns=s)
+    df = pd.DataFrame(np.array(acc1_list).reshape(1, -1), columns=s)
     df.to_csv(out_path)
 
     # save acc5
-    df = pd.DataFrame(np.array(acc5_list).reshape(1, -1), index=[model_name], columns=s)
+    df = pd.DataFrame(np.array(acc5_list).reshape(1, -1), columns=s)
     out_path = out_path.replace("acc1", "acc5")
     df.to_csv(out_path)
 
