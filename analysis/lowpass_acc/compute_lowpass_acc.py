@@ -29,7 +29,7 @@ if __name__ == "__main__":
     arch = "alexnet"
     num_classes = int(sys.argv[1])  # number of last output of the models
     epoch = 60
-    test_dataset = "imagenet"  # test_dataset to use
+    test_dataset = str(sys.argv[2])  # test_dataset to use
     batch_size = 64
     analysis = f"lowpass_acc_{test_dataset}"
     max_sigma = 10
