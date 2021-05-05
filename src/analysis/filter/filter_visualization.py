@@ -15,8 +15,8 @@ def plot_filters_multi_channel(t, title, file_name):
     # define number of columns for subplots
     num_cols = 8
     # rows = num of kernels
-    # num_rows = num_kernels
-    num_rows = -(-num_kernels // num_cols)  # round down
+    num_rows = 4
+    # num_rows = -(-num_kernels // num_cols)  # round down
 
     # set the figure size
     fig = plt.figure(figsize=(num_cols, num_rows))
