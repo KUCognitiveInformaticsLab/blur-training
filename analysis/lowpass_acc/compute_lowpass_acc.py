@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     from src.model.model_names import get_model_names
 
-    # model_names = get_model_names(arch=arch)
+    model_names = get_model_names(arch=arch)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -110,10 +110,14 @@ if __name__ == "__main__":
         print(f"{model_name}: computing lowpass acc...")
         # load model
         if "SIN" in model_name:
+            if num_classes == 16:
+                continue
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
         elif "vone" in model_name:
+            if num_classes == 16:
+                continue
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
         elif "untrained" in model_name:
