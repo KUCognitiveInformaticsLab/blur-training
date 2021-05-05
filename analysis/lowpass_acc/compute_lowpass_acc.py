@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     for model_name in tqdm(model_names, desc="models", leave=False):
         print()
-        print(f"{model_name}: computing bandpass acc...")
+        print(f"{model_name}: computing lowpass acc...")
         # load model
         if "SIN" in model_name:
             # Stylized-ImageNet

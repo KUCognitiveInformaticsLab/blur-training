@@ -18,7 +18,8 @@ if __name__ == "__main__":
     analysis = "bandpass_acc"
     arch = "alexnet"
     epoch = 60
-    num_classes = 1000  # number of last output of the models
+    num_classes = int(sys.argv[1])   # number of last output of the models
+    test_dataset = "imagenet16"
 
     # directories and model settings
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
@@ -52,21 +53,21 @@ if __name__ == "__main__":
     x.insert(0, "0(original)")
 
     # read band-pass accuracy results
-    value = "acc1"
+    metrics = "acc1"
     acc1 = {}
     for model_name in model_names:
         # if "SIN" in model_name or "vone" in model_name:
         #     # Stylized-ImageNet
-        #     file_path = os.path.join(in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv")
+        #     file_path = os.path.join(in_dir, f"{analysis}_{num_classes}-class_{model_name}_{metrics}.csv")
         # else:
         #     file_path = os.path.join(
-        #         in_dir, f"{analysis}_{num_classes}-class_{model_name}_e{epoch}_{value}.csv"
+        #         in_dir, f"{analysis}_{num_classes}-class_{model_name}_e{epoch}_{metrics}.csv"
         #     )
         file_path = os.path.join(
-            in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv"
+            in_dir, f"{analysis}_{num_classes}-class_{model_name}_{metrics}.csv"
         )
         if "vone" in model_name or "SIN" in model_name:
-            file_path = file_path.replace("16", "1000")
+            file_path = file_path.replace("16-class", "1000-class")
 
         acc1[model_name] = load_result(file_path=file_path).values[0]
 
@@ -75,9 +76,12 @@ if __name__ == "__main__":
         1,
         1,
         1,
-        title=f"Top-1 acc. on band-pass 16-class-imagenet",
-        xlabel="Test band-pass images",
-        ylabel="Top-1 accuracy",
+        title=(
+            f"Top-{metrics[-1]} acc. on ImageNet with band-pass filters " if test_dataset == "imagenet"
+            else f"Top-{metrics[-1]} acc. on 16-class-ImageNet with band-pass filters"
+        ),
+        xlabel="Band-pass filters",
+        ylabel=f"Top-{metrics[-1]} accuracy",
         ylim=(0, 1),
     )
     for model_name in model_names:
