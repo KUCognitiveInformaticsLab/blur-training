@@ -90,7 +90,7 @@ if __name__ == "__main__":
         # ax.plot(x[0], acc[model_name][0], marker="o", color=colors[model_name])
         ax.plot(
             x,
-            acc[model_name],
+            acc[model_name][:max_sigma+1],
             label=rename_model_name_vss(model_name),
             marker="o",
             ls=lines[model_name],
