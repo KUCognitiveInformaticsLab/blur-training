@@ -2,9 +2,9 @@ import os
 import pathlib
 import sys
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tick
+import pandas as pd
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -23,12 +23,10 @@ if __name__ == "__main__":
     max_sigma = 10
     analysis = f"lowpass_acc_{test_dataset}"
 
-
     # directories and model settings
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
     out_dir = f"./plots_vss/{analysis}/{num_classes}-class/"
-
 
     # models to plot
     model_names = [
@@ -52,7 +50,7 @@ if __name__ == "__main__":
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-    x = [s for s in range(max_sigma+1)]
+    x = [s for s in range(max_sigma + 1)]
     x[0] = "0(original)"
 
     # read band-pass accuracy results
@@ -80,7 +78,8 @@ if __name__ == "__main__":
         1,
         1,
         title=(
-            f"Top-{metrics[-1]} acc. on ImageNet with low-pass filters " if test_dataset == "imagenet"
+            f"Top-{metrics[-1]} acc. on ImageNet with low-pass filters "
+            if test_dataset == "imagenet"
             else f"Top-{metrics[-1]} acc. on 16-class-ImageNet with low-pass filters"
         ),
         xlabel="Low-pass filters (σ of GaussianBlur)",

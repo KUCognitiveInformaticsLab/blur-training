@@ -18,7 +18,7 @@ if __name__ == "__main__":
     analysis = "bandpass_acc"
     arch = "alexnet"
     epoch = 60
-    num_classes = int(sys.argv[1])   # number of last output of the models
+    num_classes = int(sys.argv[1])  # number of last output of the models
     test_dataset = "imagenet16"
 
     # directories and model settings
@@ -77,7 +77,8 @@ if __name__ == "__main__":
         1,
         1,
         title=(
-            f"Top-{metrics[-1]} acc. on ImageNet with band-pass filters " if test_dataset == "imagenet"
+            f"Top-{metrics[-1]} acc. on ImageNet with band-pass filters "
+            if test_dataset == "imagenet"
             else f"Top-{metrics[-1]} acc. on 16-class-ImageNet with band-pass filters"
         ),
         xlabel="Band-pass filters",
