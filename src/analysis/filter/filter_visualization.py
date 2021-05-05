@@ -18,7 +18,7 @@ def plot_filters(model, layer_num, title, file_name):
 
         if weight_tensor.shape[1] == 3:
             plot_filters_multi_channel(
-                t=weight_tensor[:32], title=title, file_name=file_name
+                t=weight_tensor, title=title, file_name=file_name
             )
         else:
             print(
