@@ -32,7 +32,7 @@ if __name__ == "__main__":
     test_dataset = "imagenet"  # test_dataset to use
     batch_size = 64
     analysis = f"lowpass_acc_{test_dataset}"
-    max_sigma = 20
+    max_sigma = 10
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 

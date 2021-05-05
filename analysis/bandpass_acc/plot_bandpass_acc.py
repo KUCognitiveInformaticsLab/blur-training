@@ -18,7 +18,7 @@ if __name__ == "__main__":
     analysis = "bandpass_acc"
     arch = "alexnet"
     epoch = 60
-    num_classes = 1000  # number of last output of the models
+    num_classes = 16  # number of last output of the models
 
     # directories and model settings
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
@@ -62,9 +62,14 @@ if __name__ == "__main__":
         #     file_path = os.path.join(
         #         in_dir, f"{analysis}_{num_classes}-class_{model_name}_e{epoch}_{value}.csv"
         #     )
-        file_path = os.path.join(
-            in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv"
-        )
+        if "vone" in model_name or "SIN" in model_name:
+            file_path = os.path.join(
+                in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv"
+            )
+        else:
+            file_path = os.path.join(
+                in_dir, f"{analysis}_{num_classes}-class_{model_name}_{value}.csv"
+            )
         acc1[model_name] = load_result(file_path=file_path).values[0]
 
     fig = plt.figure(dpi=150)
