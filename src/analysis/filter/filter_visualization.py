@@ -8,6 +8,26 @@ import torch.nn as nn
 from torchvision import models
 
 
+def plot_filters(model, layer_num, title, file_name):
+    # extracting the model features at the particular layer number
+    layer = model.features[layer_num]
+    # checking whether the layer is convolution layer or not
+    if isinstance(layer, nn.Conv2d):
+        # getting the weight tensor data
+        weight_tensor = layer.weight.data
+
+        if weight_tensor.shape[1] == 3:
+            plot_filters_multi_channel(
+                t=weight_tensor[:32], title=title, file_name=file_name
+            )
+        else:
+            print(
+                "Can only plot weights with three channels with single channel = False"
+            )
+    else:
+        print("Can only visualize layers which are convolutional")
+
+
 def plot_filters_multi_channel(t, title, file_name):
     # get the number of kernals
     num_kernels = t.shape[0]
@@ -15,8 +35,8 @@ def plot_filters_multi_channel(t, title, file_name):
     # define number of columns for subplots
     num_cols = 8
     # rows = num of kernels
-    num_rows = 4
-    # num_rows = -(-num_kernels // num_cols)  # round down
+    # num_rows = num_kernels
+    num_rows = -(-num_kernels // num_cols)  # round down
 
     # set the figure size
     fig = plt.figure(figsize=(num_cols, num_rows))
@@ -47,26 +67,6 @@ def plot_filters_multi_channel(t, title, file_name):
     plt.savefig(file_name)
     # plt.show()
     plt.close()
-
-
-def plot_filters(model, layer_num, title, file_name):
-    # extracting the model features at the particular layer number
-    layer = model.features[layer_num]
-    # checking whether the layer is convolution layer or not
-    if isinstance(layer, nn.Conv2d):
-        # getting the weight tensor data
-        weight_tensor = layer.weight.data
-
-        if weight_tensor.shape[1] == 3:
-            plot_filters_multi_channel(
-                t=weight_tensor, title=title, file_name=file_name
-            )
-        else:
-            print(
-                "Can only plot weights with three channels with single channel = False"
-            )
-    else:
-        print("Can only visualize layers which are convolutional")
 
 
 def plot_filters_fft(model, layer_num, file_name):
