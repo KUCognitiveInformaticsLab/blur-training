@@ -110,13 +110,13 @@ if __name__ == "__main__":
         print(f"{model_name}: computing lowpass acc...")
         # load model
         if "SIN" in model_name:
-            if num_classes == 16:
+            if test_dataset == "imagenet16":
                 continue
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
         elif "vone" in model_name:
-            if num_classes == 16:
+            if test_dataset == "imagenet16":
                 continue
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
