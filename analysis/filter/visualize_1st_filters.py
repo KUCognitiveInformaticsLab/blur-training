@@ -44,6 +44,10 @@ if __name__ == "__main__":
 
     model_names = get_model_names(arch=arch)
 
+    print("===== models to analyze =====")
+    print(model_names)
+    print()
+
     for model_name in tqdm(model_names, desc="models", leave=False):
         # load model
         if (num_classes == 1000) and ("SIN" in model_name):
