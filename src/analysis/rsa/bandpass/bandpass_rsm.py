@@ -336,6 +336,99 @@ def plot_bandpass_RSMs(
     plt.close()
 
 
+def plot_bandpass_RSMs_flatt(
+    rsms,
+    layers=alexnet_layers,
+    num_filters=6,
+    vmin=0,
+    vmax=2,
+    title="",
+    out_file="rsms.png",
+    show_plot=False,
+):
+    """Plot several layers RSMs in one figure.
+    Args:
+        model_name: name of the model to examine.
+    """
+    fig = plt.figure(dpi=300, figsize=(24, 3))
+
+    # color bar
+    # cbar_ax = fig.add_axes([.91, .3, .03, .4])
+
+    for i, layer in enumerate(layers):
+        ax = fig.add_subplot(1, 8, i + 1)
+        # sns.set(font_scale=0.5)  # adjust the font size of labels
+        ax.set_title(layer)
+
+        sns.heatmap(
+            rsms[layer],
+            ax=ax,
+            square=True,
+            vmin=vmin,
+            vmax=vmax,
+            xticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
+            yticklabels=["0", "0-1", "1-2", "2-4", "4-8", "8-16", "16-"],
+            cmap="coolwarm_r",
+            cbar=False,
+            # --- show values ---
+            annot=True,
+            fmt="1.2f",
+            annot_kws={"size": 6},
+            # ---  ---
+            # cbar_ax=cbar_ax,  # show color bar
+        )
+
+        ax.hlines(
+            [i for i in range(2, num_filters + 1)],
+            *ax.get_xlim(),
+            linewidth=0.1,
+            colors="gray",
+        )
+        ax.vlines(
+            [i for i in range(2, num_filters + 1)],
+            *ax.get_ylim(),
+            linewidth=0.1,
+            colors="gray",
+        )
+
+        # separate original and bandpass
+        ax.hlines(
+            1,  # diff. line for separating raw images and bandpass images
+            *ax.get_xlim(),
+            linewidth=2,
+            colors="white",
+        )
+        ax.vlines(
+            1,  # diff. line for separating raw images and bandpass images
+            *ax.get_xlim(),
+            linewidth=2,
+            colors="white",
+        )
+
+    # show color bar
+    # cbar_ax = fig.add_axes([0.91, 0.3, 0.03, 0.4])
+    # sns.heatmap(
+    #     rsms[layer],
+    #     cbar=True,
+    #     cbar_ax=cbar_ax,
+    #     vmin=vmin,
+    #     vmax=vmax,
+    #     cmap="coolwarm_r",
+    #     xticklabels=False,
+    #     yticklabels=False,
+    # )
+
+    # sns.set(font_scale=0.5)  # adjust the font size of title
+    if title:
+        fig.suptitle(title, weight="bold")
+    # fig.tight_layout(rect=[0, 0, 0.9, 1])
+    fig.tight_layout()
+    plt.savefig(out_file)
+    if show_plot:
+        plt.show()
+    plt.close()
+
+
 def plot_bandpass_RSM_raw_images(
     rsm,
     num_filters=6,

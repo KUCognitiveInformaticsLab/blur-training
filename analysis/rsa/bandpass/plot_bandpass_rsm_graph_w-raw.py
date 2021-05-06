@@ -18,7 +18,7 @@ from src.model.plot import colors, lines
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 1000
+    num_classes = int(sys.argv[1])
     epoch = 60
 
     metrics = "correlation"  # ("correlation", "1-covariance",   "negative-covariance")
@@ -36,14 +36,14 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        "raw_images",
-        f"untrained_{arch}",
+        # "raw_images",
+        # f"untrained_{arch}",
         f"{arch}_normal",
-        f"{arch}_all_s04",
+        # f"{arch}_all_s04",
         f"{arch}_mix_s04",
-        f"{arch}_multi-steps",
-        f"vone_{arch}",
-        sin_names[arch],
+        # f"{arch}_multi-steps",
+        # f"vone_{arch}",
+        # sin_names[arch],
     ]
 
     # (optional) set title
@@ -52,9 +52,9 @@ if __name__ == "__main__":
     # set filename
     num_filters = 6
     filename = (
-        f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_legend.png"
+        f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_legend_{model_names}.png"
         if legend
-        else f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw.png"
+        else f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_{model_names}.png"
     )
     out_file = os.path.join(out_dir, filename)
 
