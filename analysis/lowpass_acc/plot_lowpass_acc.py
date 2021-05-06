@@ -37,13 +37,13 @@ if __name__ == "__main__":
         # f"{arch}_mix_s10",
         # f"{arch}_random-mix_s00-05",
         # f"{arch}_random-mix_s00-10",
-        f"{arch}_trained_on_SIN",
-        f"vone_{arch}",
+        # f"{arch}_trained_on_SIN",
+        # f"vone_{arch}",
     ]
 
     # set plot file name.
     plot_file = (
-        f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{arch}_SIN_vone.png"
+        f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{arch}.png"
     )
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         os.makedirs(out_dir)
 
     x = [s for s in range(max_sigma + 1)]
-    x[0] = "0(original)"
+    x[0] = "0(sharp)"
 
     # read band-pass accuracy results
     acc = {}

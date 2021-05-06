@@ -39,13 +39,13 @@ if __name__ == "__main__":
         # f"{arch}_mix_s10",
         # f"{arch}_random-mix_s00-05",
         # f"{arch}_random-mix_s00-10",
-        f"{arch}_trained_on_SIN",
-        f"vone_{arch}",
+        # f"{arch}_trained_on_SIN",
+        # f"vone_{arch}",
     ]
 
     # set plot file name.
     plot_file = (
-        f"{analysis}_{num_classes}-class_{arch}_normal_all-s04_mix-s04_sin_vone.png"
+        f"{analysis}_{num_classes}-class_{arch}_normal_all-s04_mix-s04.png"
     )
 
     x = ["{}-{}".format(2 ** i, 2 ** (i + 1)) for i in range(4)] + ["16-"]
