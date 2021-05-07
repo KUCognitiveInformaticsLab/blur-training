@@ -12,10 +12,11 @@ from src.analysis.rsa.bandpass.bandpass_rdm import plot_bandpass_rdms
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 16
+    num_classes = int(sys.argv[1])
     epoch = 60
 
     metrics = "correlation"
+    analysis = f"bandpass_rsm_{metrics}"
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/mean_rdms_{metrics}/{num_classes}-class-{arch}/"
     out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/diff_rdms_{metrics}/{num_classes}-class-{arch}"
@@ -29,7 +30,10 @@ if __name__ == "__main__":
     rdms_normal = load_rdms(file_path=in_file)
 
     # models to compare
-    blur_models = ["mix_s04", "all_s04"]
+    blur_models = [
+        "mix_s04",
+        "all_s04"
+    ]
 
     for blur_model in blur_models:
         model_name = f"{arch}_{blur_model}"
@@ -45,7 +49,8 @@ if __name__ == "__main__":
         num_filters = rdms_normal["num_filters"]
 
         # (optional) set title
-        title = f"RDM (1 - {metrics}), {num_classes}-class-{arch}, {blur_model} - normal, epoch={epoch}"
+        # title = f"{num_classes}-class, {blur_model} - normal, epoch={epoch}"
+        title = f"{num_classes}-class, B+S-Net (σ=4) - S-Net"
 
         # set filename
         filename = f"{num_classes}-class_mean_rdns_{metrics}diff_normal_{blur_model}_e{epoch}_f{num_filters}_n{num_images}.png"

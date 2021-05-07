@@ -52,13 +52,13 @@ if __name__ == "__main__":
     # set filename
     num_filters = 6
     filename = (
-        f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_legend_{model_names}.png"
+        f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_legend_flatt_{model_names}.png"
         if legend
-        else f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_{model_names}.png"
+        else f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_flatt_{model_names}.png"
     )
     out_file = os.path.join(out_dir, filename)
 
-    fig = plt.figure(dpi=300)
+    fig = plt.figure(dpi=300, figsize=(16, 3))
 
     for model_name in model_names:
         if model_name == "raw_images":
@@ -88,7 +88,7 @@ if __name__ == "__main__":
             num_bandpass = int(len(y) / 2)
             x = [x for x in range(-num_bandpass, num_bandpass + 1)]
 
-            ax = fig.add_subplot(2, 4, i + 1)
+            ax = fig.add_subplot(1, 8, i + 1)
             ax.plot(
                 x,
                 y,
@@ -96,9 +96,9 @@ if __name__ == "__main__":
                 marker=".",
                 markersize=3,
                 ls=lines[model_name],
-                linewidth=0.8,
+                linewidth=1,
                 color=colors[model_name],
-                alpha=0.8,
+                alpha=1,
             )
 
             # sns.set(font_scale=0.5)  # adjust the font size of labels
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             #     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
             if i == 7 and legend:
                 plt.legend(
-                    bbox_to_anchor=(-0.2, -0.2),
+                    bbox_to_anchor=(.2, -0.2),
                     loc="upper left",
                     # borderaxespad=0,
                     fontsize=8,
