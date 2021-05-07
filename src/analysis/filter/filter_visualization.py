@@ -60,7 +60,7 @@ def plot_filters_multi_channel(t, title, file_name):
         ax1.set_yticklabels([])
 
     if title:
-        fig.suptitle(title)
+        fig.suptitle(title, weight="bold")
     plt.tight_layout()
     # mappable = ScalarMappable(cmap='viridis')  # for colorbar. default: 'viridis'
     # plt.colorbar(mappable)
