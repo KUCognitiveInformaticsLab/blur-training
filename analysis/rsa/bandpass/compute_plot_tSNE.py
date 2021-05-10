@@ -248,7 +248,7 @@ if __name__ == "__main__":
 
             # fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=10)
             plt.title(
-                f"{analysis}, p={perplexity}, iter={n_iter}, {num_classes}, {rename_model_name(model_name)}, {layer}",
+                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}, {rename_model_name(model_name)}, {layer}",
                 fontsize=8,
             )
             # fig.tight_layout()
