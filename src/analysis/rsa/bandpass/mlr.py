@@ -22,11 +22,11 @@ def compute_mlr(
     clf = linear_model.LinearRegression()
 
     results = []
-    for layer in tqdm(alexnet_layers, desc="layers"):
+    for layer in tqdm(alexnet_layers, desc="layers", leave=False):
         X = []  # activations by band-pass images
         Y = []  # activations by raw images
 
-        for image_id in tqdm(range(num_images), desc="images"):
+        for image_id in tqdm(range(num_images), desc="images", leave=False):
             file_name = f"image{image_id:04d}_f{num_filters:02d}.pkl"
             activations = load_activations(file_path=os.path.join(in_dir, file_name))
             X += [activations[layer][1:].reshape(num_filters, -1).transpose(1, 0)]
