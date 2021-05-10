@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     # I/O settings
     # data_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/activations/{num_classes}-class-{arch}/"
-    data_dir = "./results/activations/{num_classes}-class-{arch}/"
+    data_dir = f"./results/activations/{num_classes}-class-{arch}/"
     results_dir = f"./results/{analysis}/{num_classes}-class"
 
     assert os.path.exists(data_dir), f"{data_dir} does not exist."
