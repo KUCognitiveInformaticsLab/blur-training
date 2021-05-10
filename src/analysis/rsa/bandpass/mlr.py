@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn import linear_model
+from tqdm import tqdm
 
 sys.path.append("../../../../")
 
@@ -21,13 +22,13 @@ def compute_mlr(
     clf = linear_model.LinearRegression()
 
     results = []
-    for layer in alexnet_layers:
+    for layer in tqdm(alexnet_layers, desc="layers"):
         X = []  # activations by band-pass images
         Y = []  # activations by raw images
 
-        for image_id in range(num_images):
+        for image_id in tqdm(range(num_images), desc="images"):
             file_name = f"image{image_id:04d}_f{num_filters:02d}.pkl"
-            activations = load_activations(in_dir=in_dir, file_name=file_name)
+            activations = load_activations(file_path=os.path.join(in_dir, file_name))
             X += [activations[layer][1:].reshape(num_filters, -1).transpose(1, 0)]
             Y += [activations[layer][0].reshape(1, -1).transpose(1, 0)]
 
