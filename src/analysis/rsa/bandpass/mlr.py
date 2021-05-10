@@ -44,9 +44,12 @@ def compute_mlr(
             np.array(list(clf.coef_[0]) + list(clf.intercept_) + [clf.score(X, Y)])
         ]
 
+    # w_band_filters = [f"w{i}" for i in range(num_filters)]
+    w_band_filters = ["w(0-1)", "w(1-2)", "w(2-4)", "w(4-8)", "w(8-16)", "w(16-)"]
+
     df_results = pd.DataFrame(
         np.array(results),
-        columns=[f"w{i}" for i in range(num_filters)] + ["residual"] + ["r^2"],
+        columns=w_band_filters + ["residual"] + ["r^2"],
         index=alexnet_layers,
     )
 

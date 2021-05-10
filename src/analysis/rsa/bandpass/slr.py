@@ -55,8 +55,10 @@ def compute_slr(
         results_res += [np.array(res)]
         results_r2 += [np.array(r2)]
 
+    # band_filters = [f"f{i}" for i in range(num_filters)]
+    band_filters = ["0-1", "1-2", "2-4", "4-8", "8-16", "16-"]
+
     # create results df
-    band_filters = [f"f{i}" for i in range(num_filters)]
     df_w = pd.DataFrame(results_w, columns=band_filters, index=alexnet_layers)
     df_res = pd.DataFrame(results_res, columns=band_filters, index=alexnet_layers)
     df_r2 = pd.DataFrame(results_r2, columns=band_filters, index=alexnet_layers)
