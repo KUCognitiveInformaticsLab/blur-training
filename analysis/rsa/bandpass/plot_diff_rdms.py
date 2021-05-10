@@ -30,10 +30,7 @@ if __name__ == "__main__":
     rdms_normal = load_rdms(file_path=in_file)
 
     # models to compare
-    blur_models = [
-        "mix_s04",
-        "all_s04"
-    ]
+    blur_models = ["mix_s04", "all_s04"]
 
     for blur_model in blur_models:
         model_name = f"{arch}_{blur_model}"

@@ -113,7 +113,7 @@ if __name__ == "__main__":
             #     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
             if i == 7 and legend:
                 plt.legend(
-                    bbox_to_anchor=(.2, -0.2),
+                    bbox_to_anchor=(0.2, -0.2),
                     loc="upper left",
                     # borderaxespad=0,
                     fontsize=8,

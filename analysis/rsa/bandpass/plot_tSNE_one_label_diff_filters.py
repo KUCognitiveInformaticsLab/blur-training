@@ -93,8 +93,24 @@ if __name__ == "__main__":
         # "untrained_alexnet",
     ]
 
-    colors = ["k", "r", "g", "b", "c", "m", "y", "orange",
-              "pink", "brown", "purple", "navy", "lime", "crimson", "gold", "gray"]
+    colors = [
+        "k",
+        "r",
+        "g",
+        "b",
+        "c",
+        "m",
+        "y",
+        "orange",
+        "pink",
+        "brown",
+        "purple",
+        "navy",
+        "lime",
+        "crimson",
+        "gold",
+        "gray",
+    ]
 
     print("===== arguments =====")
     print("analysis:", analysis)
@@ -142,8 +158,10 @@ if __name__ == "__main__":
                 fig = plt.figure(dpi=150).gca(projection="3d")
 
             for image_id in range(100):
-                for filter_id in range(num_filters+1):
-                    target = embedded_activations[layer_id, label_id*100+image_id, filter_id]
+                for filter_id in range(num_filters + 1):
+                    target = embedded_activations[
+                        layer_id, label_id * 100 + image_id, filter_id
+                    ]
                     if num_dim == 2:
                         plt.scatter(
                             x=target[0],

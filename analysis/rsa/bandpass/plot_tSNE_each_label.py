@@ -93,8 +93,24 @@ if __name__ == "__main__":
         # "untrained_alexnet",
     ]
 
-    colors = ["k", "r", "g", "b", "c", "m", "y", "orange",
-              "pink", "brown", "purple", "navy", "lime", "crimson", "gold", "gray"]
+    colors = [
+        "k",
+        "r",
+        "g",
+        "b",
+        "c",
+        "m",
+        "y",
+        "orange",
+        "pink",
+        "brown",
+        "purple",
+        "navy",
+        "lime",
+        "crimson",
+        "gold",
+        "gray",
+    ]
 
     print("===== arguments =====")
     print("analysis:", analysis)
@@ -143,7 +159,9 @@ if __name__ == "__main__":
 
             for image_id in range(num_images):
                 for label_id in range(num_labels):
-                    target = embedded_activations[layer_id, label_id*100+image_id, filter_id]
+                    target = embedded_activations[
+                        layer_id, label_id * 100 + image_id, filter_id
+                    ]
                     if num_dim == 2:
                         plt.scatter(
                             x=target[0],

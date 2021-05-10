@@ -44,9 +44,7 @@ if __name__ == "__main__":
     ]
 
     # set plot file name.
-    plot_file = (
-        f"{analysis}_{num_classes}-class_{arch}_normal_all-s04_mix-s04.png"
-    )
+    plot_file = f"{analysis}_{num_classes}-class_{arch}_normal_all-s04_mix-s04.png"
 
     x = ["{}-{}".format(2 ** i, 2 ** (i + 1)) for i in range(4)] + ["16-"]
     x.insert(0, "0-1")
