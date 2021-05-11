@@ -44,7 +44,8 @@ parser.add_argument(
     type=int,
 )
 parser.add_argument(
-    "-d", "--num_dim",
+    "-d",
+    "--num_dim",
     default=3,
     type=int,
 )
@@ -146,8 +147,12 @@ if __name__ == "__main__":
             file_path=result_path
         )  # (F+1, L, N, D), (N)
 
-        for filter_id in tqdm(range(num_filters+1), desc="platting (each filters)", leave=False):
-            for layer_id, layer in tqdm(enumerate(layers), "plotting (each layer)", leave=False):
+        for filter_id in tqdm(
+            range(num_filters + 1), desc="platting (each filters)", leave=False
+        ):
+            for layer_id, layer in tqdm(
+                enumerate(layers), "plotting (each layer)", leave=False
+            ):
                 if num_dim == 2:
                     fig = plt.figure(dpi=150)
                 elif num_dim == 3:
@@ -158,7 +163,8 @@ if __name__ == "__main__":
                     plt.scatter(
                         x=target[:, 0],
                         y=target[:, 1],
-                        c=labels, cmap='jet',
+                        c=labels,
+                        cmap="jet",
                         alpha=0.5,
                     )
                 elif num_dim == 3:
@@ -166,7 +172,8 @@ if __name__ == "__main__":
                         xs=target[:, 0],
                         ys=target[:, 1],
                         zs=target[:, 2],
-                        c=labels, cmap='jet',
+                        c=labels,
+                        cmap="jet",
                         alpha=0.5,
                     )
 
