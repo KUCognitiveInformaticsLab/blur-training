@@ -16,6 +16,8 @@ sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.t_sne import (
     compute_bandpass_tSNE,
+    save_embedded_activations,
+    load_embedded_activations,
 )
 from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
 from src.dataset.imagenet16 import make_local_in16_test_loader
@@ -81,7 +83,7 @@ if __name__ == "__main__":
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
     in16_test_path = "/mnt/data1/imagenet16/test/"
 
-    analysis = f"bandpass_activations_tSNE"
+    analysis = f"tSNE_bandpass_activations"
     compute = args.compute
     num_filters = args.num_filters
     num_dim = args.num_dim
@@ -180,7 +182,7 @@ if __name__ == "__main__":
         # compute bandpass tSNE
         if compute:
             print(f"{model_name} computing...")
-            embedded_activations = compute_bandpass_tSNE(
+            embed, labels = compute_bandpass_tSNE(
                 RSA=RSA,
                 num_images=test_loader.num_images,
                 data_loader=test_loader,
@@ -189,19 +191,19 @@ if __name__ == "__main__":
                 perplexity=perplexity,
                 n_iter=n_iter,
                 device=device,
-            )
+            )  # (F+1, L, N, D), (N)
 
         result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
-
+        
         if compute:
             # save t-SNE embedded activations
-            np.save(result_path, embedded_activations)
-
+            save_embedded_activations(embedded_activations=embed, labels=labels, file_path=result_path)
+            
         # === plot t-SNE ===
         colors = ["k", "r", "g", "b", "c", "m", "y"]
 
-        embedded_activations = np.load(result_path)
+        embed, labels = load_embedded_activations(file_path=result_path)  # (F+1, L, N, D), (N)
 
         for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
             if num_dim == 2:
@@ -209,44 +211,41 @@ if __name__ == "__main__":
             elif num_dim == 3:
                 fig = plt.figure(dpi=150).gca(projection="3d")
 
-            for image_id in range(test_loader.num_images):
-                for filter_id in range(num_filters + 1):
-                    target = embedded_activations[layer_id, image_id, filter_id]
-                    if num_dim == 2:
-                        plt.scatter(
-                            x=target[0],
-                            y=target[1],
-                            label=f"f{filter_id}",
-                            color=colors[filter_id],
-                            alpha=0.5,
-                        )
-                    elif num_dim == 3:
-                        fig.scatter(
-                            xs=target[0],
-                            ys=target[1],
-                            zs=target[2],
-                            label=f"f{filter_id}",
-                            color=colors[filter_id],
-                            alpha=0.5,
-                        )
+            for filter_id in range(num_filters + 1):
+                target = embed[filter_id, layer_id]
+                if num_dim == 2:
+                    plt.scatter(
+                        x=target[:, 0],
+                        y=target[:, 1],
+                        c=labels,
+                        alpha=0.5,
+                    )
+                elif num_dim == 3:
+                    fig.scatter(
+                        xs=target[:, 0],
+                        ys=target[:, 1],
+                        zs=target[:, 2],
+                        c=labels,
+                        alpha=0.5,
+                    )
 
-                if image_id == 0:
-                    if num_dim == 2:
-                        fig.legend(
-                            bbox_to_anchor=(0.91, 0.88),
-                            loc="upper left",
-                            borderaxespad=0,
-                            fontsize=8,
-                        )
-                    elif num_dim == 3:
-                        fig.legend(
-                            bbox_to_anchor=(0.01, 0.92),
-                            loc="upper left",
-                            borderaxespad=0,
-                            fontsize=6,
-                        )
+                # if image_id == 0:
+                #     if num_dim == 2:
+                #         fig.legend(
+                #             bbox_to_anchor=(0.91, 0.88),
+                #             loc="upper left",
+                #             borderaxespad=0,
+                #             fontsize=8,
+                #         )
+                #     elif num_dim == 3:
+                #         fig.legend(
+                #             bbox_to_anchor=(0.01, 0.92),
+                #             loc="upper left",
+                #             borderaxespad=0,
+                #             fontsize=6,
+                #         )
 
-            # fig.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=10)
+            plt.colorbar()
             plt.title(
                 f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}, {rename_model_name(model_name)}, {layer}",
                 fontsize=8,
