@@ -94,9 +94,9 @@ def compute_bandpass_tSNE(
     num_layers = len(RSA.layers)
     num_filters = len(filters)
 
-    all_activations = {}
+    all_activations = {}  # {L: (N, F+1, activations)}
     for layer in RSA.layers:
-        all_activations[layer] = []
+        all_activations[layer] = []  # (N, F+1, activations)
 
     labels = []
 
@@ -119,7 +119,7 @@ def compute_bandpass_tSNE(
         )  # Dict: {L: (F+1, C, H, W)}
 
         for layer in RSA.layers:
-            all_activations[layer] += [activations[layer].reshape(num_filters + 1, -1)]
+            all_activations[layer] += [activations[layer].reshape(num_filters + 1, -1)]  # (F+1, activations)
 
     tsne = TSNE(
         n_components=num_dim,
@@ -128,10 +128,11 @@ def compute_bandpass_tSNE(
         n_iter=n_iter,
     )
 
-    embedded_activations = np.zeros((num_filters + 1, num_layers, num_images, num_dim))
+    embedded_activations = np.zeros((num_filters + 1, num_layers, num_images, num_dim))  # (F+1, L, N, D)
 
     for filter_id in tqdm(range(num_filters + 1), desc="Computing t-SNE (filters)", leave=False):
         for layer_id, layer in tqdm(enumerate(RSA.layers), desc="Computing t-SNE (layers)", leave=False):
+            # all_activations: dict = {L: (N, F+1, activations)}
             X = np.array(all_activations[layer])[:, filter_id]  # (N, activations)
             embedded_activations[filter_id, layer_id] = tsne.fit_transform(X)  # (N, D)
 

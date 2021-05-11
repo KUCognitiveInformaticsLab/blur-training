@@ -10,7 +10,7 @@ import pandas as pd
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
-from src.model.model_names import rename_model_name_vss
+from src.model.model_names import rename_model_name
 from src.model.plot import colors, lines
 
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         ax.plot(
             x,
             acc[model_name][: max_sigma + 1],
-            label=rename_model_name_vss(model_name),
+            label=rename_model_name(model_name),
             marker="o",
             ls=lines[model_name],
             color=colors[model_name],

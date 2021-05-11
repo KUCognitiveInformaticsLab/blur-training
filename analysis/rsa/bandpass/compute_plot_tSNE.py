@@ -24,7 +24,7 @@ from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
 from src.model.model_names import rename_model_name
-from src.model.load_sin_pretrained_models import load_sin_model
+from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 
 
 parser = argparse.ArgumentParser()
@@ -104,11 +104,11 @@ if __name__ == "__main__":
     # models to compare
     model_names = [
         "alexnet_normal",
-        # "alexnet_all_s04",
-        # "alexnet_mix_s04",
-        # sin_names[arch],
-        # "vone_alexnet",
-        # "untrained_alexnet",
+        "alexnet_all_s04",
+        "alexnet_mix_s04",
+        sin_names[arch],
+        "vone_alexnet",
+        "untrained_alexnet",
     ]
 
     print("===== arguments =====")
@@ -209,7 +209,7 @@ if __name__ == "__main__":
             file_path=result_path
         )  # (F+1, L, N, D), (N)
 
-        for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
+        for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)", leave=False):
             if num_dim == 2:
                 fig = plt.figure(dpi=150)
             elif num_dim == 3:
@@ -236,8 +236,8 @@ if __name__ == "__main__":
 
             plt.colorbar()
             plt.title(
-                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}, {rename_model_name(model_name)}, {layer}",
-                fontsize=8,
+                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                fontsize=6,
             )
             # fig.tight_layout()
             plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"

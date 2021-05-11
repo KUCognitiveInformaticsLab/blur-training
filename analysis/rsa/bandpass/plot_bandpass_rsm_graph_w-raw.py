@@ -12,7 +12,7 @@ sys.path.append(os.path.join(str(current_dir), "../../../"))
 from src.analysis.rsa.utils import load_rsms
 from src.analysis.rsa.bandpass.bandpass_rsm_graph import compute_bandpass_values
 from src.model.load_sin_pretrained_models import sin_names
-from src.model.model_names import rename_model_name_vss
+from src.model.model_names import rename_model_name
 from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
 from src.model.plot import colors, lines
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
         else:
             rsms["layers"] = alexnet_layers
 
-        renamed_model_name = rename_model_name_vss(model_name=model_name, arch=arch)
+        renamed_model_name = rename_model_name(model_name=model_name, arch=arch)
 
         for i, layer in enumerate(rsms["layers"]):
             if model_name == "raw_images":

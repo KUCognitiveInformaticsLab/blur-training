@@ -13,7 +13,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
-from src.model.model_names import rename_model_name_vss
+from src.model.model_names import rename_model_name
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -196,7 +196,7 @@ if __name__ == "__main__":
                     )
 
             plt.title(
-                f"{analysis}, p={perplexity}, i={n_iter}, l={label_id}, n={num_images}, {num_classes}, {rename_model_name_vss(model_name)}, {layer}",
+                f"{analysis}, p={perplexity}, i={n_iter}, l={label_id}, n={num_images}, {num_classes}, {rename_model_name(model_name)}, {layer}",
                 fontsize=8,
             )
             # fig.tight_layout()

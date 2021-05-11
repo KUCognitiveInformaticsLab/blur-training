@@ -16,7 +16,7 @@ from src.analysis.rsa.bandpass.bandpass_rsm import (
 )
 from src.analysis.rsa.utils import load_rsms
 from src.model.load_sin_pretrained_models import sin_names
-from src.model.model_names import rename_model_name_vss
+from src.model.model_names import rename_model_name
 from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
 
 if __name__ == "__main__":
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         num_filters = mean_rsms["num_filters"]
 
         # (optional) set title
-        plot_title = f"{num_classes}-class, {rename_model_name_vss(model_name)}"
+        plot_title = f"{num_classes}-class, {rename_model_name(model_name)}"
 
         # set plot filename
         plot_file = f"{analysis}_flatt_{num_classes}-class_{model_name}.png"
