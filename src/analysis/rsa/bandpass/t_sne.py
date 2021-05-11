@@ -7,6 +7,7 @@ from typing import Tuple
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from sklearn.manifold import TSNE
 from tqdm import tqdm
 
@@ -15,6 +16,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.analysis.rsa.bandpass.activations import compute_activations_with_bandpass
+from src.model.model_names import rename_model_name
 
 
 def compute_tSNE(
@@ -147,45 +149,6 @@ def compute_bandpass_tSNE(
     return embedded_activations, labels
 
 
-def plot_tSNE(
-    embedded_activations: np.ndarray, layers: iter, model_name: str, out_dir: str
-):
-    """
-    Args:
-        embedded_activations: (L, N, F+1, D)
-    """
-    num_images, num_layers, num_filters, num_dim = embedded_activations.shape
-    colors = ["k", "r", "g", "b", "c", "m", "y"]
-
-    for layer_id, layer in tqdm(enumerate(layers), desc="plotting layers", leave=False):
-        fig = plt.figure(dpi=150)
-
-        for image_id in tqdm(range(num_images), desc="plotting images", leave=False):
-            for filter_id in range(num_filters + 1):
-                target = embedded_activations[layer_id, image_id, filter_id]
-                if num_dim == 2:
-                    plt.scatter(
-                        x=target[0],
-                        y=target[1],
-                        label=f"f{filter_id}",
-                        color=colors[filter_id],
-                        alpha=0.5,
-                    )
-            if image_id == 0:
-                fig.legend(
-                    bbox_to_anchor=(0.91, 0.88),
-                    loc="upper left",
-                    borderaxespad=0,
-                    fontsize=8,
-                )
-
-        plt.title(layer, fontsize=10)
-        # fig.tight_layout()
-        filename = f"{model_name}_{layer}_{num_dim}d.png"
-        out_file = os.path.join(out_dir, filename)
-        fig.savefig(out_file)
-
-
 def save_embedded_activations(embedded_activations: dict, labels: list, file_path: str):
     object = {"embedded_activations": embedded_activations, "labels": labels}
     with open(file_path, "wb") as f:
@@ -196,3 +159,73 @@ def load_embedded_activations(file_path: str):
     with open(file_path, "rb") as f:
         object = pickle.load(f)
         return object["embedded_activations"], object["labels"]
+
+
+def plot_tSNE(
+    embedded_activations: np.ndarray,
+    labels: list,
+    num_filters,
+    layers,
+    num_dim,
+    plots_dir,
+    analysis,
+    perplexity,
+    n_iter,
+    num_classes,
+    model_name,
+    title=True,
+):
+    for filter_id in tqdm(
+        range(num_filters + 1), desc="platting (each filters)", leave=False
+    ):
+        for layer_id, layer in tqdm(
+            enumerate(layers), "plotting (each layer)", leave=False
+        ):
+            target = embedded_activations[filter_id, layer_id]
+
+            if num_dim == 2:
+                fig = plt.figure(dpi=150)
+
+                plt.scatter(
+                    x=target[:, 0],
+                    y=target[:, 1],
+                    c=labels,
+                    cmap="jet",
+                    alpha=0.5,
+                )
+
+                plt.colorbar()
+
+                if title:
+                    plt.title(
+                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                        fontsize=8,
+                    )
+
+            elif num_dim == 3:
+                # fig = plt.figure(dpi=150).gca(projection="3d")
+                fig = plt.figure(dpi=150)
+                ax = Axes3D(fig)
+
+                sc = ax.scatter(
+                    xs=target[:, 0],
+                    ys=target[:, 1],
+                    zs=target[:, 2],
+                    c=labels,
+                    cmap="jet",
+                    alpha=0.5,
+                )
+
+                fig.colorbar(sc, shrink=0.75)
+
+                if title:
+                    ax.set_title(
+                        title=title,
+                        fontsize=10,
+                    )
+
+            # fig.tight_layout()
+            plot_file = f"{analysis}_{num_dim}d_f{filter_id}_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
+            plot_path = os.path.join(plots_dir, plot_file)
+            plt.savefig(plot_path)
+            plt.close()

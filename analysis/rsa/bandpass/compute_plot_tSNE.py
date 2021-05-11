@@ -7,8 +7,6 @@ from distutils.util import strtobool
 import numpy as np
 import torch
 import vonenet
-from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 
 # add the path to load src module
@@ -19,12 +17,12 @@ from src.analysis.rsa.bandpass.t_sne import (
     compute_bandpass_tSNE,
     save_embedded_activations,
     load_embedded_activations,
+    plot_tSNE,
 )
 from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
 from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
-from src.model.model_names import rename_model_name
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 
 
@@ -205,61 +203,20 @@ if __name__ == "__main__":
             )
 
         # === plot t-SNE ===
-        colors = ["k", "r", "g", "b", "c", "m", "y"]
-
         embed, labels = load_embedded_activations(
             file_path=result_path
         )  # (F+1, L, N, D), (N)
 
-        for filter_id in tqdm(
-            range(num_filters + 1), desc="platting (each filters)", leave=False
-        ):
-            for layer_id, layer in tqdm(
-                enumerate(RSA.layers), "plotting (each layer)", leave=False
-            ):
-                target = embed[filter_id, layer_id]
-
-                if num_dim == 2:
-                    fig = plt.figure(dpi=150)
-
-                    plt.scatter(
-                        x=target[:, 0],
-                        y=target[:, 1],
-                        c=labels,
-                        cmap="jet",
-                        alpha=0.5,
-                    )
-
-                    plt.colorbar()
-
-                    plt.title(
-                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
-                        fontsize=8,
-                    )
-
-                elif num_dim == 3:
-                    # fig = plt.figure(dpi=150).gca(projection="3d")
-                    fig = plt.figure(dpi=150)
-                    ax = Axes3D(fig)
-
-                    sc = ax.scatter(
-                        xs=target[:, 0],
-                        ys=target[:, 1],
-                        zs=target[:, 2],
-                        c=labels,
-                        cmap="jet",
-                        alpha=0.5,
-                    )
-
-                    fig.colorbar(sc, shrink=0.75)
-
-                    ax.set_title(
-                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
-                        fontsize=10,
-                    )
-
-                # fig.tight_layout()
-                plot_file = f"{analysis}_{num_dim}d_f{filter_id}_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
-                plot_path = os.path.join(plots_dir, plot_file)
-                plt.savefig(plot_path)
-                plt.close()
+        plot_tSNE(
+            embedded_activations=embed,
+            labels=labels,
+            num_filters=num_filters,
+            num_dim=num_dim,
+            plots_dir=plots_dir,
+            analysis=analysis,
+            perplexity=perplexity,
+            n_iter=n_iter,
+            num_classes=num_classes,
+            model_name=model_name,
+            title=True,
+        )
