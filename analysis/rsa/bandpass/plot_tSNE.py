@@ -7,6 +7,7 @@ from distutils.util import strtobool
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 
 # add the path to load src module
@@ -153,13 +154,11 @@ if __name__ == "__main__":
             for layer_id, layer in tqdm(
                 enumerate(layers), "plotting (each layer)", leave=False
             ):
+                target = embed[filter_id, layer_id]
+
                 if num_dim == 2:
                     fig = plt.figure(dpi=150)
-                elif num_dim == 3:
-                    fig = plt.figure(dpi=150).gca(projection="3d")
 
-                target = embed[filter_id, layer_id]
-                if num_dim == 2:
                     plt.scatter(
                         x=target[:, 0],
                         y=target[:, 1],
@@ -167,8 +166,20 @@ if __name__ == "__main__":
                         cmap="jet",
                         alpha=0.5,
                     )
+
+                    plt.colorbar()
+
+                    plt.title(
+                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                        fontsize=8,
+                    )
+
                 elif num_dim == 3:
-                    fig.scatter(
+                    # fig = plt.figure(dpi=150).gca(projection="3d")
+                    fig = plt.figure(dpi=150)
+                    ax = Axes3D(fig)
+
+                    sc = ax.scatter(
                         xs=target[:, 0],
                         ys=target[:, 1],
                         zs=target[:, 2],
@@ -177,11 +188,13 @@ if __name__ == "__main__":
                         alpha=0.5,
                     )
 
-                plt.colorbar()
-                plt.title(
-                    f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
-                    fontsize=8,
-                )
+                    fig.colorbar(sc, shrink=0.75)
+
+                    ax.set_title(
+                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                        fontsize=10,
+                    )
+
                 # fig.tight_layout()
                 plot_file = f"{analysis}_{num_dim}d_f{filter_id}_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
                 plot_path = os.path.join(plots_dir, plot_file)

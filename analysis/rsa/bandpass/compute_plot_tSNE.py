@@ -8,6 +8,7 @@ import numpy as np
 import torch
 import vonenet
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 
 # add the path to load src module
@@ -210,42 +211,55 @@ if __name__ == "__main__":
             file_path=result_path
         )  # (F+1, L, N, D), (N)
 
-        for layer_id, layer in tqdm(
-            enumerate(RSA.layers), "plotting (each layer)", leave=False
+        for filter_id in tqdm(
+                range(num_filters + 1), desc="platting (each filters)", leave=False
         ):
-            if num_dim == 2:
-                fig = plt.figure(dpi=150)
-            elif num_dim == 3:
-                fig = plt.figure(dpi=150).gca(projection="3d")
+            for layer_id, layer in tqdm(
+                    enumerate(RSA.layers), "plotting (each layer)", leave=False
+            ):
+                target = embed[filter_id, layer_id]
 
-            filter_id = 0  # original images
+                if num_dim == 2:
+                    fig = plt.figure(dpi=150)
 
-            target = embed[filter_id, layer_id]
-            if num_dim == 2:
-                plt.scatter(
-                    x=target[:, 0],
-                    y=target[:, 1],
-                    c=labels,
-                    cmap="jet",
-                    alpha=0.5,
-                )
-            elif num_dim == 3:
-                fig.scatter(
-                    xs=target[:, 0],
-                    ys=target[:, 1],
-                    zs=target[:, 2],
-                    c=labels,
-                    cmap="jet",
-                    alpha=0.5,
-                )
+                    plt.scatter(
+                        x=target[:, 0],
+                        y=target[:, 1],
+                        c=labels,
+                        cmap="jet",
+                        alpha=0.5,
+                    )
 
-            plt.colorbar()
-            plt.title(
-                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
-                fontsize=6,
-            )
-            # fig.tight_layout()
-            plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
-            plot_path = os.path.join(plots_dir, plot_file)
-            plt.savefig(plot_path)
-            plt.close()
+                    plt.colorbar()
+
+                    plt.title(
+                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                        fontsize=8,
+                    )
+
+                elif num_dim == 3:
+                    # fig = plt.figure(dpi=150).gca(projection="3d")
+                    fig = plt.figure(dpi=150)
+                    ax = Axes3D(fig)
+
+                    sc = ax.scatter(
+                        xs=target[:, 0],
+                        ys=target[:, 1],
+                        zs=target[:, 2],
+                        c=labels,
+                        cmap="jet",
+                        alpha=0.5,
+                    )
+
+                    fig.colorbar(sc, shrink=0.75)
+
+                    ax.set_title(
+                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                        fontsize=10,
+                    )
+
+                # fig.tight_layout()
+                plot_file = f"{analysis}_{num_dim}d_f{filter_id}_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
+                plot_path = os.path.join(plots_dir, plot_file)
+                plt.savefig(plot_path)
+                plt.close()
