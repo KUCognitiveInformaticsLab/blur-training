@@ -195,15 +195,19 @@ if __name__ == "__main__":
 
         result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
-        
+
         if compute:
             # save t-SNE embedded activations
-            save_embedded_activations(embedded_activations=embed, labels=labels, file_path=result_path)
-            
+            save_embedded_activations(
+                embedded_activations=embed, labels=labels, file_path=result_path
+            )
+
         # === plot t-SNE ===
         colors = ["k", "r", "g", "b", "c", "m", "y"]
 
-        embed, labels = load_embedded_activations(file_path=result_path)  # (F+1, L, N, D), (N)
+        embed, labels = load_embedded_activations(
+            file_path=result_path
+        )  # (F+1, L, N, D), (N)
 
         for layer_id, layer in tqdm(enumerate(RSA.layers), "plotting (each layer)"):
             if num_dim == 2:

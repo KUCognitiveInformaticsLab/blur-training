@@ -57,8 +57,6 @@ def compute_tSNE(
             add_noise=False,
         )  # Dict: {L: (F+1, C, H, W)}
 
-
-
     tsne = TSNE(
         n_components=num_dim,
         random_state=random_state,
@@ -180,10 +178,7 @@ def plot_tSNE(
 
 
 def save_embedded_activations(embedded_activations: dict, labels: list, file_path: str):
-    object = {
-        "embedded_activations": embedded_activations,
-        "labels": labels
-    }
+    object = {"embedded_activations": embedded_activations, "labels": labels}
     with open(file_path, "wb") as f:
         pickle.dump(object, f)
 
