@@ -215,39 +215,24 @@ if __name__ == "__main__":
             elif num_dim == 3:
                 fig = plt.figure(dpi=150).gca(projection="3d")
 
-            for filter_id in range(num_filters + 1):
-                target = embed[filter_id, layer_id]
-                if num_dim == 2:
-                    plt.scatter(
-                        x=target[:, 0],
-                        y=target[:, 1],
-                        c=labels,
-                        alpha=0.5,
-                    )
-                elif num_dim == 3:
-                    fig.scatter(
-                        xs=target[:, 0],
-                        ys=target[:, 1],
-                        zs=target[:, 2],
-                        c=labels,
-                        alpha=0.5,
-                    )
+            filter_id = 0  # original images
 
-                # if image_id == 0:
-                #     if num_dim == 2:
-                #         fig.legend(
-                #             bbox_to_anchor=(0.91, 0.88),
-                #             loc="upper left",
-                #             borderaxespad=0,
-                #             fontsize=8,
-                #         )
-                #     elif num_dim == 3:
-                #         fig.legend(
-                #             bbox_to_anchor=(0.01, 0.92),
-                #             loc="upper left",
-                #             borderaxespad=0,
-                #             fontsize=6,
-                #         )
+            target = embed[filter_id, layer_id]
+            if num_dim == 2:
+                plt.scatter(
+                    x=target[:, 0],
+                    y=target[:, 1],
+                    c=labels, cmap='jet',
+                    alpha=0.5,
+                )
+            elif num_dim == 3:
+                fig.scatter(
+                    xs=target[:, 0],
+                    ys=target[:, 1],
+                    zs=target[:, 2],
+                    c=labels, cmap='jet',
+                    alpha=0.5,
+                )
 
             plt.colorbar()
             plt.title(

@@ -102,7 +102,7 @@ def compute_bandpass_tSNE(
 
     # compute RSM for each image (with some filters applied)
     for image_id, (image, label) in tqdm(
-        enumerate(data_loader), desc="test images", leave=False
+        enumerate(data_loader), desc="Feed test images", leave=False
     ):
         """Note that data_loader SHOULD return a single image for each loop.
         image (torch.Tensor): torch.Size([1, C, H, W])
@@ -130,8 +130,8 @@ def compute_bandpass_tSNE(
 
     embedded_activations = np.zeros((num_filters + 1, num_layers, num_images, num_dim))
 
-    for filter_id in range(num_filters + 1):
-        for layer_id, layer in enumerate(RSA.layers):
+    for filter_id in tqdm(range(num_filters + 1), desc="Computing t-SNE (filters)", leave=False):
+        for layer_id, layer in tqdm(enumerate(RSA.layers), desc="Computing t-SNE (layers)", leave=False):
             X = np.array(all_activations[layer])[:, filter_id]  # (N, activations)
             embedded_activations[filter_id, layer_id] = tsne.fit_transform(X)  # (N, D)
 
