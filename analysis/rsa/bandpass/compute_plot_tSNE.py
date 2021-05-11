@@ -212,10 +212,10 @@ if __name__ == "__main__":
         )  # (F+1, L, N, D), (N)
 
         for filter_id in tqdm(
-                range(num_filters + 1), desc="platting (each filters)", leave=False
+            range(num_filters + 1), desc="platting (each filters)", leave=False
         ):
             for layer_id, layer in tqdm(
-                    enumerate(RSA.layers), "plotting (each layer)", leave=False
+                enumerate(RSA.layers), "plotting (each layer)", leave=False
             ):
                 target = embed[filter_id, layer_id]
 
