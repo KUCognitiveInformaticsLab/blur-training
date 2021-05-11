@@ -83,7 +83,7 @@ if __name__ == "__main__":
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
     in16_test_path = "/mnt/data1/imagenet16/test/"
 
-    analysis = f"tSNE_bandpass_activations"
+    analysis = f"t-SNE_bandpass_activations"
     compute = args.compute
     num_filters = args.num_filters
     num_dim = args.num_dim
