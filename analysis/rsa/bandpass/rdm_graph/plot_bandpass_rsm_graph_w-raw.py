@@ -7,7 +7,7 @@ import matplotlib.ticker as tick
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(os.path.join(str(current_dir), "../../../"))
+sys.path.append(os.path.join(str(current_dir), "../../../../"))
 
 from src.analysis.rsa.utils import load_rsms
 from src.analysis.rsa.bandpass.bandpass_rsm_graph import compute_bandpass_values
@@ -18,17 +18,17 @@ from src.model.plot import colors, lines
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 1000
+    num_classes = int(sys.argv[1])
     epoch = 60
 
-    metrics = "correlation"  # ("correlation", "1-covariance", "negative-covariance")
+    metrics = "correlation"  # ("correlation", "1-covariance",   "negative-covariance")
     analysis = f"bandpass_rsm_{metrics}"
     legend = True
 
     in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
     # in_dir = f"./results/{analysis}/{num_classes}-class/"
-    out_dir = f"./plots/{analysis}_graph/{num_classes}-class/"
+    out_dir = f"./plots_vss/{analysis}_graph/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -36,13 +36,14 @@ if __name__ == "__main__":
 
     # models to compare
     model_names = [
-        "raw_images",
-        f"untrained_{arch}",
+        # "raw_images",
+        # f"untrained_{arch}",
         f"{arch}_normal",
-        f"{arch}_all_s04",
+        # f"{arch}_all_s04",
         f"{arch}_mix_s04",
-        f"vone_{arch}",
-        sin_names[arch],
+        # f"{arch}_multi-steps",
+        # f"vone_{arch}",
+        # sin_names[arch],
     ]
 
     # (optional) set title
@@ -51,13 +52,13 @@ if __name__ == "__main__":
     # set filename
     num_filters = 6
     filename = (
-        f"{analysis}_graph{num_classes}-class_f{num_filters}_conv1_legend.png"
+        f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_legend_flatt_{model_names}.png"
         if legend
-        else f"{analysis}_graph{num_classes}-class_f{num_filters}_conv1.png"
+        else f"{analysis}_graph_{num_classes}-class_f{num_filters}_w-raw_flatt_{model_names}.png"
     )
     out_file = os.path.join(out_dir, filename)
 
-    fig = plt.figure(dpi=300)
+    fig = plt.figure(dpi=300, figsize=(16, 3))
 
     for model_name in model_names:
         if model_name == "raw_images":
@@ -72,47 +73,51 @@ if __name__ == "__main__":
         rsms = load_rsms(file_path=in_file)
 
         if "vone" in model_name:
-            layer = vone_alexnet_layers[0]  # vone-block
+            rsms["layers"] = vone_alexnet_layers
         else:
-            layer = alexnet_layers[0]  # conv-relu-1
+            rsms["layers"] = alexnet_layers
 
         renamed_model_name = rename_model_name(model_name=model_name, arch=arch)
 
-        if model_name == "raw_images":
-            y = compute_bandpass_values(rsms["raw"])
-        else:
-            y = compute_bandpass_values(rsms[layer])
+        for i, layer in enumerate(rsms["layers"]):
+            if model_name == "raw_images":
+                y = compute_bandpass_values(rsms["raw"])
+            else:
+                y = compute_bandpass_values(rsms[layer])
 
-        num_bandpass = int(len(y) / 2)
-        x = [x for x in range(-num_bandpass, num_bandpass + 1)]
+            num_bandpass = int(len(y) / 2)
+            x = [x for x in range(-num_bandpass, num_bandpass + 1)]
 
-        ax = fig.add_subplot(111)
-        ax.plot(
-            x,
-            y,
-            label=renamed_model_name,
-            marker=".",
-            markersize=3,
-            ls=lines[model_name],
-            linewidth=1,
-            color=colors[model_name],
-        )
+            ax = fig.add_subplot(1, 8, i + 1)
+            ax.plot(
+                x,
+                y,
+                label=renamed_model_name,
+                marker=".",
+                markersize=3,
+                ls=lines[model_name],
+                linewidth=1,
+                color=colors[model_name],
+                alpha=1,
+            )
 
-        # sns.set(font_scale=0.5)  # adjust the font size of labels
-        # plt.rcParams["font.size"] = 8
-        ax.set_title(layer, fontsize=8)
-        plt.ylim((-0.1, 1.1))
-        ax.xaxis.set_major_locator(tick.MultipleLocator(1))
-        plt.xticks(fontsize=6)
-        plt.yticks(fontsize=6)
+            # sns.set(font_scale=0.5)  # adjust the font size of labels
+            # plt.rcParams["font.size"] = 8
+            ax.set_title(layer, fontsize=8)
+            plt.ylim((-0.1, 1.1))
+            ax.xaxis.set_major_locator(tick.MultipleLocator(1))
+            plt.xticks(fontsize=6)
+            plt.yticks(fontsize=6)
 
-        # ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-        plt.legend(
-            bbox_to_anchor=(1.05, 1),
-            loc="upper left",
-            borderaxespad=0,
-            fontsize=8,
-        )
+            # if i == 3:
+            #     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+            if i == 7 and legend:
+                plt.legend(
+                    bbox_to_anchor=(0.2, -0.2),
+                    loc="upper left",
+                    # borderaxespad=0,
+                    fontsize=8,
+                )
 
     # fig.legend(
     #     bbox_to_anchor=(0, -0.1),
