@@ -267,7 +267,7 @@ def main():
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data[0], data[1].to(device)
 
-            if labels.item() in args.excluded_labels:
+            if args.excluded_labels and labels.item() in args.excluded_labels:
                 continue  # Exclude this image from training
 
             # Blur images
@@ -314,7 +314,7 @@ def main():
             for data in testloader:
                 inputs, labels = data[0], data[1].to(device)
 
-                if labels.item() in args.excluded_labels:
+                if args.excluded_labels and labels.item() in args.excluded_labels:
                     continue  # Exclude this image
 
                 if args.blur_val:

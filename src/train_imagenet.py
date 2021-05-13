@@ -522,7 +522,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
     end = time.time()
     for i, (images, target) in enumerate(train_loader):
-        if target.item() in args.excluded_labels:
+        if args.excluded_labels and target.item() in args.excluded_labels:
             continue  # Exclude this image from training
 
         # measure data loading time
@@ -585,7 +585,7 @@ def validate(val_loader, model, criterion, args):
     with torch.no_grad():
         end = time.time()
         for i, (images, target) in enumerate(val_loader):
-            if target.item() in args.excluded_labels:
+            if args.excluded_labels and target.item() in args.excluded_labels:
                 continue  # Exclude this image from training
 
             # blur images
