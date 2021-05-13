@@ -45,7 +45,9 @@ model_names = sorted(
     if name.islower() and not name.startswith("__") and callable(models.__dict__[name])
 )
 
-parser = argparse.ArgumentParser(description="PyTorch ImageNet Training with Blurred Images")
+parser = argparse.ArgumentParser(
+    description="PyTorch ImageNet Training with Blurred Images"
+)
 parser.add_argument(
     "-a",
     "--arch",
