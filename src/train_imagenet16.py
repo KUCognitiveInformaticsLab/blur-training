@@ -35,7 +35,7 @@ model_names = sorted(
 )
 
 # Training settings
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="PyTorch 16-class-ImageNet Training with Blurred Images")
 parser.add_argument(
     "--no-cuda", action="store_true", default=False, help="Disables CUDA training."
 )  # Remember no-cuda becomes no_cuda in the code. ("-" becomes "_")
