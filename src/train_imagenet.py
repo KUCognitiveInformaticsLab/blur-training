@@ -221,6 +221,13 @@ parser.add_argument(
 parser.add_argument(
     "--cbt_rate", type=float, default=0.9, help="Blur decay rate (multi-steps-cbt)"
 )
+parser.add_argument(
+    "--excluded_labels",
+    type=int,
+    nargs="+",
+    default=[],
+    help="Excluded labels (classes) that are not used in training and validation.",
+)
 
 best_acc1 = 0
 
@@ -240,6 +247,13 @@ def main():
     # recording outputs
     sys.stdout = open(outputs_path, "a")
     sys.stderr = open(outputs_path, "a")
+
+    if args.excluded_labels:
+        # Set batch size as 1 in order to exclude a label one by one.
+        # TODO: Excluding labels can be scaled to the batch size bigger than 1.
+        #   For instance, excluding labels in load_imagenet16()
+        #   BUT if you do this, output ids can be different.
+        args.batch_size = 1
 
     if args.seed is not None:
         random.seed(args.seed)
@@ -506,6 +520,9 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
     end = time.time()
     for i, (images, target) in enumerate(train_loader):
+        if target.item() in args.excluded_labels:
+            continue  # Exclude this image from training
+
         # measure data loading time
         data_time.update(time.time() - end)
 
@@ -566,6 +583,9 @@ def validate(val_loader, model, criterion, args):
     with torch.no_grad():
         end = time.time()
         for i, (images, target) in enumerate(val_loader):
+            if target.item() in args.excluded_labels:
+                continue  # Exclude this image from training
+
             # blur images
             if args.blur_val:
                 images = GaussianBlurAll(images, args.sigma)

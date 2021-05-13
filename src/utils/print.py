@@ -23,12 +23,18 @@ def print_settings(model, args):
         print("#" * 20)
     elif args.mode == "all":
         print("Sigma: {}".format(args.sigma))
+
     if args.blur_val:
         print("VALIDATION MODE: blur-val")
-    print("Random seed: {}".format(args.seed))
+
+    if args.excluded_labels:
+        print(f"Excluded labels: {args.excluded_labels}")
+
     print("Epochs: {}".format(args.epochs))
+    print(f"Batch size: {args.batch_size}")
     print("Learning rate: {}".format(args.lr))
     print("Weight_decay: {}".format(args.weight_decay))
+    print("Random seed: {}".format(args.seed))
     print()
     print(model)
     print("=" * 20)

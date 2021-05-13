@@ -132,6 +132,13 @@ parser.add_argument(
     metavar="PATH",
     help="path to latest checkpoint (default: none)",
 )
+parser.add_argument(
+    "--excluded_labels",
+    type=int,
+    nargs="+",
+    default=[],
+    help="Excluded labels (classes) that are not used in training and validation.",
+)
 
 
 def main():
@@ -182,6 +189,13 @@ def main():
         torch.cuda.manual_seed(args.seed)
 
     # data settings
+    if args.excluded_labels:
+        # Set batch size as 1 in order to exclude a label one by one.
+        # TODO: Excluding labels can be scaled to the batch size bigger than 1.
+        #   For instance, excluding labels in load_imagenet16()
+        #   BUT if you do this, output ids can be different.
+        args.batch_size = 1
+
     trainloader, testloader = load_imagenet16(batch_size=args.batch_size)
 
     # Model, Criterion, Optimizer
@@ -251,6 +265,9 @@ def main():
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data[0], data[1].to(device)
 
+            if labels.item() in args.excluded_labels:
+                continue  # Exclude this image from training
+
             # Blur images
             if args.mode == "mix":
                 half1, half2 = inputs.chunk(2)
@@ -264,6 +281,7 @@ def main():
                 inputs = torch.cat((half1, half2))
             else:
                 inputs = GaussianBlurAll(inputs, args.sigma)
+
             inputs = inputs.to(device)
 
             # zero the parameter gradients
@@ -271,8 +289,10 @@ def main():
 
             # forward + record
             outputs = model(inputs)
+
             loss = criterion(outputs, labels)
             acc1 = accuracy(outputs, labels, topk=(1,))
+
             train_loss.update(loss.item(), inputs.size(0))
             train_acc.update(acc1[0], inputs.size(0))
 
@@ -291,12 +311,20 @@ def main():
         with torch.no_grad():
             for data in testloader:
                 inputs, labels = data[0], data[1].to(device)
+
+                if labels.item() in args.excluded_labels:
+                    continue  # Exclude this image
+
                 if args.blur_val:
                     inputs = GaussianBlurAll(inputs, args.sigma)
+
                 inputs = inputs.to(device)
+
                 outputs = model(inputs)
+
                 loss = criterion(outputs, labels)
                 acc1 = accuracy(outputs, labels, topk=(1,))
+
                 val_loss.update(loss.item(), inputs.size(0))
                 val_acc.update(acc1[0], inputs.size(0))
 
