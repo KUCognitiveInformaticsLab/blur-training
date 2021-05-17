@@ -96,11 +96,11 @@ def GaussianBlurProb(images, sigma, p_blur, kernel_size=(0, 0)) -> torch.Tensor:
 def GaussianBlurProbExcludeLabels(
     images,
     labels,
-    excluded_labels,
     p_blur,
     sigma,
-    min_sigma,
-    max_sigma,
+    excluded_labels=[],
+    min_sigma=0,
+    max_sigma=0,
     kernel_size=(0, 0),
 ) -> torch.Tensor:
     """
