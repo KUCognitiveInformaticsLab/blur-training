@@ -99,3 +99,16 @@ def compute_bandpass_values_0(
     c_avr = c_count / len(c)
 
     return r1_avr, b_avr, c_avr
+
+
+def compute_bandpass_x(y):
+    y0, y1, y2, y3 = y[3:]
+    y4 = 0
+    if y1 < 0.5 <= y0:
+        return 1 / ((y0 - y1) * 2)
+    elif y2 < 0.5 <= y1:
+        return 1 / ((y1 - y2) * 2)
+    elif y3 < 0.5 <= y2:
+        return 1 / ((y2 - y3) * 2)
+    elif y4 < 0.5 <= y3:
+        return 1 / ((y3 - y4) * 2)
