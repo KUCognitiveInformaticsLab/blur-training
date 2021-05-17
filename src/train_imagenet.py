@@ -22,7 +22,11 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../")
 
 from src.dataset.imagenet import load_imagenet
-from src.image_process.lowpass_filter import GaussianBlurAll, GaussianBlurAllRandomSigma
+from src.image_process.lowpass_filter import (
+    GaussianBlurAll,
+    GaussianBlurAllRandomSigma,
+    GaussianBlurProbExcludeLabels,
+)
 from src.model.utils import save_model, save_checkpoint
 from src.utils.adjust import (
     adjust_learning_rate,
@@ -197,6 +201,13 @@ parser.add_argument(
     "--sigma", "-s", type=float, default=1, help="Sigma of Gaussian Blur."
 )
 parser.add_argument(
+    "--p_blur",
+    "-p",
+    type=float,
+    default=0.5,
+    help="Percentage of Blur. [0, 1]",
+)
+parser.add_argument(
     "--min_sigma",
     type=float,
     default=0,
@@ -249,13 +260,6 @@ def main():
     # recording outputs
     sys.stdout = open(outputs_path, "a")
     sys.stderr = open(outputs_path, "a")
-
-    if args.excluded_labels:
-        # Set batch size as 1 in order to exclude a label one by one.
-        # TODO: Excluding labels can be scaled to the batch size bigger than 1.
-        #   For instance, excluding labels in load_imagenet16()
-        #   BUT if you do this, output ids can be different.
-        args.batch_size = 1
 
     if args.seed is not None:
         random.seed(args.seed)
@@ -521,37 +525,50 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
             args.sigma = args.reverse_sigma
 
     end = time.time()
-    for i, (images, target) in enumerate(train_loader):
-        if args.excluded_labels and target.item() in args.excluded_labels:
-            continue  # Exclude this image from training
-
+    for i, (images, targets) in enumerate(train_loader):
         # measure data loading time
         data_time.update(time.time() - end)
 
         # blur images (no blur when args.sigma = 0)
         if args.mode == "mix":
-            half1, half2 = images.chunk(2)
-            # blur first half images
-            half1 = GaussianBlurAll(half1, args.sigma)
-            images = torch.cat((half1, half2))
+            # half1, half2 = images.chunk(2)
+            # # blur first half images
+            # half1 = GaussianBlurAll(half1, args.sigma)
+            # images = torch.cat((half1, half2))
+            images = GaussianBlurProbExcludeLabels(
+                images=images,
+                labels=targets,
+                excluded_labels=args.excluded_labels,
+                p_blur=args.p_blur,
+                sigma=args.sigma,
+            )
         elif args.mode == "random-mix":
             half1, half2 = images.chunk(2)
             # blur first half images
             half1 = GaussianBlurAllRandomSigma(half1, args.min_sigma, args.max_sigma)
             images = torch.cat((half1, half2))
+            # inputs = GaussianBlurProbExcludeLabels(
+            #     images=inputs,
+            #     labels=labels,
+            #     excluded_labels=args.excluded_labels,
+            #     p_blur=args.p_blur,
+            #     sigma="random",
+            #     min_sigma=args.min_sigma,
+            #     max_sigma=args.max_sigma,
+            # )
         else:
             images = GaussianBlurAll(images, args.sigma)
 
         if torch.cuda.is_available():
             images = images.cuda(args.gpu, non_blocking=True)
-            target = target.cuda(args.gpu, non_blocking=True)
+            targets = targets.cuda(args.gpu, non_blocking=True)
 
         # compute outputs
         output = model(images)
-        loss = criterion(output, target)
+        loss = criterion(output, targets)
 
         # measure accuracy and record loss
-        acc1, acc5 = accuracy(output, target, topk=(1, 5))
+        acc1, acc5 = accuracy(output, targets, topk=(1, 5))
         losses.update(loss.item(), images.size(0))
         top1.update(acc1[0], images.size(0))
         top5.update(acc5[0], images.size(0))
@@ -584,23 +601,20 @@ def validate(val_loader, model, criterion, args):
     model.eval()
     with torch.no_grad():
         end = time.time()
-        for i, (images, target) in enumerate(val_loader):
-            if args.excluded_labels and target.item() in args.excluded_labels:
-                continue  # Exclude this image from training
-
+        for i, (images, targets) in enumerate(val_loader):
             # blur images
             if args.blur_val:
                 images = GaussianBlurAll(images, args.sigma)
             if torch.cuda.is_available():
                 images = images.cuda(args.gpu, non_blocking=True)
-                target = target.cuda(args.gpu, non_blocking=True)
+                targets = targets.cuda(args.gpu, non_blocking=True)
 
             # compute output
             output = model(images)
-            loss = criterion(output, target)
+            loss = criterion(output, targets)
 
             # measure accuracy and record loss
-            acc1, acc5 = accuracy(output, target, topk=(1, 5))
+            acc1, acc5 = accuracy(output, targets, topk=(1, 5))
             losses.update(loss.item(), images.size(0))
             top1.update(acc1[0], images.size(0))
             top5.update(acc5[0], images.size(0))

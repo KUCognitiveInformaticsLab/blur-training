@@ -16,7 +16,11 @@ from torch.utils.tensorboard import SummaryWriter
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../")
 
-from src.image_process.lowpass_filter import GaussianBlurAll, GaussianBlurAllRandomSigma
+from src.image_process.lowpass_filter import (
+    GaussianBlurAll,
+    GaussianBlurAllRandomSigma,
+    GaussianBlurProbExcludeLabels,
+)
 from src.dataset.imagenet16 import load_imagenet16
 from src.model.utils import load_model, save_model
 from src.utils.adjust import (
@@ -79,6 +83,13 @@ parser.add_argument(
     type=float,
     default=1,
     help="Sigma of Gaussian Kernel (Gaussian Blur).",
+)
+parser.add_argument(
+    "--p_blur",
+    "-p",
+    type=float,
+    default=0.5,
+    help="Percentage of Blur. [0, 1]",
 )
 parser.add_argument(
     "--min_sigma",
@@ -191,13 +202,6 @@ def main():
         torch.cuda.manual_seed(args.seed)
 
     # data settings
-    if args.excluded_labels:
-        # Set batch size as 1 in order to exclude a label one by one.
-        # TODO: Excluding labels can be scaled to the batch size bigger than 1.
-        #   For instance, excluding labels in load_imagenet16()
-        #   BUT if you do this, output ids can be different.
-        args.batch_size = 1
-
     trainloader, testloader = load_imagenet16(batch_size=args.batch_size)
 
     # Model, Criterion, Optimizer
@@ -267,20 +271,35 @@ def main():
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data[0], data[1].to(device)
 
-            if args.excluded_labels and labels.item() in args.excluded_labels:
-                continue  # Exclude this image from training
-
             # Blur images
             if args.mode == "mix":
-                half1, half2 = inputs.chunk(2)
-                # blur first half images
-                half1 = GaussianBlurAll(half1, args.sigma)
-                inputs = torch.cat((half1, half2))
+                # half1, half2 = inputs.chunk(2)
+                # # blur first half images
+                # half1 = GaussianBlurAll(half1, args.sigma)
+                # inputs = torch.cat((half1, half2))
+                inputs = GaussianBlurProbExcludeLabels(
+                    images=inputs,
+                    labels=labels,
+                    excluded_labels=args.excluded_labels,
+                    p_blur=args.p_blur,
+                    sigma=args.sigma,
+                )
             elif args.mode == "random-mix":
                 half1, half2 = inputs.chunk(2)
                 # blur first half images
-                half1 = GaussianBlurAllRandomSigma(half1, args.min_sigma, args.max_sigma)
+                half1 = GaussianBlurAllRandomSigma(
+                    half1, args.min_sigma, args.max_sigma
+                )
                 inputs = torch.cat((half1, half2))
+                # inputs = GaussianBlurProbExcludeLabels(
+                #     images=inputs,
+                #     labels=labels,
+                #     excluded_labels=args.excluded_labels,
+                #     p_blur=args.p_blur,
+                #     sigma="random",
+                #     min_sigma=args.min_sigma,
+                #     max_sigma=args.max_sigma,
+                # )
             else:
                 inputs = GaussianBlurAll(inputs, args.sigma)
 
@@ -313,9 +332,6 @@ def main():
         with torch.no_grad():
             for data in testloader:
                 inputs, labels = data[0], data[1].to(device)
-
-                if args.excluded_labels and labels.item() in args.excluded_labels:
-                    continue  # Exclude this image
 
                 if args.blur_val:
                     inputs = GaussianBlurAll(inputs, args.sigma)
