@@ -37,8 +37,11 @@ if __name__ == "__main__":
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     # I/O
-    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+    # models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+    #     16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+    # )
+    models_dir = "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
+        16 if num_classes == 16 else ""  # else means (num_classes == 1000)
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
 
