@@ -122,7 +122,6 @@ parser.add_argument(
     help="path to latest checkpoint (default: none)",
 )
 parser.add_argument(
-    "-e",
     "--evaluate",
     dest="evaluate",
     action="store_true",
