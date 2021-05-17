@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # ===== args =====
     analysis = "bandpass_confusion_matrix"
     arch = "alexnet"
-    num_classes = 16  # number of last output of the models
+    num_classes = int(sys.argv[1])  # number of last output of the models
     epoch = 60
     batch_size = 64
 
@@ -37,8 +37,11 @@ if __name__ == "__main__":
     num_filters = 6  # the number of bandpass filters
 
     # I/O
-    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+    # models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+    #     16 if num_classes == 16 else ""  # else means (num_classes == 1000)
+    # )
+    models_dir = "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
+        16 if num_classes == 16 else ""  # else means (num_classes == 1000)
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
@@ -48,6 +51,11 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
+    model_names = [
+        "mix_no-blur-1label",
+        "mix_no-blur-8label",
+    ]
+
     # model_names = [
     #     "untrained_alexnet",
     #     "alexnet_normal",
@@ -59,37 +67,7 @@ if __name__ == "__main__":
 
     from src.model.model_names import get_model_names
 
-    model_names = get_model_names(arch=arch)
-
-    # modes = [
-    #     # "normal",
-    #     "all",
-    #     "mix",
-    #     "random-mix",
-    #     "single-step",
-    #     "fixed-single-step",
-    #     "reversed-single-step",
-    #     "multi-steps",
-    # ]
-
-    # # sigmas to compare
-    # sigmas_mix = [s for s in range(1, 6)] + [10]
-    # sigmas_random_mix = ["00-05", "00-10"]
-    #
-    # # make model name list
-    # # model_names = []
-    # for mode in modes:
-    #     if mode in ("normal", "multi-steps"):
-    #         model_names += [f"{arch}_{mode}"]
-    #     elif mode == "random-mix":
-    #         for min_max in sigmas_random_mix:
-    #             model_names += [f"{arch}_{mode}_s{min_max}"]
-    #     elif mode == "mix":
-    #         for sigma in sigmas_mix:
-    #             model_names += [f"{arch}_{mode}_s{sigma:02d}"]
-    #     else:
-    #         for s in range(4):
-    #             model_names += [f"{arch}_{mode}_s{s + 1:02d}"]
+    # model_names = get_model_names(arch=arch)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
