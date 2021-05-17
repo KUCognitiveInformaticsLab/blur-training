@@ -4,6 +4,7 @@ def print_settings(model, args):
     if args.mode == "mix":
         print("### MIX ###")
         print("Sigma: {}".format(args.sigma))
+        print(f"p_blur: {args.p_blur}")
     elif args.mode == "single-step":
         print("### SINGLE STEP ###")
         print("## NO BLUR FROM EPOCH {:d}".format(args.epochs // 2))
