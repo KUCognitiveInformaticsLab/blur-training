@@ -108,7 +108,6 @@ parser.add_argument(
     dest="weight_decay",
 )
 parser.add_argument(
-    "-p",
     "--print_freq",
     default=100,
     type=int,
