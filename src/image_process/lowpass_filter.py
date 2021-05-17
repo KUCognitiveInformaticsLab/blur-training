@@ -33,7 +33,7 @@ def GaussianBlurAll(imgs, sigma, kernel_size=(0, 0)) -> torch.Tensor:
         return torch.from_numpy(imgs_list)
 
 
-def RandomGaussianBlurAll(
+def GaussianBlurAllRandomSigma(
     imgs, min_sigma, max_sigma, kernel_size=(0, 0)
 ) -> torch.Tensor:
     """Return Blurred images by random sigma.

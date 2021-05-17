@@ -16,7 +16,7 @@ from torch.utils.tensorboard import SummaryWriter
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../")
 
-from src.image_process.lowpass_filter import GaussianBlurAll, RandomGaussianBlurAll
+from src.image_process.lowpass_filter import GaussianBlurAll, GaussianBlurAllRandomSigma
 from src.dataset.imagenet16 import load_imagenet16
 from src.model.utils import load_model, save_model
 from src.utils.adjust import (
@@ -279,7 +279,7 @@ def main():
             elif args.mode == "random-mix":
                 half1, half2 = inputs.chunk(2)
                 # blur first half images
-                half1 = RandomGaussianBlurAll(half1, args.min_sigma, args.max_sigma)
+                half1 = GaussianBlurAllRandomSigma(half1, args.min_sigma, args.max_sigma)
                 inputs = torch.cat((half1, half2))
             else:
                 inputs = GaussianBlurAll(inputs, args.sigma)

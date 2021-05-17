@@ -22,7 +22,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../")
 
 from src.dataset.imagenet import load_imagenet
-from src.image_process.lowpass_filter import GaussianBlurAll, RandomGaussianBlurAll
+from src.image_process.lowpass_filter import GaussianBlurAll, GaussianBlurAllRandomSigma
 from src.model.utils import save_model, save_checkpoint
 from src.utils.adjust import (
     adjust_learning_rate,
@@ -537,7 +537,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         elif args.mode == "random-mix":
             half1, half2 = images.chunk(2)
             # blur first half images
-            half1 = RandomGaussianBlurAll(half1, args.min_sigma, args.max_sigma)
+            half1 = GaussianBlurAllRandomSigma(half1, args.min_sigma, args.max_sigma)
             images = torch.cat((half1, half2))
         else:
             images = GaussianBlurAll(images, args.sigma)
