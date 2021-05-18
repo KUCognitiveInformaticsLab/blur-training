@@ -64,6 +64,7 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
     model_name = model_name.replace(f"{arch}_normal", f"S-{arch}")
     model_name = model_name.replace(f"{arch}_all", f"B-{arch}")
     model_name = model_name.replace(f"{arch}_mix", f"B+S-{arch}")
+    model_name = model_name.replace(f"mix", f"B+S-{arch}_s01")
     model_name = model_name.replace(f"{arch}_multi-steps", f"B2S-{arch}")
     model_name = re.sub("s([0-9]+)", r"(σ=\1)", model_name)  # sigma value
     model_name = re.sub("0", "", model_name)

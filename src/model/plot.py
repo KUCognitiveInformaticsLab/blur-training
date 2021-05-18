@@ -5,11 +5,14 @@ colors = {
     f"alexnet_multi-steps": "mediumvioletred",
     f"alexnet_all_s04": "darkgreen",
     f"alexnet_mix_s04": "darkorange",
+    f"alexnet_mix_s01": "darkorange",
     f"alexnet_mix_s10": "hotpink",
     f"alexnet_random-mix_s00-05": "green",
     f"alexnet_random-mix_s00-10": "darkgreen",
     f"alexnet_trained_on_SIN": "brown",
     f"vone_alexnet": "navy",
+    f"mix_no-blur-1label": "green",
+    f"mix_no-blur-8label": "darkgreen",
 }
 
 lines = {
@@ -19,9 +22,12 @@ lines = {
     f"alexnet_multi-steps": "-",
     f"alexnet_all_s04": "-",
     f"alexnet_mix_s04": "-",
+    f"alexnet_mix_s01": "-",
     f"alexnet_mix_s10": "-",
     f"alexnet_random-mix_s00-05": "-",
     f"alexnet_random-mix_s00-10": "-",
     f"alexnet_trained_on_SIN": "-",
     f"vone_alexnet": "-",
+    f"mix_no-blur-1label": "-",
+    f"mix_no-blur-8label": "-",
 }

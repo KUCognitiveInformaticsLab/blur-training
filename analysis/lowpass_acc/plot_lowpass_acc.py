@@ -24,9 +24,9 @@ if __name__ == "__main__":
     analysis = f"lowpass_acc_{test_dataset}"
 
     # directories and model settings
-    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
+    in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
-    out_dir = f"./plots_vss/{analysis}/{num_classes}-class/"
+    out_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     # models to plot
     model_names = [
@@ -41,8 +41,15 @@ if __name__ == "__main__":
         # f"vone_{arch}",
     ]
 
+    model_names = [
+        f"{arch}_normal",
+        f"{arch}_mix_s01",
+        "mix_no-blur-1label",
+        "mix_no-blur-8label",
+    ]
+
     # set plot file name.
-    plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{arch}.png"
+    plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.png"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
