@@ -7,7 +7,7 @@ import torchvision.transforms as transforms
 
 
 def load_imagenet(
-    imagenet_path: str = "/mnt/data1/ImageNet/ILSVRC2012/",
+    imagenet_path: str = "/mnt/data/ImageNet/ILSVRC2012/",
     batch_size: int = 256,
     distributed: bool = False,
     workers: int = 4,
