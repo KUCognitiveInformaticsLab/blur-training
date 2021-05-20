@@ -25,7 +25,7 @@ if __name__ == "__main__":
     analysis = f"bandpass_rsm_{metrics}"
     legend = True
 
-    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
+    in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/bandpass/rsm/results/{analysis}/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/plots/{analysis}/{num_classes}-class/"
     # in_dir = f"./results/{analysis}/{num_classes}-class/"
     out_dir = f"./plots_vss/{analysis}_graph/{num_classes}-class/"
@@ -96,7 +96,7 @@ if __name__ == "__main__":
                 marker=".",
                 markersize=3,
                 ls=lines[model_name],
-                linewidth=1,
+                linewidth=2,
                 color=colors[model_name],
                 alpha=1,
             )
