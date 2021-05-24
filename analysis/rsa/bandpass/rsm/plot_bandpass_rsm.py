@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(str(current_dir) + "/../../../")
+sys.path.append(str(current_dir) + "/../../../../")
 
 from src.analysis.rsa.bandpass.bandpass_rsm import (
     plot_bandpass_RSMs,
@@ -34,9 +34,9 @@ if __name__ == "__main__":
     analysis = f"bandpass_rsm_{metrics}"
 
     # I/O settings
-    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/rsa/bandpass/results/{analysis}/{num_classes}-class/"
+    in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/bandpass/rsm/results/{analysis}/{num_classes}-class/"
     # in_dir = f"./results/{analysis}/{num_classes}-class/"
-    plots_dir = f"./plots_vss/{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     os.makedirs(in_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
