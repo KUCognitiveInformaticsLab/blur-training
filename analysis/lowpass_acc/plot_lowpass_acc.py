@@ -48,6 +48,22 @@ if __name__ == "__main__":
         "mix_no-blur-8label",
     ]
 
+    model_names = [
+        f"{arch}_normal",
+
+        # f"{arch}_all_s01",
+        # f"{arch}_all_s02",
+        # f"{arch}_all_s03",
+        # f"{arch}_all_s04",
+
+        # f"{arch}_mix_s01",
+        # f"{arch}_mix_s02",
+        # f"{arch}_mix_s03",
+        # f"{arch}_mix_s04",
+
+        f"{arch}_multi-steps",
+    ]
+
     # set plot file name.
     plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.png"
 
@@ -99,6 +115,7 @@ if __name__ == "__main__":
             label=rename_model_name(model_name),
             marker="o",
             ls=lines[model_name],
+            # ls=":" if model_name == f"{arch}_normal" else "-",
             color=colors[model_name],
         )
 
