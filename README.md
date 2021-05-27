@@ -26,5 +26,10 @@ You can try different training schedule as for blurring images. Here is an overv
   I make the dataset from ImageNet by using `robustness` library.
 - Cifar-10 dataset  
 
+# References
+[pytorch tutorial][pytorch-tutorial] <br>
+[pytorch imagenet training example][pytorch-imagenet]
 
 [cifar10]: ./cifar10/
+[pytorch-tutorial]:https://github.com/pytorch/tutorials/blob/master/beginner_source/blitz/cifar10_tutorial.py
+[pytorch-imagenet]:https://github.com/pytorch/examples/blob/master/imagenet
