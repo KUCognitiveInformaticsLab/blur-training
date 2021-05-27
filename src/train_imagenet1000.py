@@ -165,7 +165,7 @@ parser.add_argument("--exp_name", "-n", type=str, default="", help="Experiment n
 parser.add_argument(
     "--log_dir",
     type=str,
-    default=str(current_dir) + "/../train-logs/imagenet",
+    default=str(current_dir) + "/../train-logs/imagenet1000",
     help="Path to log directory to store trained models, tensorboard, stdout, and stderr.",
 )
 parser.add_argument(
