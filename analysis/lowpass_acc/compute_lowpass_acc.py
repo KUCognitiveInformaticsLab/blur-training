@@ -112,7 +112,7 @@ if __name__ == "__main__":
         _, test_loader = load_imagenet16(
             imagenet_path=imagenet_path, batch_size=batch_size
         )
-    elif test_dataset == "imagenet":
+    elif test_dataset == "imagenet1000":
         _, _, test_loader = load_imagenet(
             imagenet_path=imagenet_path,
             batch_size=batch_size,
