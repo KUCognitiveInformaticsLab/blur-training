@@ -41,7 +41,7 @@ if __name__ == "__main__":
     #     16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     # )
     models_dir = "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else means (num_classes == 1000)
+        16 if num_classes == 16 else 1000  # else means (num_classes == 1000)
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
 
@@ -65,11 +65,16 @@ if __name__ == "__main__":
     model_names = get_model_names(arch=arch)
 
     model_names = [
-        "alexnet_mix_s01_no-blur-1label",
-        "alexnet_mix_s01_no-blur-8label",
         "alexnet_mix_s04_no-blur-1label",
         "alexnet_mix_s04_no-blur-8label",
+        "alexnet_mix_s01_p_blur",
+        "alexnet_mix_s04_p_blur",
     ]
+    if num_classes == 16:
+        model_names += [
+            "alexnet_mix_s01_no-blur-1label",
+            "alexnet_mix_s01_no-blur-8label",
+        ]
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
