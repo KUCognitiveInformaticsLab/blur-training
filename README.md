@@ -13,7 +13,7 @@ You can try different training schedule as for blurring images. Here is an overv
 ![schedule](./figures/schedule.png)
 
 ## Training
-- `src/train_imagenet.py`: Training with ImageNet dataset. See [`./training_with_imagenet.md/`](./training_with_imagenet.md)  
+- `src/train_imagenet1000.py`: Training with ImageNet dataset. See [`./training_with_imagenet1000.md/`](training_with_imagenet1000.md)  
 - `src/train_imagenet16.py`: Training with 16-class-ImageNet dataset. See [`./training_with_imagenet16.md/`](./training_with_imagenet16.md)  
 - `./cifar10/main.py`: Training with Cifar-10 dataset. See [`./cifar10/`][cifar10]
 
