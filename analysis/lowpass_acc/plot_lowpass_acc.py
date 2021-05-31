@@ -58,8 +58,12 @@ if __name__ == "__main__":
         # f"{arch}_mix_s02",
         # f"{arch}_mix_s03",
         f"{arch}_mix_s04",
-        f"{arch}_mix_s01_p_blur",
-        f"{arch}_mix_s04_p_blur",
+        # f"{arch}_mix_p-blur_s01",
+        f"{arch}_mix_p-blur_s04",
+        f"{arch}_mix_p-blur_s01_no-blur-1label",
+        f"{arch}_mix_p-blur_s01_no-blur-8label",
+        f"{arch}_mix_p-blur_s04_no-blur-1label",
+        f"{arch}_mix_p-blur_s04_no-blur-8label",
         # f"{arch}_multi-steps",
     ]
 
@@ -90,7 +94,7 @@ if __name__ == "__main__":
         )
         if "vone" in model_name or "SIN" in model_name:
             file_path = file_path.replace("16-class", "1000-class")
-            file_path = file_path.replace("imagenet16", "imagenet")
+            file_path = file_path.replace("imagenet16", "imagenet1000")
 
         acc[model_name] = pd.read_csv(file_path, index_col=0).values[0]
 
@@ -101,7 +105,7 @@ if __name__ == "__main__":
         1,
         title=(
             f"Top-{metrics[-1]} acc. on ImageNet with low-pass filters "
-            if test_dataset == "imagenet"
+            if test_dataset == "imagenet1000"
             else f"Top-{metrics[-1]} acc. on 16-class-ImageNet with low-pass filters"
         ),
         xlabel="Low-pass filters (σ of GaussianBlur)",
