@@ -34,6 +34,22 @@ from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    "--stimuli",
+    default="each_bandpass",
+    type=str,
+    choices=["each_bandpass", "all_bandpass"],
+)
+parser.add_argument(
+    "--compute",
+    action="store_true",
+    default=False,
+)
+parser.add_argument(
+    "--plot",
+    action="store_true",
+    default=False,
+)
+parser.add_argument(
     "-a",
     "--arch",
     metavar="ARCH",
@@ -77,19 +93,10 @@ parser.add_argument(
 #     type=strtobool,
 #     default=1,
 # )
-parser.add_argument(
-    "--compute",
-    action="store_true",
-    default=False,
-)
-parser.add_argument(
-    "--plot",
-    action="store_true",
-    default=False,
-)
 
 
 if __name__ == "__main__":
+    # python compute_plot_tSNE.py --compute --plot --stimuli "each_bandpass"
     # ===== args =====
     args = parser.parse_args()
 
@@ -100,7 +107,7 @@ if __name__ == "__main__":
     imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
     in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
 
-    stimuli = "all_bandpass"  # "each_bandpass", "all_bandpass"
+    stimuli = args.stimuli  # "each_bandpass", "all_bandpass"
     analysis = f"t-SNE_{stimuli}"
     compute = args.compute
     plot = args.plot
