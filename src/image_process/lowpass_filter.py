@@ -31,6 +31,43 @@ def GaussianBlurAll(imgs, sigma, kernel_size=(0, 0)) -> torch.Tensor:
         imgs_list = imgs_list.transpose(0, 3, 1, 2)
 
         return torch.from_numpy(imgs_list)
+    
+
+def GaussianBlurAllExcludeLabels(
+    images, 
+    labels,
+    excluded_labels=[],
+    sigma=1,
+    kernel_size=(0, 0)
+) -> torch.Tensor:
+    """
+    Args:
+        images (torch.Tensor): Images, size: (N, C, H, W)
+        labels (torch.Tensor): Labels, size: (N)
+        sigma: Standard deviation of Gaussian kernel.
+        kernel_size: This size will be automatically adjusted.
+    Returns: Blurred images (torch.Tensor)
+            size: (N, C, H, W)
+    """
+    if sigma == 0:
+        return images  # do nothing
+    else:
+        images = images.numpy()
+
+        images_list = []
+        for image, label in zip(images, labels):
+            if label not in excluded_labels:
+                images_list.append(image.transpose(1, 2, 0))  # no blur
+            else:
+                images_list.append(
+                    cv2.GaussianBlur(image.transpose(1, 2, 0), kernel_size, sigma)
+                )
+
+        images_list = np.array(images_list)
+        # Change the order of dimension for pytorch (B, C, H, W)
+        images_list = images_list.transpose(0, 3, 1, 2)
+
+        return torch.from_numpy(images_list)
 
 
 def GaussianBlurAllRandomSigma(
