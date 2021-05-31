@@ -104,8 +104,6 @@ if __name__ == "__main__":
     num_classes = args.num_classes
     epoch = args.epoch
 
-
-
     stimuli = args.stimuli  # "each_bandpass", "all_bandpass"
     analysis = f"t-SNE_{stimuli}"
     compute = args.compute
