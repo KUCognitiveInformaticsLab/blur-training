@@ -40,9 +40,7 @@ def make_bandpass_filters(
     return filters
 
 
-def make_blur_filters(
-    sigmas=[4]
-) -> Dict[int, Optional[List[int]]]:
+def make_blur_filters(sigmas=[4]) -> Dict[int, Optional[List[int]]]:
     filters = {}
     for i, sigma in enumerate(sigmas):
         filters[i] = [sigma, None]

@@ -120,7 +120,7 @@ if __name__ == "__main__":
         args.data_dir,
         "pretrained_models/blur-training/imagenet{}/models/".format(
             16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
-        )
+        ),
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
