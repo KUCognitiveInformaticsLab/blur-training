@@ -104,8 +104,7 @@ if __name__ == "__main__":
     num_classes = args.num_classes
     epoch = args.epoch
 
-    imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
-    in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
+
 
     stimuli = args.stimuli  # "each_bandpass", "all_bandpass"
     analysis = f"t-SNE_{stimuli}"
@@ -117,15 +116,19 @@ if __name__ == "__main__":
     n_iter = args.n_iter
 
     # I/O settings
+    imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
+    in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
     models_dir = os.path.join(
         args.data_dir,
         "/pretrained_models/blur-training/imagenet{}/models/".format(
             16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
-        ),
+        )
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
+    assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
+    assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
