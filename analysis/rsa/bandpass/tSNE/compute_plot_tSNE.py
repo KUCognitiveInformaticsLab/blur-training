@@ -27,7 +27,7 @@ from src.analysis.rsa.rsa import (
     vone_alexnet_layers,
 )
 from src.dataset.imagenet16 import make_local_in16_test_loader
-from src.image_process.bandpass_filter import make_bandpass_filters
+from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 
@@ -37,7 +37,7 @@ parser.add_argument(
     "--stimuli",
     default="each_bandpass",
     type=str,
-    choices=["each_bandpass", "all_bandpass"],
+    choices=["each_bandpass", "all_bandpass", "S_B"],
 )
 parser.add_argument(
     "--compute",
@@ -183,6 +183,8 @@ if __name__ == "__main__":
 
     # make filters
     filters = make_bandpass_filters(num_filters=num_filters)
+    if stimuli == "S_B":
+        filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
 
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
@@ -224,7 +226,7 @@ if __name__ == "__main__":
                     n_iter=n_iter,
                     device=device,
                 )  # (F+1, L, N, D), (N)
-            elif stimuli == "all_bandpass":
+            elif stimuli == "all_bandpass" or stimuli == "S_B":
                 embed, labels = compute_tSNE_all_bandpass(
                     RSA=RSA,
                     num_images=test_loader.num_images,
@@ -271,7 +273,7 @@ if __name__ == "__main__":
                     model_name=model_name,
                     title=True,
                 )
-            elif stimuli == "all_bandpass":
+            elif stimuli == "all_bandpass" or stimuli == "S_B":
                 plot_tSNE_all_bandpass(
                     embedded_activations=embed,
                     labels=labels,

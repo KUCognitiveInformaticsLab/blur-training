@@ -29,12 +29,23 @@ def make_bandpass_filters(
     num_filters: int = 6,
 ) -> Dict[int, Optional[List[int]]]:
     filters = {}
-    filters[0] = [0, 1]
+
+    filters[0] = [0, 1]  # high-pass
     for i in range(1, num_filters):
         if i == (num_filters - 1):
             filters[i] = [2 ** (i - 1), None]  # last band-pass is low-pass filter
         else:
             filters[i] = [2 ** (i - 1), 2 ** i]
+
+    return filters
+
+
+def make_blur_filters(
+    sigmas=[4]
+) -> Dict[int, Optional[List[int]]]:
+    filters = {}
+    for i, sigma in enumerate(sigmas):
+        filters[i] = [sigma, None]
 
     return filters
 
