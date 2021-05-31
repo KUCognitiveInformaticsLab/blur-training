@@ -118,7 +118,7 @@ if __name__ == "__main__":
     in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
     models_dir = os.path.join(
         args.data_dir,
-        "/pretrained_models/blur-training/imagenet{}/models/".format(
+        "pretrained_models/blur-training/imagenet{}/models/".format(
             16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
         )
     )
