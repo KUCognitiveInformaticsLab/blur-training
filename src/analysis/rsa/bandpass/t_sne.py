@@ -132,7 +132,7 @@ def compute_tSNE_all_bandpass(
         image (torch.Tensor): torch.Size([1, C, H, W])
         label (torch.Tensor): e.g. tensor([0])
         """
-        labels += ["l{}_f{}".format(label.item(), i) for i in range(filters + 1)]
+        labels += [f"l{label.item()}_f{i}" for i in range(num_filters + 1)]
 
         activations = compute_activations_with_bandpass(
             RSA=RSA,
