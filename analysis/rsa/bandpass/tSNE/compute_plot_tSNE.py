@@ -75,7 +75,7 @@ parser.add_argument(
 parser.add_argument(
     "-d",
     "--num_dim",
-    default=3,
+    default=2,
     type=int,
 )
 parser.add_argument(
