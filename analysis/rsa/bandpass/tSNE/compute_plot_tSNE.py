@@ -109,6 +109,8 @@ if __name__ == "__main__":
     compute = args.compute
     plot = args.plot
     num_filters = args.num_filters
+    if stimuli == "S_B":
+        num_filters = 1
     num_dim = args.num_dim
     perplexity = args.perplexity
     n_iter = args.n_iter
