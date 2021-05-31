@@ -149,6 +149,17 @@ if __name__ == "__main__":
             file_path=result_path
         )  # (F+1, L, N, D), (N)
 
-        plot_tSNE_each_bandpass(embedded_activations=embed, labels=labels, num_filters=num_filters, layers=,
-                                num_dim=num_dim, plots_dir=plots_dir, analysis=analysis, perplexity=perplexity,
-                                n_iter=n_iter, num_classes=num_classes, model_name=model_name, title=True)
+        plot_tSNE_each_bandpass(
+            embedded_activations=embed,
+            labels=labels,
+            num_filters=num_filters,
+            layers=layers,
+            num_dim=num_dim,
+            plots_dir=plots_dir,
+            analysis=analysis,
+            perplexity=perplexity,
+            n_iter=n_iter,
+            num_classes=num_classes,
+            model_name=model_name,
+            title=True,
+        )

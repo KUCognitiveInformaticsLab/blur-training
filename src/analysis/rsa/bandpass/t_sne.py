@@ -132,7 +132,7 @@ def compute_tSNE_all_bandpass(
         image (torch.Tensor): torch.Size([1, C, H, W])
         label (torch.Tensor): e.g. tensor([0])
         """
-        labels += ["l{}_f{}".format(label.item(), i) for i in range(filters+1)]
+        labels += ["l{}_f{}".format(label.item(), i) for i in range(filters + 1)]
 
         activations = compute_activations_with_bandpass(
             RSA=RSA,
@@ -162,7 +162,9 @@ def compute_tSNE_all_bandpass(
         enumerate(RSA.layers), desc="Computing t-SNE (layers)", leave=False
     ):
         # all_activations: dict = {L: (N, F+1, activations)}
-        X = np.array(all_activations[layer]).reshape(num_images * (num_filters + 1), -1)  # (N * (F+1), activations)
+        X = np.array(all_activations[layer]).reshape(
+            num_images * (num_filters + 1), -1
+        )  # (N * (F+1), activations)
         embedded_activations[layer_id] = tsne.fit_transform(X)  # (N * (F+1), D)
 
     return embedded_activations, labels
