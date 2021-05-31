@@ -65,12 +65,12 @@ if __name__ == "__main__":
     model_names = get_model_names(arch=arch)
 
     model_names = [
-        "alexnet_mix_s01_no-blur-1label",
-        "alexnet_mix_s01_no-blur-8label",
-        "alexnet_mix_s04_no-blur-1label",
-        "alexnet_mix_s04_no-blur-8label",
-        "alexnet_mix_s01_p_blur",
-        "alexnet_mix_s04_p_blur",
+        # "alexnet_mix_s01_no-blur-1label",
+        # "alexnet_mix_s01_no-blur-8label",
+        # "alexnet_mix_s04_no-blur-1label",
+        # "alexnet_mix_s04_no-blur-8label",
+        "alexnet_mix_s01_p-blur",
+        "alexnet_mix_s04_p-blur",
     ]
 
     print("===== arguments =====")
