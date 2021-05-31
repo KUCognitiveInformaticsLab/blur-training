@@ -54,11 +54,13 @@ if __name__ == "__main__":
         # f"{arch}_all_s02",
         # f"{arch}_all_s03",
         # f"{arch}_all_s04",
-        # f"{arch}_mix_s01",
+        f"{arch}_mix_s01",
         # f"{arch}_mix_s02",
         # f"{arch}_mix_s03",
-        # f"{arch}_mix_s04",
-        f"{arch}_multi-steps",
+        f"{arch}_mix_s04",
+        f"{arch}_mix_s01_p_blur",
+        f"{arch}_mix_s04_p_blur",
+        # f"{arch}_multi-steps",
     ]
 
     # set plot file name.
