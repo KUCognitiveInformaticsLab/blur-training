@@ -40,8 +40,10 @@ if __name__ == "__main__":
     # models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
     #     16 if num_classes == 16 else ""  # else means (num_classes == 1000)
     # )
-    models_dir = "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else means (num_classes == 1000)
+    models_dir = (
+        "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
+            16 if num_classes == 16 else ""  # else means (num_classes == 1000)
+        )
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"

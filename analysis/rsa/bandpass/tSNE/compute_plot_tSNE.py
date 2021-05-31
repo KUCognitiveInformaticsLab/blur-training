@@ -2,7 +2,6 @@ import argparse
 import os
 import pathlib
 import sys
-from distutils.util import strtobool
 
 import numpy as np
 import torch
@@ -14,12 +13,19 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.t_sne import (
-    compute_bandpass_tSNE,
+    compute_tSNE_each_bandpass,
+    compute_tSNE_all_bandpass,
     save_embedded_activations,
     load_embedded_activations,
-    plot_tSNE,
+    plot_tSNE_each_bandpass,
+    plot_tSNE_all_bandpass,
 )
-from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
+from src.analysis.rsa.rsa import (
+    AlexNetRSA,
+    VOneNetAlexNetRSA,
+    alexnet_layers,
+    vone_alexnet_layers,
+)
 from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
@@ -43,6 +49,7 @@ parser.add_argument(
     default=60,
     type=int,
 )
+parser.add_argument("--data_dir", default="/mnt/data1", type=str)
 parser.add_argument("--model_names", nargs="+", type=str)
 parser.add_argument(
     "--num_filters",
@@ -65,10 +72,20 @@ parser.add_argument(
     default=1000,
     type=int,
 )
+# parser.add_argument(
+#     "--compute",
+#     type=strtobool,
+#     default=1,
+# )
 parser.add_argument(
     "--compute",
-    type=strtobool,
-    default=1,
+    action="store_true",
+    default=False,
+)
+parser.add_argument(
+    "--plot",
+    action="store_true",
+    default=False,
 )
 
 
@@ -80,19 +97,24 @@ if __name__ == "__main__":
     num_classes = args.num_classes
     epoch = args.epoch
 
-    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
-    in16_test_path = "/mnt/data1/imagenet16/test/"
+    imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
+    in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
 
-    analysis = f"t-SNE_bandpass_activations"
+    stimuli = "all_bandpass"  # "each_bandpass", "all_bandpass"
+    analysis = f"t-SNE_{stimuli}"
     compute = args.compute
+    plot = args.plot
     num_filters = args.num_filters
     num_dim = args.num_dim
     perplexity = args.perplexity
     n_iter = args.n_iter
 
     # I/O settings
-    models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+    models_dir = os.path.join(
+        args.data_dir,
+        "/pretrained_models/blur-training/imagenet{}/models/".format(
+            16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
+        ),
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
@@ -114,6 +136,7 @@ if __name__ == "__main__":
     print("===== arguments =====")
     print("analysis:", analysis)
     print("compute:", compute)
+    print("plot:", plot)
     print("num_classes:", num_classes)
     print("num_filters:", num_filters)
     print("num_dim:", num_dim)
@@ -182,16 +205,28 @@ if __name__ == "__main__":
         # compute bandpass tSNE
         if compute:
             print(f"{model_name} computing...")
-            embed, labels = compute_bandpass_tSNE(
-                RSA=RSA,
-                num_images=test_loader.num_images,
-                data_loader=test_loader,
-                filters=filters,
-                num_dim=num_dim,
-                perplexity=perplexity,
-                n_iter=n_iter,
-                device=device,
-            )  # (F+1, L, N, D), (N)
+            if stimuli == "each_bandpass":
+                embed, labels = compute_tSNE_each_bandpass(
+                    RSA=RSA,
+                    num_images=test_loader.num_images,
+                    data_loader=test_loader,
+                    filters=filters,
+                    num_dim=num_dim,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    device=device,
+                )  # (F+1, L, N, D), (N)
+            elif stimuli == "all_bandpass":
+                embed, labels = compute_tSNE_all_bandpass(
+                    RSA=RSA,
+                    num_images=test_loader.num_images,
+                    data_loader=test_loader,
+                    filters=filters,
+                    num_dim=num_dim,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    device=device,
+                )  # (L, N * (F+1), D), (N)
 
         result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
@@ -203,20 +238,42 @@ if __name__ == "__main__":
             )
 
         # === plot t-SNE ===
-        embed, labels = load_embedded_activations(
-            file_path=result_path
-        )  # (F+1, L, N, D), (N)
+        if plot:
+            embed, labels = load_embedded_activations(
+                file_path=result_path
+            )  # (F+1, L, N, D), (N) or (L, N * (F+1), D), (N * (F+1))
 
-        plot_tSNE(
-            embedded_activations=embed,
-            labels=labels,
-            num_filters=num_filters,
-            num_dim=num_dim,
-            plots_dir=plots_dir,
-            analysis=analysis,
-            perplexity=perplexity,
-            n_iter=n_iter,
-            num_classes=num_classes,
-            model_name=model_name,
-            title=True,
-        )
+            if "vone" in model_name:
+                layers = vone_alexnet_layers
+            else:
+                layers = alexnet_layers
+
+            if stimuli == "each_bandpass":
+                plot_tSNE_each_bandpass(
+                    embedded_activations=embed,
+                    labels=labels,
+                    num_filters=num_filters,
+                    layers=layers,
+                    num_dim=num_dim,
+                    plots_dir=plots_dir,
+                    analysis=analysis,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    num_classes=num_classes,
+                    model_name=model_name,
+                    title=True,
+                )
+            elif stimuli == "all_bandpass":
+                plot_tSNE_all_bandpass(
+                    embedded_activations=embed,
+                    labels=labels,
+                    layers=layers,
+                    num_dim=num_dim,
+                    plots_dir=plots_dir,
+                    analysis=analysis,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    num_classes=num_classes,
+                    model_name=model_name,
+                    title=True,
+                )

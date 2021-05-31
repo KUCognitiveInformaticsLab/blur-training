@@ -16,7 +16,7 @@ sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.t_sne import (
     load_embedded_activations,
-    plot_tSNE,
+    plot_tSNE_each_bandpass,
 )
 from src.analysis.rsa.rsa import alexnet_layers, vone_alexnet_layers
 from src.image_process.bandpass_filter import make_bandpass_filters
@@ -149,16 +149,6 @@ if __name__ == "__main__":
             file_path=result_path
         )  # (F+1, L, N, D), (N)
 
-        plot_tSNE(
-            embedded_activations=embed,
-            labels=labels,
-            num_filters=num_filters,
-            num_dim=num_dim,
-            plots_dir=plots_dir,
-            analysis=analysis,
-            perplexity=perplexity,
-            n_iter=n_iter,
-            num_classes=num_classes,
-            model_name=model_name,
-            title=True,
-        )
+        plot_tSNE_each_bandpass(embedded_activations=embed, labels=labels, num_filters=num_filters, layers=,
+                                num_dim=num_dim, plots_dir=plots_dir, analysis=analysis, perplexity=perplexity,
+                                n_iter=n_iter, num_classes=num_classes, model_name=model_name, title=True)

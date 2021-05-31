@@ -13,7 +13,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.t_sne import (
-    compute_bandpass_tSNE,
+    compute_tSNE_each_bandpass,
 )
 from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
 from src.dataset.imagenet16 import load_imagenet16
@@ -119,7 +119,7 @@ if __name__ == "__main__":
             RSA = AlexNetRSA(model)
 
         # compute bandpass tSNE
-        embedded_activations = compute_bandpass_tSNE(
+        embedded_activations = compute_tSNE_each_bandpass(
             RSA=RSA,
             num_images=test_loader.num_images,
             data_loader=test_loader,
