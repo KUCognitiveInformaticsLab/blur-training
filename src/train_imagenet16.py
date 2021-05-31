@@ -61,6 +61,7 @@ parser.add_argument(
         "normal",
         "all",
         "mix",
+        "mix_p-blur",
         "random-mix",
         "single-step",
         "reversed-single-step",
@@ -273,10 +274,11 @@ def main():
 
             # Blur images
             if args.mode == "mix":
-                # half1, half2 = inputs.chunk(2)
-                # # blur first half images
-                # half1 = GaussianBlurAll(half1, args.sigma)
-                # inputs = torch.cat((half1, half2))
+                half1, half2 = inputs.chunk(2)
+                # blur first half images
+                half1 = GaussianBlurAll(half1, args.sigma)
+                inputs = torch.cat((half1, half2))
+            elif args.mode == "mix_p-blur":
                 inputs = GaussianBlurProbExcludeLabels(
                     images=inputs,
                     labels=labels,

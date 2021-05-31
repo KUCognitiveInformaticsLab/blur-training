@@ -6,6 +6,7 @@ import sys
 import time
 import warnings
 
+import numpy as np
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
 import torch.multiprocessing as mp
@@ -180,6 +181,7 @@ parser.add_argument(
         "normal",
         "all",
         "mix",
+        "mix_p-blur",
         "random-mix",
         "single-step",
         "reversed-single-step",
@@ -266,6 +268,7 @@ def main():
 
     if args.seed is not None:
         random.seed(args.seed)
+        np.random.seed(args.seed)
         torch.manual_seed(args.seed)
         cudnn.deterministic = True
         warnings.warn(
@@ -534,10 +537,11 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
         # blur images (no blur when args.sigma = 0)
         if args.mode == "mix":
-            # half1, half2 = images.chunk(2)
-            # # blur first half images
-            # half1 = GaussianBlurAll(half1, args.sigma)
-            # images = torch.cat((half1, half2))
+            half1, half2 = images.chunk(2)
+            # blur first half images
+            half1 = GaussianBlurAll(half1, args.sigma)
+            images = torch.cat((half1, half2))
+        elif args.mode == "mix_p-blur":
             images = GaussianBlurProbExcludeLabels(
                 images=images,
                 labels=targets,
