@@ -56,7 +56,7 @@ def GaussianBlurAllExcludeLabels(
 
         images_list = []
         for image, label in zip(images, labels):
-            if label not in excluded_labels:
+            if label in excluded_labels:
                 images_list.append(image.transpose(1, 2, 0))  # no blur
             else:
                 images_list.append(
