@@ -73,6 +73,9 @@ if __name__ == "__main__":
         f"{arch}_mix_p-blur_s04{arch}",
     ]
 
+    model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] \
+                + [f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)]
+
     print("===== arguments =====")
     print("num_classes:", num_classes)
     print("batch_size:", batch_size)
