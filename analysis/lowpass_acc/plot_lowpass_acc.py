@@ -63,7 +63,7 @@ if __name__ == "__main__":
         f"{arch}_mix_s04_no-blur-1label",
         f"{arch}_mix_s04_no-blur-8label",
         # f"{arch}_mix_p-blur_s01",
-        # f"{arch}_mix_p-blur_s04",c
+        # f"{arch}_mix_p-blur_s04",
         # f"{arch}_mix_p-blur_s01_no-blur-1label",
         # f"{arch}_mix_p-blur_s01_no-blur-8label",
         # f"{arch}_mix_p-blur_s04_no-blur-1label",
