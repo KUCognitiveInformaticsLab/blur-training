@@ -123,4 +123,4 @@ def compute_confusion_matrix(
 
     conf_matrix = confusion_matrix(targets, pred)
 
-    return conf_matrix, pred, targets
+    return conf_matrix
