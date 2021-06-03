@@ -402,8 +402,6 @@ def plot_tSNE_s_b(
         #     #             fontsize=10,
         #     #         )
 
-
-
         # if title:
         #     plt.title(
         #         f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
