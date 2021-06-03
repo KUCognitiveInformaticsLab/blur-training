@@ -539,11 +539,12 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         # blur images (no blur when args.sigma = 0)
         if args.mode == "mix":
             half1, half2 = images.chunk(2)
+            targets1, _ = targets.chunk(2)
             # blur first half images
             # half1 = GaussianBlurAll(half1, args.sigma)
             half1 = GaussianBlurAllExcludeLabels(
                 images=half1,
-                labels=targets,
+                labels=targets1,
                 excluded_labels=args.excluded_labels,
                 sigma=args.sigma,
             )

@@ -276,11 +276,12 @@ def main():
             # Blur images
             if args.mode == "mix":
                 half1, half2 = inputs.chunk(2)
+                labels1, _ = labels.chunk(2)
                 # blur first half images
                 # half1 = GaussianBlurAll(half1, args.sigma)
                 half1 = GaussianBlurAllExcludeLabels(
                     images=half1,
-                    labels=labels,
+                    labels=labels1,
                     excluded_labels=args.excluded_labels,
                     sigma=args.sigma,
                 )
