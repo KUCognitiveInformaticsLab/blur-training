@@ -31,14 +31,10 @@ def GaussianBlurAll(imgs, sigma, kernel_size=(0, 0)) -> torch.Tensor:
         imgs_list = imgs_list.transpose(0, 3, 1, 2)
 
         return torch.from_numpy(imgs_list)
-    
+
 
 def GaussianBlurAllExcludeLabels(
-    images, 
-    labels,
-    excluded_labels=[],
-    sigma=1,
-    kernel_size=(0, 0)
+    images, labels, excluded_labels=[], sigma=1, kernel_size=(0, 0)
 ) -> torch.Tensor:
     """
     Args:

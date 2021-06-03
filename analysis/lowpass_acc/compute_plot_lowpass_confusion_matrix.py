@@ -7,7 +7,9 @@ import os
 import pathlib
 import sys
 
+import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 import torch
 import torch.backends.cudnn as cudnn
 import vonenet
@@ -21,7 +23,7 @@ from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
-from src.analysis.lowpass_acc.lowpass_acc import test_performance
+from src.analysis.lowpass_acc.lowpass_acc import compute_confusion_matrix
 
 
 if __name__ == "__main__":
@@ -55,10 +57,11 @@ if __name__ == "__main__":
         )
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
+    os.makedirs(results_dir, exist_ok=True)
+    os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
     model_names = [
@@ -170,12 +173,26 @@ if __name__ == "__main__":
             results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
         )  # acc1&acc5 will be saved (when ImageNet is test dataset)
 
-        test_performance(
-            model=model,
-            test_loader=test_loader,
-            max_sigma=max_sigma,
-            out_path=out_path,
-            device=device,
-        )
+        for s in tqdm(range(max_sigma + 1), desc="lowpass filters", leave=False):
+            conf_matrix = compute_confusion_matrix(
+                model=model,
+                test_loader=test_loader,
+                sigma=s,
+                device=device,
+            )
+
+            # save confusion matrix
+            result_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.csv"
+            result_path = os.path.join(results_dir, result_name)
+            np.savetxt(result_path, conf_matrix, delimiter=",")
+
+            # plot confusion matrix
+            sns.heatmap(conf_matrix)
+            title = f"{analysis} s{s:02d}, {num_classes}-class, {model_name}"
+            plt.title(title)
+            plot_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.png"
+            plot_path = os.path.join(plots_dir, plot_name)
+            plt.savefig(plot_path)
+            plt.close()
 
     print(f"{analysis}: All done!!")

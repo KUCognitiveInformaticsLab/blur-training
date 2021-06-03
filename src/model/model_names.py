@@ -32,8 +32,9 @@ def get_model_names(arch, compare="vss"):
             f"{arch}_mix_p-blur_s04{arch}",
         ]
     elif compare == "mix_no-blur":
-        model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] \
-                      + [f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)]
+        model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
+            f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
+        ]
     elif compare == "all_blur-training":
         modes = [
             f"{arch}_all",
