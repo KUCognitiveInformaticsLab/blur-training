@@ -34,15 +34,19 @@ if __name__ == "__main__":
     analysis = f"lowpass_acc_{test_dataset}"
     max_sigma = 20
 
-    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
+    machine = "server"  # ("server", "local")
+
+    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/" if machine == "server" else (
+        "/Users/sou/lab2-mnt/data1/ImageNet/ILSVRC2012/"
+    )
 
     # I/O
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
-    )
-    # models_dir = "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
-    #     16 if num_classes == 16 else 1000  # else means (num_classes == 1000)
-    # )
+    ) if machine == "server" else (
+        "/Users/sou/lab2-mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+        16 if num_classes == 16 else 1000  # else means (num_classes == 1000)
+    ))
     results_dir = f"./results/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
