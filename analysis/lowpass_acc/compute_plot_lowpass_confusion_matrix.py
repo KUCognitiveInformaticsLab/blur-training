@@ -64,6 +64,10 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
+    from src.model.model_names import get_model_names
+
+    model_names = get_model_names(arch=arch)
+
     model_names = [
         f"untrained_{arch}",
         f"{arch}_normal",
@@ -74,22 +78,18 @@ if __name__ == "__main__":
         sin_names[arch],
     ]
 
-    from src.model.model_names import get_model_names
-
-    model_names = get_model_names(arch=arch)
-
-    model_names = [
-        f"{arch}_mix_p-blur_s01_no-blur-1label",
-        f"{arch}_mix_p-blur_s01_no-blur-8label",
-        f"{arch}_mix_p-blur_s04_no-blur-1label",
-        f"{arch}_mix_p-blur_s04_no-blur-8label",
-        f"{arch}_mix_p-blur_s01",
-        f"{arch}_mix_p-blur_s04",
-    ]
-
-    model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
-        f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
-    ]
+    # model_names = [
+    #     f"{arch}_mix_p-blur_s01_no-blur-1label",
+    #     f"{arch}_mix_p-blur_s01_no-blur-8label",
+    #     f"{arch}_mix_p-blur_s04_no-blur-1label",
+    #     f"{arch}_mix_p-blur_s04_no-blur-8label",
+    #     f"{arch}_mix_p-blur_s01",
+    #     f"{arch}_mix_p-blur_s04",
+    # ]
+    #
+    # model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
+    #     f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
+    # ]
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
