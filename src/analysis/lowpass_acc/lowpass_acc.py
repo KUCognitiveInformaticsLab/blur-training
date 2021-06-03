@@ -115,7 +115,7 @@ def compute_confusion_matrix(
                     model_decision_id = get_key_from_value(label_map, model_decision)
 
                     pred += [model_decision_id]
-            else:  # TODO: acc5 with imagenet1000
+            elif model.num_classes == 16:
                 pred += [outputs.topk(1)[1].view(-1).cpu().numpy()]
 
     targets = np.array(targets).reshape(-1)
