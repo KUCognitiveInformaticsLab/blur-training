@@ -92,7 +92,7 @@ def compute_confusion_matrix(
 
     with torch.no_grad():
         for data in tqdm(test_loader, desc="test images", leave=False):
-            inputs, labels = data[0], data[1].to(device)
+            inputs, labels = data[0], data[1]
 
             # add target ids
             targets += [labels.numpy()]
