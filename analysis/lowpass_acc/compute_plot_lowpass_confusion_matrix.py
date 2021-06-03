@@ -182,9 +182,9 @@ if __name__ == "__main__":
             )
 
             # save confusion matrix
-            result_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.csv"
+            result_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.npy"
             result_path = os.path.join(results_dir, result_name)
-            np.savetxt(result_path, conf_matrix, delimiter=",")
+            np.save(result_path, conf_matrix, delimiter=",")
 
             # plot confusion matrix
             sns.heatmap(conf_matrix)
