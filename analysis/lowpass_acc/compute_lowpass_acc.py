@@ -69,8 +69,8 @@ if __name__ == "__main__":
         f"{arch}_mix_p-blur_s01_no-blur-8label",
         f"{arch}_mix_p-blur_s04_no-blur-1label",
         f"{arch}_mix_p-blur_s04_no-blur-8label",
-        f"{arch}_mix_p-blur_s01{arch}",
-        f"{arch}_mix_p-blur_s04{arch}",
+        f"{arch}_mix_p-blur_s01",
+        f"{arch}_mix_p-blur_s04",
     ]
 
     model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] \
