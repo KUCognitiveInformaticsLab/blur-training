@@ -33,7 +33,7 @@ if __name__ == "__main__":
     epoch = 60
     test_dataset = str(sys.argv[2])  # test_dataset to use
     batch_size = 64
-    analysis = f"lowpass_acc_{test_dataset}"
+    analysis = f"lowpass_confusion_matrix_{test_dataset}"
     max_sigma = 20
 
     machine = "server"  # ("server", "local")
