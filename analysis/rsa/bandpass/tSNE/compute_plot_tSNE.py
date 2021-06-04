@@ -19,6 +19,7 @@ from src.analysis.rsa.bandpass.t_sne import (
     load_embedded_activations,
     plot_tSNE_each_bandpass,
     plot_tSNE_all_bandpass,
+    plot_tSNE_s_b,
 )
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
@@ -116,22 +117,26 @@ if __name__ == "__main__":
     n_iter = args.n_iter
 
     # I/O settings
-    imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
-    in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
-    models_dir = os.path.join(
-        args.data_dir,
-        "pretrained_models/blur-training/imagenet{}/models/".format(
-            16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
-        ),
-    )
-    results_dir = f"./results/{analysis}/{num_classes}-class/"
-    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
+    if args.compute:
+        imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
+        in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
+        models_dir = os.path.join(
+            args.data_dir,
+            "pretrained_models/blur-training/imagenet{}/models/".format(
+                16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
+            ),
+        )
+        assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
+        assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
+        assert os.path.exists(models_dir), f"{models_dir} does not exist."
 
-    assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
-    assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
-    assert os.path.exists(models_dir), f"{models_dir} does not exist."
+    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    # results_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/bandpass/tSNE/results/{analysis}/{num_classes}-class/"
     os.makedirs(results_dir, exist_ok=True)
-    os.makedirs(plots_dir, exist_ok=True)
+
+    if args.plot:
+        plots_dir = f"./plots/{analysis}/{num_classes}-class/"
+        os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
     model_names = [
@@ -154,7 +159,8 @@ if __name__ == "__main__":
     print("n_iter:", n_iter)
 
     print("===== I/O =====")
-    print("IN, models_dir:", models_dir)
+    if args.compute:
+        print("IN, models_dir:", models_dir)
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
     print()
@@ -174,48 +180,49 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    if args.compute:
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    # make Dataloader
-    # ** batch_size must be 1 **
-    # _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=1)
-    test_loader = make_local_in16_test_loader(
-        data_path=in16_test_path, batch_size=1, shuffle=False
-    )
+        # make Dataloader
+        # ** batch_size must be 1 **
+        # _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=1)
+        test_loader = make_local_in16_test_loader(
+            data_path=in16_test_path, batch_size=1, shuffle=False
+        )
 
-    # make filters
-    filters = make_bandpass_filters(num_filters=num_filters)
-    if stimuli == "S_B":
-        filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
+        # make filters
+        filters = make_bandpass_filters(num_filters=num_filters)
+        if stimuli == "S_B":
+            filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
 
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
-        # make RSA instance
-        if num_classes == 1000 and "SIN" in model_name:
-            # Stylized-ImageNet
-            model = load_sin_model(model_name).to(device)
-            model.features = model.features.module
-            RSA = AlexNetRSA(model)
-        elif num_classes == 1000 and "vone" in model_name:
-            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            RSA = VOneNetAlexNetRSA(model)
-        elif "untrained" in model_name:
-            model_path = ""  # load untrained model
-            model = load_model(
-                arch=arch, num_classes=num_classes, model_path=model_path
-            ).to(device)
-            RSA = AlexNetRSA(model)
-        else:
-            model_path = os.path.join(
-                models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
-            )
-            model = load_model(
-                arch=arch, num_classes=num_classes, model_path=model_path
-            ).to(device)
-            RSA = AlexNetRSA(model)
+        if args.compute:
+            # make RSA instance
+            if num_classes == 1000 and "SIN" in model_name:
+                # Stylized-ImageNet
+                model = load_sin_model(model_name).to(device)
+                model.features = model.features.module
+                RSA = AlexNetRSA(model)
+            elif num_classes == 1000 and "vone" in model_name:
+                model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+                RSA = VOneNetAlexNetRSA(model)
+            elif "untrained" in model_name:
+                model_path = ""  # load untrained model
+                model = load_model(
+                    arch=arch, num_classes=num_classes, model_path=model_path
+                ).to(device)
+                RSA = AlexNetRSA(model)
+            else:
+                model_path = os.path.join(
+                    models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
+                )
+                model = load_model(
+                    arch=arch, num_classes=num_classes, model_path=model_path
+                ).to(device)
+                RSA = AlexNetRSA(model)
 
-        # compute bandpass tSNE
-        if compute:
+            # compute bandpass tSNE
             print(f"{model_name} computing...")
             if stimuli == "each_bandpass":
                 embed, labels = compute_tSNE_each_bandpass(
@@ -275,8 +282,22 @@ if __name__ == "__main__":
                     model_name=model_name,
                     title=True,
                 )
-            elif stimuli == "all_bandpass" or stimuli == "S_B":
+            elif stimuli == "all_bandpass":
                 plot_tSNE_all_bandpass(
+                    embedded_activations=embed,
+                    labels=labels,
+                    layers=layers,
+                    num_dim=num_dim,
+                    plots_dir=plots_dir,
+                    analysis=analysis,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    num_classes=num_classes,
+                    model_name=model_name,
+                    title=True,
+                )
+            elif stimuli == "S_B":
+                plot_tSNE_s_b(
                     embedded_activations=embed,
                     labels=labels,
                     layers=layers,
