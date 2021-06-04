@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # directories and model settings
     in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
-    # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
+    # out_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
     out_dir = f"./plots/{analysis}/{num_classes}-class/"
 
     # models to plot
