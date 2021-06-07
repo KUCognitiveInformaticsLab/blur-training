@@ -25,7 +25,8 @@ sys.path.append(str(current_dir) + "/../")
 from src.dataset.imagenet import load_imagenet
 from src.image_process.lowpass_filter import (
     GaussianBlurAll,
-    GaussianBlurAllExcludeLabels,
+    GaussianBlurAllNotInExcludedLabels,
+    GaussianBlurAllInExcludedLabels,
     GaussianBlurAllRandomSigma,
     GaussianBlurProbExcludeLabels,
 )
@@ -182,6 +183,7 @@ parser.add_argument(
         "normal",
         "all",
         "mix",
+        "mix_no-sharp",
         "mix_p-blur",
         "random-mix",
         "single-step",
@@ -542,13 +544,25 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
             targets1, _ = targets.chunk(2)
             # blur first half images
             # half1 = GaussianBlurAll(half1, args.sigma)
-            half1 = GaussianBlurAllExcludeLabels(
+            half1 = GaussianBlurAllNotInExcludedLabels(
                 images=half1,
                 labels=targets1,
                 excluded_labels=args.excluded_labels,
                 sigma=args.sigma,
             )
             images = torch.cat((half1, half2))
+        elif args.mode == "mix_no-sharp":
+            half1, half2 = inputs.chunk(2)
+            _, targets2 = targets.chunk(2)
+            # blur first half images
+            half1 = GaussianBlurAll(half1, args.sigma)
+            half2 = GaussianBlurAllInExcludedLabels(
+                images=half2,
+                labels=targets2,
+                excluded_labels=args.excluded_labels,
+                sigma=args.sigma,
+            )
+            inputs = torch.cat((half1, half2))
         elif args.mode == "mix_p-blur":
             images = GaussianBlurProbExcludeLabels(
                 images=images,

@@ -18,7 +18,8 @@ sys.path.append(str(current_dir) + "/../")
 
 from src.image_process.lowpass_filter import (
     GaussianBlurAll,
-    GaussianBlurAllExcludeLabels,
+    GaussianBlurAllNotInExcludedLabels,
+    GaussianBlurAllInExcludedLabels,
     GaussianBlurAllRandomSigma,
     GaussianBlurProbExcludeLabels,
 )
@@ -63,6 +64,7 @@ parser.add_argument(
         "all",
         "mix",
         "mix_p-blur",
+        "mix_no-sharp",
         "random-mix",
         "single-step",
         "reversed-single-step",
@@ -279,9 +281,21 @@ def main():
                 labels1, _ = labels.chunk(2)
                 # blur first half images
                 # half1 = GaussianBlurAll(half1, args.sigma)
-                half1 = GaussianBlurAllExcludeLabels(
+                half1 = GaussianBlurAllNotInExcludedLabels(
                     images=half1,
                     labels=labels1,
+                    excluded_labels=args.excluded_labels,
+                    sigma=args.sigma,
+                )
+                inputs = torch.cat((half1, half2))
+            elif args.mode == "mix_no-sharp":
+                half1, half2 = inputs.chunk(2)
+                _, labels2 = labels.chunk(2)
+                # blur first half images
+                half1 = GaussianBlurAll(half1, args.sigma)
+                half2 = GaussianBlurAllInExcludedLabels(
+                    images=half2,
+                    labels=labels2,
                     excluded_labels=args.excluded_labels,
                     sigma=args.sigma,
                 )
