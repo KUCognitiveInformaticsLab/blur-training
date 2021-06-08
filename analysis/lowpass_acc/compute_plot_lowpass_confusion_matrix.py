@@ -37,6 +37,8 @@ if __name__ == "__main__":
     analysis = f"{stimuli}_confusion_matrix_{test_dataset}"
     max_sigma = 20
 
+    compare = str(sys.argv[3])  # models to compare
+
     machine = "server"  # ("server", "local")
 
     imagenet_path = (
@@ -65,10 +67,6 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    from src.model.model_names import get_model_names
-
-    model_names = get_model_names(arch=arch)
-
     model_names = [
         f"untrained_{arch}",
         f"{arch}_normal",
@@ -78,6 +76,10 @@ if __name__ == "__main__":
         f"vone_{arch}",
         sin_names[arch],
     ]
+
+    from src.model.model_names import get_model_names
+
+    model_names = get_model_names(arch=arch, compare=compare)
 
     # model_names = [
     #     f"{arch}_mix_p-blur_s01_no-blur-1label",
