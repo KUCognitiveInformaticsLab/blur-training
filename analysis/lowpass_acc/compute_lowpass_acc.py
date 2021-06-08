@@ -34,6 +34,8 @@ if __name__ == "__main__":
     analysis = f"lowpass_acc_{test_dataset}"
     max_sigma = 20
 
+    compare = str(sys.argv[3])  # models to compare
+
     machine = "server"  # ("server", "local")
 
     imagenet_path = (
@@ -71,22 +73,16 @@ if __name__ == "__main__":
         sin_names[arch],
     ]
 
-    from src.model.model_names import get_model_names
-
-    model_names = get_model_names(arch=arch)
-
-    model_names = [
-        f"{arch}_mix_p-blur_s01_no-blur-1label",
-        f"{arch}_mix_p-blur_s01_no-blur-8label",
-        f"{arch}_mix_p-blur_s04_no-blur-1label",
-        f"{arch}_mix_p-blur_s04_no-blur-8label",
-        f"{arch}_mix_p-blur_s01",
-        f"{arch}_mix_p-blur_s04",
-    ]
-
     model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
         f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
     ]
+    model_names = [f"{arch}_mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
+        f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
+    ]
+
+    from src.model.model_names import get_model_names
+
+    model_names = get_model_names(arch=arch, compare=compare)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
