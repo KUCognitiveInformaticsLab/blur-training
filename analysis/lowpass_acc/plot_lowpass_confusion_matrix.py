@@ -10,22 +10,13 @@ import sys
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
-import vonenet
 from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
-from src.dataset.imagenet16 import load_imagenet16
-from src.dataset.imagenet import load_imagenet
-from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
-from src.analysis.lowpass_acc.lowpass_acc import (
-    compute_confusion_matrix,
-    plot_confusion_matrix,
-)
-
+from src.analysis.lowpass_acc.lowpass_acc import plot_confusion_matrix
 
 if __name__ == "__main__":
     # ===== args =====
@@ -40,13 +31,7 @@ if __name__ == "__main__":
 
     compare = str(sys.argv[3])  # models to compare
 
-    machine = "server"  # ("server", "local")
-
-    imagenet_path = (
-        "/mnt/data1/ImageNet/ILSVRC2012/"
-        if machine == "server"
-        else ("/Users/sou/lab2-mnt/data1/ImageNet/ILSVRC2012/")
-    )
+    machine = "local"  # ("server", "local")
 
     # I/O
     models_dir = (
@@ -60,24 +45,20 @@ if __name__ == "__main__":
             )
         )
     )
-    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    results_dir = (
+        f"./results/{analysis}/{num_classes}-class/"
+        if machine == "server"
+        else f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
+    )
+
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
+    plots_server_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        f"untrained_{arch}",
-        f"{arch}_normal",
-        f"{arch}_multi-steps",
-        f"{arch}_all_s04",
-        f"{arch}_mix_s04",
-        f"vone_{arch}",
-        sin_names[arch],
-    ]
-
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, compare=compare)
@@ -126,79 +107,22 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # print(device)
 
-    # loading data
-    if test_dataset == "imagenet16":
-        _, test_loader = load_imagenet16(
-            imagenet_path=imagenet_path, batch_size=batch_size
-        )
-    elif test_dataset == "imagenet1000":
-        _, _, test_loader = load_imagenet(
-            imagenet_path=imagenet_path,
-            batch_size=batch_size,
-            distributed=False,
-            workers=4,
-        )
-
     for model_name in tqdm(model_names, desc="models", leave=False):
-        print()
-        print(f"{model_name}: computing lowpass confusion matrix...")
-        # load model
-        if "SIN" in model_name:
-            if test_dataset == "imagenet16":
-                continue
-            # Stylized-ImageNet
-            model = load_sin_model(model_name).to(device)
-            model.num_classes = num_classes
-        elif "vone" in model_name:
-            if test_dataset == "imagenet16":
-                continue
-            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            model.num_classes = num_classes
-        elif "untrained" in model_name:
-            model_path = ""  # load untrained model
-            model = load_model(
-                arch=arch, num_classes=num_classes, model_path=model_path
-            ).to(device)
-            model.num_classes = num_classes
-        else:
-            model_path = os.path.join(
-                models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
-            )
-            model = load_model(
-                arch=arch,
-                num_classes=num_classes,
-                model_path=model_path,
-                device="cuda:0" if torch.cuda.is_available() else "cpu",
-            ).to(device)
-            model.num_classes = num_classes
-
-        # set path to output
-        out_path = os.path.join(
-            results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
-        )  # acc1&acc5 will be saved (when ImageNet is test dataset)
-
         for s in tqdm(range(max_sigma + 1), desc="lowpass filters", leave=False):
-            conf_matrix = compute_confusion_matrix(
-                model=model,
-                test_loader=test_loader,
-                sigma=s,
-                device=device,
-            )
-
-            # save confusion matrix
+            # load confusion matrix
             result_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.npy"
             result_path = os.path.join(results_dir, result_name)
-            np.save(result_path, conf_matrix)
+            conf_matrix = np.load(result_path)
 
-            # load confusion matrix
-            # conf_matrix = np.load(result_path)
+            # compute acc
+            acc = np.diag(conf_matrix).sum() / conf_matrix.sum()
 
             # normalize confusion matrix. (divided by # of each class)
             norm_conf_matrix = conf_matrix / (conf_matrix.sum() / num_classes)
 
             # plot confusion matrix
             title = (
-                f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}"
+                f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}"
             )
             plot_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.png"
             plot_path = os.path.join(plots_dir, plot_name)
@@ -209,5 +133,15 @@ if __name__ == "__main__":
                 title=title,
                 out_path=plot_path,
             )
+            if machine == "local":
+                # save to a server
+                plot_path = os.path.join(plots_server_dir, plot_name)
+                plot_confusion_matrix(
+                    confusion_matrix=norm_conf_matrix,
+                    vmin=0,
+                    vmax=1,
+                    title=title,
+                    out_path=plot_path,
+                )
 
     print(f"{analysis}: All done!!")
