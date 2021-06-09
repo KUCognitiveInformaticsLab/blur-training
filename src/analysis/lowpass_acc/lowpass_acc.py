@@ -5,8 +5,10 @@ import os
 import pathlib
 import sys
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import torch
 from sklearn.metrics import confusion_matrix
 from tqdm import tqdm
@@ -124,3 +126,16 @@ def compute_confusion_matrix(
     conf_matrix = confusion_matrix(targets, pred)
 
     return conf_matrix
+
+
+def plot_confusion_matrix(
+    confusion_matrix, vmin=0, vmax=1, title="", out_path="", show=False
+):
+    sns.heatmap(confusion_matrix, vmin=vmin, vmax=vmax)
+    if title:
+        plt.title(title)
+    if out_path:
+        plt.savefig(out_path)
+    if show:
+        plt.show()
+    plt.close()
