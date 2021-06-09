@@ -1,5 +1,5 @@
 # normal
-python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch vone_vone_alexnet --mode normal -n vone_vone_alexnet_normal
+python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch vone_alexnet --mode normal -n vone_alexnet_normal
 
 # all
 python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --mode all -s 1 -n vone_alexnet_all_s1
