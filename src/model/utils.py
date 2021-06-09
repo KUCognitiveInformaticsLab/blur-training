@@ -5,6 +5,8 @@ import torch
 import torch.nn as nn
 import torchvision.models as models
 
+import vonenet
+
 
 def load_model(
     arch: str,
@@ -23,6 +25,17 @@ def load_model(
         device (str): device for map_location for loading weights. (e.g. "cuda:0")
     Returns: model (torch.model)
     """
+    if arch == "vone_alexnet":
+        model = vonenet.get_model(model_arch=arch.split("_")[1], pretrained=False)
+        if num_classes == 1000:
+            return model
+        elif num_classes == 16:
+            model.model.classifier[-1] = nn.Linear(
+                model.model.classifier[-1].in_features, num_classes
+            )
+
+            return model
+
     model = models.__dict__[arch]()
 
     if num_classes == 1000:

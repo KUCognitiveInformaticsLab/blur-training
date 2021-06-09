@@ -51,6 +51,7 @@ model_names = sorted(
     for name in models.__dict__
     if name.islower() and not name.startswith("__") and callable(models.__dict__[name])
 )
+model_names += ["vone_alexnet"]
 
 parser = argparse.ArgumentParser(
     description="PyTorch ImageNet Training with Blurred Images"

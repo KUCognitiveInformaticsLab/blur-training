@@ -39,6 +39,7 @@ model_names = sorted(
     for name in models.__dict__
     if name.islower() and not name.startswith("__") and callable(models.__dict__[name])
 )
+model_names += ["vone_alexnet"]
 
 # Training settings
 parser = argparse.ArgumentParser(
