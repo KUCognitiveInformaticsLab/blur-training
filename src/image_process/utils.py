@@ -37,7 +37,8 @@ def imshow(
         else:
             plt.savefig(filename)
 
-    plt.show()
+    # plt.show()
+    plt.close()
 
 
 def imsave(img, filename, unnormalize=False):
