@@ -171,7 +171,7 @@ if __name__ == "__main__":
         save_acc1(acc1=acc1, save_file=acc1_path)
 
         # save confusion matrix
-        conf_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}.npy"
+        conf_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.npy"
         conf_path = os.path.join(results_dir, conf_name)
         np.save(conf_path, conf_matrix)
 
@@ -183,7 +183,7 @@ if __name__ == "__main__":
 
         # plot confusion matrix
         title = f"{test_dataset}, {stimuli} {div_v}x{div_h}, {num_classes}-class, {model_name}"
-        plot_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}.png"
+        plot_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.png"
         plot_path = os.path.join(plots_dir, plot_name)
         plot_confusion_matrix(
             confusion_matrix=norm_conf_matrix,
