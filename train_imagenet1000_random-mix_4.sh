@@ -1,0 +1,5 @@
+# random-mix
+python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 4 -n alexnet_random-mix_s00-04
+python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 2 -n alexnet_random-mix_s00-02
+python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 8 -n alexnet_random-mix_s00-08
+python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 16 -n alexnet_random-mix_s00-16

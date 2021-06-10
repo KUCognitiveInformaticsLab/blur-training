@@ -49,6 +49,7 @@ def load_model(
                 if not parallel:
                     model.features = model.features.module
                     # TODO: This part is different when a model is "resnet".
+
         return model
     else:  # num_classes == 16
         if (

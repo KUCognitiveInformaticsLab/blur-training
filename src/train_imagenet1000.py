@@ -30,7 +30,7 @@ from src.image_process.lowpass_filter import (
     GaussianBlurAllRandomSigma,
     GaussianBlurProbExcludeLabels,
 )
-from src.model.utils import save_model, save_checkpoint
+from src.model.utils import save_model, save_checkpoint, load_model
 from src.utils.adjust import (
     adjust_learning_rate,
     adjust_multi_steps,
@@ -334,7 +334,7 @@ def main_worker(gpu, ngpus_per_node, args):
         model = models.__dict__[args.arch](pretrained=True)
     else:
         print("=> creating model '{}'".format(args.arch))
-        model = models.__dict__[args.arch]()
+        model = load_model(args.arch)
 
     if args.distributed:
         # For multiprocessing distributed, DistributedDataParallel constructor
