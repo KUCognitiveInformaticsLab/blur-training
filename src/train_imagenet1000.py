@@ -334,7 +334,7 @@ def main_worker(gpu, ngpus_per_node, args):
         model = models.__dict__[args.arch](pretrained=True)
     else:
         print("=> creating model '{}'".format(args.arch))
-        model = load_model(args.arch)
+        model = load_model(arch=args.arch, num_classes=1000)
 
     if args.distributed:
         # For multiprocessing distributed, DistributedDataParallel constructor
