@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
     for model_name in tqdm(model_names, desc="models", leave=False):
         print()
-        print(f"{model_name}: computing lowpass confusion matrix...")
+        print(f"{model_name}: computing ...")
         # load model
         if "SIN" in model_name:
             if test_dataset == "imagenet16":
