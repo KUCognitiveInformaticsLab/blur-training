@@ -121,9 +121,7 @@ if __name__ == "__main__":
             norm_conf_matrix = conf_matrix / (conf_matrix.sum() / num_classes)
 
             # plot confusion matrix
-            title = (
-                f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}"
-            )
+            title = f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}"
             plot_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.png"
             plot_path = os.path.join(plots_dir, plot_name)
             plot_confusion_matrix(

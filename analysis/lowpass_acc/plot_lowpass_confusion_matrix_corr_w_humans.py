@@ -122,7 +122,9 @@ if __name__ == "__main__":
             human_data_path = os.path.join(human_data_dir, human_data_name)
             conf_matrix_human = np.load(human_data_path)
 
-            corr = np.corrcoef([conf_matrix.reshape(-1), conf_matrix_human.reshape(-1)])[0, 1]
+            corr = np.corrcoef(
+                [conf_matrix.reshape(-1), conf_matrix_human.reshape(-1)]
+            )[0, 1]
 
             # compute acc
             acc = np.diag(conf_matrix).sum() / conf_matrix.sum()
@@ -131,9 +133,7 @@ if __name__ == "__main__":
             norm_conf_matrix = conf_matrix / (conf_matrix.sum() / num_classes)
 
             # plot confusion matrix
-            title = (
-                f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}, corr w/ humans={corr:.2f}"
-            )
+            title = f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}, corr w/ humans={corr:.2f}"
             plot_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.png"
             plot_path = os.path.join(plots_dir, plot_name)
             plot_confusion_matrix(
