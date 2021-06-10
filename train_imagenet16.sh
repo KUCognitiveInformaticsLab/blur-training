@@ -13,6 +13,12 @@
 #python src/train_imagenet16.py --arch alexnet --mode mix -s 3 -n alexnet_mix_s3
 #python src/train_imagenet16.py --arch alexnet --mode mix -s 4 -n alexnet_mix_s4
 
+# random-mix
+#python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 2 -n alexnet_random-mix_s00-02
+#python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 4 -n alexnet_random-mix_s00-04
+#python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 8 -n alexnet_random-mix_s00-08
+#python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 16 -n alexnet_random-mix_s00-16
+
 # single-step
 #python src/train_imagenet16.py --arch alexnet --mode single-step -s 1 -n alexnet_single-step_s1
 #python src/train_imagenet16.py --arch alexnet --mode single-step -s 2 -n alexnet_single-step_s2

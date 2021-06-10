@@ -66,6 +66,20 @@ usage example:
 $ python src/train_imagenet16.py --arch alexnet --mode random-mix --min_sigma 0 --max_sigma 5 -n alexnet_random-mix_s0-5
 ```
 
+- **mix_no-blur** <br>
+Training with mix blur with some blur-labels excluded (*`log_dir` is different):
+```bash  
+$ python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --mode mix -s 4 -n mix_s04_no-blur-1label --excluded_labels 15;
+$ python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --mode mix -s 4 -n mix_s04_no-blur-8label --excluded_labels 8 9 10 11 12 13 14 15;
+```
+
+- **mix_no-sharp** <br>
+Training with mix blur with some sharp-labels excluded (*`log_dir` is different):
+```bash
+$ python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --mode mix_no-sharp -s 4 -n mix_s04_no-sharp-1label --excluded_labels 15;
+$ python src/train_imagenet16.py --log_dir /mnt/data/pretrained_models/blur-training/imagenet16 --mode mix_no-sharp -s 4 -n mix_s04_no-sharp-8label --excluded_labels 8 9 10 11 12 13 14 15;
+```
+
 - **single-step**    
 This mode blurs first half epochs (e.g. first 30 epochs in 60 entire epochs) in the training.
 usage example:  
