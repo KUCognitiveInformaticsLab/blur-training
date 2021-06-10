@@ -18,7 +18,9 @@ def jumble_images(imgs, div_v: int, div_h: int):
             size: (N, C, H, W)
     """
     for img in imgs:
-        blocks = split_image_cut(img.numpy().transpose(1, 2, 0), div_v=div_v, div_h=div_h).squeeze()
+        blocks = split_image_cut(
+            img.numpy().transpose(1, 2, 0), div_v=div_v, div_h=div_h
+        ).squeeze()
 
         for v in range(div_v):
             # blocks randomly permuted horizontally
@@ -45,7 +47,9 @@ def jumble_images_with_glay_occluder(imgs, div_v: int, div_h: int):
     gray_idx_1 = [i for i in range(1, div_v, 2)]
 
     for img in imgs:
-        blocks = split_image_cut(img.numpy().transpose(1, 2, 0), div_v=div_v, div_h=div_h).squeeze()
+        blocks = split_image_cut(
+            img.numpy().transpose(1, 2, 0), div_v=div_v, div_h=div_h
+        ).squeeze()
 
         for v in range(0, div_v, 2):
             blocks[v] = blocks[v, np.random.permutation(div_v), ...]
@@ -56,4 +60,3 @@ def jumble_images_with_glay_occluder(imgs, div_v: int, div_h: int):
             blocks[v, gray_idx_1, ...] = 0.5  # make blocks gray (every one block)
 
     return imgs
-
