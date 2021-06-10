@@ -1,0 +1,4 @@
+python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py 16 imagenet16 jumbled 4 vss
+python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py 16 imagenet16 jumbled 8 vss
+python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py 16 imagenet16 jumbled 16 vss
+python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py 16 imagenet16 jumbled 32 vss

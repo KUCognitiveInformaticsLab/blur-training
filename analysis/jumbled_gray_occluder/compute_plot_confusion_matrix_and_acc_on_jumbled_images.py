@@ -77,10 +77,6 @@ if __name__ == "__main__":
 
     model_names = get_model_names(arch=arch, compare=compare)
 
-    model_names = [
-        f"{arch}_normal",
-    ]
-
     print("===== arguments =====")
     print("num_classes:", num_classes)
     print("batch_size:", batch_size)
