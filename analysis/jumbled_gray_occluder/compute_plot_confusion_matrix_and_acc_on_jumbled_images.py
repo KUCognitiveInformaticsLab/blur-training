@@ -39,6 +39,8 @@ if __name__ == "__main__":
     div_h = div_v
     compare = str(sys.argv[5])  # models to compare
 
+    metrics = "acc1"
+
     arch = "alexnet"
     epoch = 60
     batch_size = 64
@@ -81,7 +83,7 @@ if __name__ == "__main__":
     print("num_classes:", num_classes)
     print("batch_size:", batch_size)
     print("test_dataset:", test_dataset)
-    print(f"stimuli: {stimuli} {div_v}x{div_h}", stimuli)
+    print(f"stimuli: {stimuli} {div_v}x{div_h}")
     print()
 
     print("===== I/O =====")
@@ -165,10 +167,10 @@ if __name__ == "__main__":
 
         # save acc
         acc1_name = (
-            f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_acc1.csv"
+            f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_{metrics}.csv"
         )
         acc1_path = os.path.join(results_dir, acc1_name)
-        save_acc1(acc1=acc1, save_file=acc1_path)
+        save_acc1(acc1=acc1, file_path=acc1_path)
 
         # save confusion matrix
         conf_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.npy"
