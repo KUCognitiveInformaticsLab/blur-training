@@ -22,15 +22,19 @@ from src.analysis.bandpass_acc.bandpass_acc import test_performance
 
 if __name__ == "__main__":
     # ===== args =====
-    analysis = "bandpass_acc"
-    arch = "alexnet"
-    num_classes = 16  # number of last output of the models
+    arch = str(sys.argv[1])
+    num_classes = int(sys.argv[2])  # number of last output of the models
+    test_dataset = str(sys.argv[3])  # test_dataset to use
+    compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+
+    analysis = f"bandpass_acc_{test_dataset}"
+
     epoch = 60
     batch_size = 64
 
-    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
+    pretrained = False  # True if you want to use pretrained vone_alexnet.
 
-    test_dataset = "imagenet16"  # test_dataset to use
+    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     num_filters = 6  # the number of bandpass filters
 
@@ -44,42 +48,9 @@ if __name__ == "__main__":
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
 
-    # models to compare
-    model_names = [
-        "untrained_alexnet",
-        # "vone_alexnet",
-    ]  # VOneNet
-    # model_names += [sin_names[arch]]  # SIN
+    from src.model.model_names import get_model_names
 
-    modes = [
-        "normal",
-        "all",
-        "mix",
-        "random-mix",
-        "single-step",
-        "fixed-single-step",
-        "reversed-single-step",
-        "multi-steps",
-    ]
-
-    # sigmas to compare
-    sigmas_mix = [s for s in range(1, 6)] + [10]
-    sigmas_random_mix = ["00-05", "00-10"]
-
-    # make model name list
-    # model_names = []
-    for mode in modes:
-        if mode in ("normal", "multi-steps"):
-            model_names += [f"{arch}_{mode}"]
-        elif mode == "random-mix":
-            for min_max in sigmas_random_mix:
-                model_names += [f"{arch}_{mode}_s{min_max}"]
-        elif mode == "mix":
-            for sigma in sigmas_mix:
-                model_names += [f"{arch}_{mode}_s{sigma:02d}"]
-        else:
-            for s in range(4):
-                model_names += [f"{arch}_{mode}_s{s + 1:02d}"]
+    model_names = get_model_names(arch=arch, compare=compare)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -136,7 +107,7 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name:
+        elif "vone" in model_name and pretrained:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
         elif "untrained" in model_name:
