@@ -15,7 +15,7 @@ from src.analysis.rsa.bandpass.bandpass_rdm import (
     compute_bandpass_RDMs,
     plot_bandpass_rdms,
 )
-from src.analysis.rsa.rsa import VOneNetAlexNetRSA, AlexNetRSA
+from src.analysis.rsa.rsa import VOneNetAlexNetRSAParallel, AlexNetRSA
 from src.analysis.rsa.utils import save_rdms
 from src.dataset.imagenet16 import load_imagenet16
 from src.model.utils import load_model
@@ -126,7 +126,7 @@ if __name__ == "__main__":
             RSA = AlexNetRSA(model)
         elif "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            RSA = VOneNetAlexNetRSA(model)
+            RSA = VOneNetAlexNetRSAParallel(model)
         else:
             model_path = os.path.join(
                 models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"

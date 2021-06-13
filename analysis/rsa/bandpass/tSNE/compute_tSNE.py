@@ -15,7 +15,7 @@ sys.path.append(str(current_dir) + "/../../../")
 from src.analysis.rsa.bandpass.t_sne import (
     compute_tSNE_each_bandpass,
 )
-from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA
+from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSAParallel
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
 from src.model.utils import load_model
@@ -102,7 +102,7 @@ if __name__ == "__main__":
             RSA = AlexNetRSA(model)
         elif num_classes == 1000 and "vone" in model_name:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            RSA = VOneNetAlexNetRSA(model)
+            RSA = VOneNetAlexNetRSAParallel(model)
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(

@@ -23,7 +23,7 @@ from src.analysis.rsa.bandpass.t_sne import (
 )
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
-    VOneNetAlexNetRSA,
+    VOneNetAlexNetRSAParallel,
     alexnet_layers,
     vone_alexnet_layers,
 )
@@ -206,7 +206,7 @@ if __name__ == "__main__":
                 RSA = AlexNetRSA(model)
             elif num_classes == 1000 and "vone" in model_name:
                 model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-                RSA = VOneNetAlexNetRSA(model)
+                RSA = VOneNetAlexNetRSAParallel(model)
             elif "untrained" in model_name:
                 model_path = ""  # load untrained model
                 model = load_model(

@@ -126,6 +126,64 @@ class VOneNetAlexNetRSA:
 
         self.activations = {}
 
+        self.model.vone_block.register_forward_hook(
+            self._get_activations(self.layers[0])
+        )
+        self.model.model.features[1].register_forward_hook(
+            self._get_activations(self.layers[1])
+        )
+        self.model.model.features[4].register_forward_hook(
+            self._get_activations(self.layers[2])
+        )
+        self.model.model.features[6].register_forward_hook(
+            self._get_activations(self.layers[3])
+        )
+        self.model.model.features[8].register_forward_hook(
+            self._get_activations(self.layers[4])
+        )
+        self.model.model.classifier[2].register_forward_hook(
+            self._get_activations(self.layers[5])
+        )
+        self.model.model.classifier[5].register_forward_hook(
+            self._get_activations(self.layers[6])
+        )
+        self.model.model.classifier[6].register_forward_hook(
+            self._get_activations(self.layers[7])
+        )
+
+    # Ref:
+    #  https://discuss.pytorch.org/t/extract-features-from-layer-of-submodule-of-a-model/20181
+    def _get_activations(self, name):
+        def hook(model, input, output):
+            self.activations[name] = output.detach().cpu().numpy()
+
+        return hook
+
+    def compute_activations(self, images: torch.Tensor) -> dict:
+        """Computes activations of units in a model.
+        Args:
+            images: images to test the model with. shape=(N, C, H, W)
+
+        Returns: activations
+        """
+
+        _ = self.model(images)
+
+        return self.activations
+
+
+class VOneNetAlexNetRSAParallel:
+    def __init__(self, model):
+        """
+        Args:
+            model: VOneAlexnet model (PyTorch)
+        """
+        self.model = model
+
+        self.layers = vone_alexnet_layers
+
+        self.activations = {}
+
         self.model.module.vone_block.register_forward_hook(
             self._get_activations(self.layers[0])
         )

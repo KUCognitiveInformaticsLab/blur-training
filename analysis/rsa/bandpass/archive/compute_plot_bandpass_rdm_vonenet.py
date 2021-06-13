@@ -14,7 +14,7 @@ sys.path.append(str(current_dir) + "/../../../")
 from src.analysis.rsa.bandpass.bandpass_rdm import (
     compute_bandpass_RDMs,
 )
-from src.analysis.rsa.rsa import VOneNetAlexNetRSA
+from src.analysis.rsa.rsa import VOneNetAlexNetRSAParallel
 from src.analysis.rsa.utils import save_rdms
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
         # make RSA instance
         # RSA = AlexNetRSA(model)
-        RSA = VOneNetAlexNetRSA(model)
+        RSA = VOneNetAlexNetRSAParallel(model)
 
         # ===== compute RDM =====
         print()
