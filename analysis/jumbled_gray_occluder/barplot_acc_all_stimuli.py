@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     metrics = "acc1"
 
-    arch = "vone_alexnet"
+    arch = "alexnet"
     epoch = 60
     batch_size = 64
 
@@ -45,6 +45,22 @@ if __name__ == "__main__":
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
         f"{arch}_multi-steps",
+        # f"{arch}_mix_s10",
+        # f"{arch}_random-mix_s00-05",
+        # f"{arch}_random-mix_s00-10",
+        # f"{arch}_trained_on_SIN",
+        # f"vone_{arch}",
+    ]
+
+    model_names = [
+        f"{arch}_normal",
+        f"vone_{arch}_normal",
+        f"{arch}_all_s04",
+        f"vone_{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"vone_{arch}_mix_s04",
+        f"{arch}_multi-steps",
+        f"vone_{arch}_multi-steps",
         # f"{arch}_mix_s10",
         # f"{arch}_random-mix_s00-05",
         # f"{arch}_random-mix_s00-10",
@@ -141,8 +157,9 @@ if __name__ == "__main__":
             acc[model_name],
             color=colors[model_name],
             width=barWidth,
-            edgecolor="white",
-            label=rename_model_name(model_name),
+            edgecolor="w",
+            hatch="////" if "vone_" in model_name else None,
+            label=rename_model_name(model_name=model_name, arch=arch),
         )
         r1 = [x + barWidth for x in r1]
 
@@ -158,7 +175,8 @@ if __name__ == "__main__":
     plt.hlines(
         [1 / 16],
         xmin=-0.1,
-        xmax=len(x) - 0.6,
+        # xmax=len(x) - 0.6,
+        xmax=len(x) - 0.2,
         colors="k",
         linestyles="dashed",
         label="Chance performance",
@@ -171,7 +189,8 @@ if __name__ == "__main__":
     ax.grid(which="minor", linestyle="dotted")
 
     # set plot file name.
-    plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
+    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
+    plot_file = f"{analysis}_{metrics}_{num_classes}-class_vs_vonenet.png"
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file), bbox_inches="tight")

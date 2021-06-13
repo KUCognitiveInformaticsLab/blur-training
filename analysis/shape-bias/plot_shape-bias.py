@@ -16,7 +16,7 @@ from src.model.model_names import rename_model_name
 
 
 if __name__ == "__main__":
-    arch = "vone_alexnet"
+    arch = "alexnet"
     num_classes = 16
     epoch = 60
 
@@ -32,6 +32,22 @@ if __name__ == "__main__":
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
         f"{arch}_multi-steps",
+        # f"vone_{arch}_normal",
+        # f"{arch}_vonenet",
+        # "resnet50-1x_simclr",
+        # "resnet50-2x_simclr",
+        # "resnet50-4x_simclr",
+        sin_names[arch.replace("vone_", "")],
+    ]
+    model_names = [
+        f"{arch}_normal",
+        f"vone_{arch}_normal",
+        f"{arch}_all_s04",
+        f"vone_{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"vone_{arch}_mix_s04",
+        f"{arch}_multi-steps",
+        f"vone_{arch}_multi-steps",
         # f"vone_{arch}_normal",
         # f"{arch}_vonenet",
         # "resnet50-1x_simclr",
@@ -75,7 +91,10 @@ if __name__ == "__main__":
     )
     # plot shape bias
     for model_name in model_names:
-        ax.bar(model_name, shape_bias[model_name], color=colors[model_name])
+        ax.bar(model_name, shape_bias[model_name], color=colors[model_name],
+            hatch = "///" if "vone_" in model_name else None,
+            edgecolor="w",
+        )
     ax.bar("Humans", 0.96, color=colors["humans"])
 
     # plot accuracy
