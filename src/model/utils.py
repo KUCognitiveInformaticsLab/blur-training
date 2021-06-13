@@ -75,7 +75,6 @@ def load_model(
                     # TODO: This part is different when a model is "resnet".
 
             return model
-
         elif num_classes == 16:
             if device:
                 checkpoint = torch.load(model_path, map_location=device)
@@ -88,7 +87,8 @@ def load_model(
                 print(model)
                 if arch == "vone_alexnet":
                     model = torch.nn.DataParallel(model)
-                model.features = torch.nn.DataParallel(model.features)
+                else:
+                    model.features = torch.nn.DataParallel(model.features)
                 model.load_state_dict(checkpoint["state_dict"])
 
             return model
