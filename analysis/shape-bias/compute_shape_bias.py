@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # I/O
     cue_conf_data_path = "/mnt/data1/shape-texture-cue-conflict/"
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+        16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
     )
     results_dir = f"./results/{num_classes}-class"
 
