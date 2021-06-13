@@ -107,19 +107,34 @@ def get_model_names(arch, models="vss", num_classes=16):
 def rename_model_name(model_name: str, arch: str = "alexnet"):
     model_name = model_name.replace(f"raw_images", f"(Original) bandpass corr.")
 
-    model_name = model_name.replace(f"untrained_{arch}", f"Untrained-{arch}")
+    # model_name = model_name.replace(f"untrained_{arch}", f"Untrained-{arch}")
+    model_name = model_name.replace(
+        f"untrained_vone_alexnet", f"Untrained-vone_alexnet"
+    )
+    model_name = model_name.replace(f"untrained_alexnet", f"Untrained-alexnet")
 
-    model_name = model_name.replace(f"{arch}_normal", f"S-{arch}")
-    model_name = model_name.replace(f"{arch}_all", f"B-{arch}")
-    model_name = model_name.replace(f"{arch}_mix", f"B+S-{arch}")
+    # model_name = model_name.replace(f"{arch}_normal", f"S-{arch}")
+    # model_name = model_name.replace(f"{arch}_all", f"B-{arch}")
+    # model_name = model_name.replace(f"{arch}_mix", f"B+S-{arch}")
+    # model_name = model_name.replace(f"{arch}_multi-steps", f"B2S-{arch}")
+
+    model_name = model_name.replace(f"vone_alexnet_normal", f"S-vone_alexnet")
+    model_name = model_name.replace(f"vone_alexnet_all", f"B-vone_alexnet")
+    model_name = model_name.replace(f"vone_alexnet_mix", f"B+S-vone_alexnet")
+    model_name = model_name.replace(f"vone_alexnet_multi-steps", f"B2S-vone_alexnet")
+
+    model_name = model_name.replace(f"alexnet_normal", f"S-alexnet")
+    model_name = model_name.replace(f"alexnet_all", f"B-alexnet")
+    model_name = model_name.replace(f"alexnet_mix", f"B+S-alexnet")
+    model_name = model_name.replace(f"alexnet_multi-steps", f"B2S-alexnet")
+
     model_name = model_name.replace(f"mix", f"B+S-{arch}_s01")
-    model_name = model_name.replace(f"{arch}_multi-steps", f"B2S-{arch}")
     model_name = re.sub("s([0-9]+)", r"(σ=\1)", model_name)  # sigma value
     model_name = re.sub("0", "", model_name)
 
     model_name = model_name.replace(
-        sin_names[arch.replace("vone_", "")],
-        "SIN-trained-{}".format(arch.replace("vone_", "")),
+        sin_names["alexnet"],
+        "SIN-trained-alexnet",
     )
     model_name = model_name.replace(f"vone_", f"VOne")
 
