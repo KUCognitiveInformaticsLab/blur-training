@@ -55,6 +55,11 @@ def get_model_names(arch, models="vss"):
             + [f"{arch}_random-mix_s{s}" for s in ["00-02", "00-04", "00-08", "00-16"]]
         )
     elif models == "all_blur-training_old":
+        model_names = [
+            f"{arch}_normal",
+            f"{arch}_multi-steps",
+        ]
+
         modes = [
             f"{arch}_all",
             f"{arch}_mix",
