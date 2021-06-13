@@ -19,9 +19,12 @@ def get_model_names(arch, compare="vss"):
             f"{arch}_all_s04",
             f"{arch}_mix_s04",
             f"{arch}_multi-steps",
-            f"vone_{arch}",
-            sin_names[arch],
         ]
+        if arch != "vone_alexnet":
+            model_names += [
+                f"vone_{arch}",
+                sin_names[arch],
+            ]
     elif compare == "mix_p-blur":
         model_names = [
             f"{arch}_mix_p-blur_s01_no-blur-1label",
