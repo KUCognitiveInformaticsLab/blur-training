@@ -38,7 +38,6 @@ def get_model_names(arch, models="vss", num_classes=16):
     elif models == "random-mix":
         model_names = [
             f"{arch}_random-mix_s00-04",
-            f"{arch}_random-mix_s00-04",
         ]
     elif models == "mix_p-blur":
         model_names = [
@@ -73,8 +72,8 @@ def get_model_names(arch, models="vss", num_classes=16):
         # ]
         s = 4
         model_names = [
-            f"{arch}_random-mix_s{s:02d}_no-blur-1label",
-            f"{arch}_random-mix_s{s:02d}_no-blur-8label",
+            f"{arch}_random-mix_s00-{s:02d}_no-blur-1label",
+            f"{arch}_random-mix_s00-{s:02d}_no-blur-8label",
         ]
     elif models == "random-mix_no-sharp":
         # model_names = [f"{arch}_random-mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
@@ -82,8 +81,8 @@ def get_model_names(arch, models="vss", num_classes=16):
         # ]
         s = 4
         model_names = [
-            f"{arch}_random-mix_s{s:02d}_no-sharp-1label",
-            f"{arch}_random-mix_s{s:02d}_no-sharp-8label",
+            f"{arch}_random-mix_s00-{s:02d}_no-sharp-1label",
+            f"{arch}_random-mix_s00-{s:02d}_no-sharp-8label",
         ]
     elif models == "all_blur-training":
         model_names = (
