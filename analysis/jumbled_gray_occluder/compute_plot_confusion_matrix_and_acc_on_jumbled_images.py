@@ -30,20 +30,22 @@ from src.analysis.classification.acc import save_acc1
 
 if __name__ == "__main__":
     # ===== args =====
-    num_classes = int(sys.argv[1])  # number of last output of the models
-    test_dataset = str(sys.argv[2])  # test_dataset to use
+    arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
+    num_classes = int(sys.argv[2])  # number of last output of the models
+    test_dataset = str(sys.argv[3])  # test_dataset to use
     stimuli = str(
-        sys.argv[3]
+        sys.argv[4]
     )  # ("jumbled", "gray_occluder", "jumbled_with_gray_occluder")
-    div_v = int(sys.argv[4])  # (4, 8, 16, 32)
+    div_v = int(sys.argv[5])  # (4, 8, 16, 32)
+    compare = str(sys.argv[6])  # models to compare
+
     div_h = div_v
-    compare = str(sys.argv[5])  # models to compare
 
     metrics = "acc1"
-
-    arch = "alexnet"
     epoch = 60
     batch_size = 64
+
+    pretrained_vone = False  # True if you want to use pretrained vone_alexnet.
 
     analysis = f"{stimuli}_{test_dataset}"
 
@@ -133,9 +135,7 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name:
-            if test_dataset == "imagenet16":
-                continue
+        elif "vone" in model_name and pretrained_vone:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
         elif "untrained" in model_name:
