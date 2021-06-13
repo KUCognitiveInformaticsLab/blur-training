@@ -41,3 +41,6 @@ python compute_bandpass_acc.py vone_alexnet 16 imagenet16 random-mix
 python compute_plot_bandpass_confusion_matrix.py alexnet 16 imagenet16 random-mix
 python compute_plot_bandpass_confusion_matrix.py vone_alexnet 16 imagenet16 random-mix
 
+cd ../rsa/rsm
+python compute_plot_bandpass_rsm.py alexnet 16 random-mix
+python compute_plot_bandpass_rsm.py vone_alexnet 16 random-mix
