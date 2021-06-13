@@ -109,9 +109,12 @@ if __name__ == "__main__":
             if pretrained_vone:
                 model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             else:
-                model_path = os.path.join(
-                    models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
-                )
+                if "untrained" in model_name:
+                    model_path = ""  # load untrained
+                else:
+                    model_path = os.path.join(
+                        models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
+                    )
                 model = load_model(
                     arch=arch, num_classes=num_classes, model_path=model_path
                 ).to(device)
