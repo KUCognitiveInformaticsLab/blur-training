@@ -29,16 +29,20 @@ from src.analysis.lowpass_acc.lowpass_acc import (
 
 if __name__ == "__main__":
     # ===== args =====
-    arch = "alexnet"
-    num_classes = int(sys.argv[1])  # number of last output of the models
+    arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
+    num_classes = int(sys.argv[2])  # number of last output of the models
+    test_dataset = str(sys.argv[3])  # test_dataset to use
+    compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+
     epoch = 60
-    test_dataset = str(sys.argv[2])  # test_dataset to use
     batch_size = 64
     stimuli = "lowpass"
     analysis = f"{stimuli}_confusion_matrix_{test_dataset}"
     max_sigma = 20
 
     compare = str(sys.argv[3])  # models to compare
+
+    pretrained = False  # True if you want to use pretrained vone_alexnet.
 
     machine = "server"  # ("server", "local")
 
@@ -68,32 +72,9 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        f"untrained_{arch}",
-        f"{arch}_normal",
-        f"{arch}_multi-steps",
-        f"{arch}_all_s04",
-        f"{arch}_mix_s04",
-        f"vone_{arch}",
-        sin_names[arch],
-    ]
-
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, compare=compare)
-
-    # model_names = [
-    #     f"{arch}_mix_p-blur_s01_no-blur-1label",
-    #     f"{arch}_mix_p-blur_s01_no-blur-8label",
-    #     f"{arch}_mix_p-blur_s04_no-blur-1label",
-    #     f"{arch}_mix_p-blur_s04_no-blur-8label",
-    #     f"{arch}_mix_p-blur_s01",
-    #     f"{arch}_mix_p-blur_s04",
-    # ]
-    #
-    # model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
-    #     f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
-    # ]
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -149,9 +130,7 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name:
-            if test_dataset == "imagenet16":
-                continue
+        elif "vone" in model_name and pretrained:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
         elif "untrained" in model_name:

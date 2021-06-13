@@ -66,14 +66,6 @@ if __name__ == "__main__":
         os.makedirs(results_dir)
 
     # models to compare
-    #
-    # model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
-    #     f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
-    # ]
-    # model_names = [f"{arch}_mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
-    #     f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
-    # ]
-
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, compare=compare)
@@ -157,8 +149,6 @@ if __name__ == "__main__":
         out_path = os.path.join(
             results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
         )  # acc1&acc5 will be saved (when ImageNet is test dataset)
-
-        print(model)
 
         test_performance(
             model=model,
