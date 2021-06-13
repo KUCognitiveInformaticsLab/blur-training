@@ -34,7 +34,7 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
-    results_dir = f"./results/{num_classes}-class-{arch}"
+    results_dir = f"./results/{num_classes}-class"
 
     assert os.path.exists(cue_conf_data_path), f"{cue_conf_data_path} does not exist."
     assert os.path.exists(models_dir), f"{models_dir} does not exist."

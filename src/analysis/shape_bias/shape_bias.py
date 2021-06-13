@@ -49,8 +49,10 @@ def compute_shape_bias(model, num_classes, cue_conf_data_path, device):
     correct_texture_decisions = np.zeros(num_labels)
     all_results = []
     all_file_names = []
+
     # make dataloader
     cue_conf_loader = load_cue_conflict(data_path=cue_conf_data_path)
+
     model.eval()
     with torch.no_grad():
         for images, _, file_names in tqdm(
@@ -79,14 +81,14 @@ def compute_shape_bias(model, num_classes, cue_conf_data_path, device):
                 elif num_classes == 16:
                     # outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
                     _, pred = outputs[i].topk(1)
-                    model_decision = pred.item()
+                    model_decision = label_map[pred.item()]
 
                 # record all results
                 all_results.append(
                     [
                         label_map[shape_id],  # shape label
                         label_map[texture_id],  # texture label
-                        model_decision,  # model decision
+                        model_decision,  # model decision (str)
                         # *outputs[i].cpu().detach().numpy()  # remove all outputs
                     ]
                 )
