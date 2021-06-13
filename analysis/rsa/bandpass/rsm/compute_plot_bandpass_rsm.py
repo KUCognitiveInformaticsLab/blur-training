@@ -15,7 +15,11 @@ from src.analysis.rsa.bandpass.bandpass_rsm import (
     compute_bandpass_RSMs,
     plot_bandpass_RSMs,
 )
-from src.analysis.rsa.rsa import AlexNetRSA, VOneNetAlexNetRSA, VOneNetAlexNetRSAParallel
+from src.analysis.rsa.rsa import (
+    AlexNetRSA,
+    VOneNetAlexNetRSA,
+    VOneNetAlexNetRSAParallel,
+)
 from src.analysis.rsa.utils import save_rsms
 from src.dataset.imagenet16 import load_imagenet16
 from src.image_process.bandpass_filter import make_bandpass_filters
