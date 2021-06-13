@@ -22,7 +22,7 @@ from src.analysis.bandpass_acc.bandpass_acc import test_performance
 
 if __name__ == "__main__":
     # ===== args =====
-    arch = str(sys.argv[1])
+    arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])  # number of last output of the models
     test_dataset = str(sys.argv[3])  # test_dataset to use
     compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
