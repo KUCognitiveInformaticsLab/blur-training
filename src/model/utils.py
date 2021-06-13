@@ -38,11 +38,11 @@ def load_model(
 
         return model
     elif "simclr" in model_name:  # SimCLR
-        if "resnet50x1" in model_name:
+        if "resnet50-1x" in model_name:
             model = resnet50x1()
-        elif "resnet50x2" in model_name:
+        elif "resnet50-2x" in model_name:
             model = resnet50x2()
-        elif "resnet50x4" in model_name:
+        elif "resnet50-4x" in model_name:
             model = resnet50x4()
         checkpoint = torch.load(model_path, map_location=device)
         model.load_state_dict(checkpoint["state_dict"])

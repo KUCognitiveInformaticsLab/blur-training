@@ -27,9 +27,9 @@ def get_model_names(arch, models="vss", num_classes=16):
             ]
     elif models == "simclr":
         model_names = [
-            "resnet50x1_simclr",
-            "resnet50x2_simclr",
-            "resnet50x4_simclr",
+            "resnet50-1x_simclr",
+            "resnet50-2x_simclr",
+            "resnet50-4x_simclr",
         ]
     elif models == "all":
         model_names = [
