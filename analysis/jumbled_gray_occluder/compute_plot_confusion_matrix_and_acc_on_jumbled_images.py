@@ -37,7 +37,7 @@ if __name__ == "__main__":
         sys.argv[4]
     )  # ("jumbled", "gray_occluder", "jumbled_with_gray_occluder")
     div_v = int(sys.argv[5])  # (4, 8, 16, 32)
-    compare = str(sys.argv[6])  # models to compare
+    models = str(sys.argv[6])  # models to compare
 
     div_h = div_v
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     # models to compare
     from src.model.model_names import get_model_names
 
-    model_names = get_model_names(arch=arch, compare=compare)
+    model_names = get_model_names(arch=arch, models=models)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)

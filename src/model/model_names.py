@@ -10,9 +10,9 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.model.load_sin_pretrained_models import sin_names
 
 
-def get_model_names(arch, compare="vss"):
+def get_model_names(arch, models="vss"):
     # models to compare
-    if compare == "vss":
+    if models == "vss":
         model_names = [
             f"untrained_{arch}",
             f"{arch}_normal",
@@ -25,7 +25,11 @@ def get_model_names(arch, compare="vss"):
                 f"vone_{arch}",
                 sin_names[arch],
             ]
-    elif compare == "mix_p-blur":
+    elif models == "all":
+        model_names = [
+            f"{arch}_all_s04",
+        ]
+    elif models == "mix_p-blur":
         model_names = [
             f"{arch}_mix_p-blur_s01_no-blur-1label",
             f"{arch}_mix_p-blur_s01_no-blur-8label",
@@ -34,15 +38,15 @@ def get_model_names(arch, compare="vss"):
             f"{arch}_mix_p-blur_s01{arch}",
             f"{arch}_mix_p-blur_s04{arch}",
         ]
-    elif compare == "mix_no-blur":
+    elif models == "mix_no-blur":
         model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
             f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
         ]
-    elif compare == "mix_no-sharp":
+    elif models == "mix_no-sharp":
         model_names = [f"{arch}_mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
             f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
         ]
-    elif compare == "all_blur-training":
+    elif models == "all_blur-training":
         model_names = (
             [f"{arch}_normal"]
             + [f"{arch}_multi-steps"]
@@ -50,7 +54,7 @@ def get_model_names(arch, compare="vss"):
             + [f"{arch}_all_s{s:02d}" for s in range(1, 5)]
             + [f"{arch}_random-mix_s{s}" for s in ["00-02", "00-04", "00-08", "00-16"]]
         )
-    elif compare == "all_blur-training_old":
+    elif models == "all_blur-training_old":
         modes = [
             f"{arch}_all",
             f"{arch}_mix",

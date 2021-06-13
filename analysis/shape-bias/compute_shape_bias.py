@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # models to compare
     from src.model.model_names import get_model_names
 
-    model_names = get_model_names(arch=arch, compare=compare)
+    model_names = get_model_names(arch=arch, models=compare)
 
     print("===== arguments =====")
     print("arch:", arch)
