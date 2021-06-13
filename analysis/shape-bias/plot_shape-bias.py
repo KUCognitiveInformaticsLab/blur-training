@@ -47,7 +47,11 @@ if __name__ == "__main__":
 
     # load and get results
     for model_name in model_names:
-        if "SIN" in model_name or model_name == "alexnet_vonenet" or "simclr" in model_name:
+        if (
+            "SIN" in model_name
+            or model_name == "alexnet_vonenet"
+            or "simclr" in model_name
+        ):
             file_path = os.path.join(
                 in_dir.replace("16", "1000"), f"correct_decisions_{model_name}.csv"
             )
@@ -85,7 +89,7 @@ if __name__ == "__main__":
 
     # ax.set_xticklabels(acc.columns, rotation=45, ha='right')
     ax.set_xticklabels(
-        [rename_model_name(m) for m in model_names] + ["Humans"],
+        [rename_model_name(model_name=m, arch=arch) for m in model_names] + ["Humans"],
         rotation=45,
         ha="right",
     )

@@ -117,8 +117,11 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
     model_name = re.sub("s([0-9]+)", r"(σ=\1)", model_name)  # sigma value
     model_name = re.sub("0", "", model_name)
 
-    model_name = model_name.replace(sin_names[arch], f"SIN-trained-{arch}")
-    model_name = model_name.replace(f"vone_{arch}", f"VOne{arch}")
+    model_name = model_name.replace(
+        sin_names[arch.replace("vone_", "")],
+        "SIN-trained-{}".format(arch.replace("vone_", "")),
+    )
+    model_name = model_name.replace(f"vone_", f"VOne")
 
     model_name = model_name.replace("alexnet", "Net")
 
