@@ -40,7 +40,7 @@ def get_model_names(arch, models="vss", num_classes=16):
         model_names = [
             f"{arch}_random-mix_s{s:02d}",
             f"{arch}_random-mix_s{s:02d}",
-         ]
+        ]
     elif models == "mix_p-blur":
         model_names = [
             f"{arch}_mix_p-blur_s01_no-blur-1label",

@@ -129,7 +129,12 @@ def GaussianBlurAllRandomSigma(
 
 
 def GaussianBlurAllRandomSigmaNotInEx(
-    images, labels, min_sigma, max_sigma, kernel_size=(0, 0), excluded_labels=[],
+    images,
+    labels,
+    min_sigma,
+    max_sigma,
+    kernel_size=(0, 0),
+    excluded_labels=[],
 ) -> torch.Tensor:
     """Return Blurred images by random sigma.
     Each image is blurred by a sigma chosen by randomly from [min_sigma, max_sigma].
@@ -160,8 +165,14 @@ def GaussianBlurAllRandomSigmaNotInEx(
 
     return torch.from_numpy(images_list)
 
+
 def GaussianBlurAllRandomSigmaInEx(
-    images, labels, min_sigma, max_sigma, kernel_size=(0, 0), excluded_labels=[],
+    images,
+    labels,
+    min_sigma,
+    max_sigma,
+    kernel_size=(0, 0),
+    excluded_labels=[],
 ) -> torch.Tensor:
     """Return Blurred images by random sigma.
     Each image is blurred by a sigma chosen by randomly from [min_sigma, max_sigma].

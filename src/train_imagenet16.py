@@ -319,8 +319,11 @@ def main():
                 #     half1, args.min_sigma, args.max_sigma
                 # )
                 half1 = GaussianBlurAllRandomSigmaNotInEx(
-                    images=half1, labels=labels1, excluded_labels=args.excluded_labels,
-                    min_sigma=args.min_sigma, max_sigma=args.max_sigma
+                    images=half1,
+                    labels=labels1,
+                    excluded_labels=args.excluded_labels,
+                    min_sigma=args.min_sigma,
+                    max_sigma=args.max_sigma,
                 )
 
                 inputs = torch.cat((half1, half2))
@@ -342,8 +345,11 @@ def main():
                 #     half1, args.min_sigma, args.max_sigma
                 # )
                 half1 = GaussianBlurAllRandomSigmaInEx(
-                    images=half1, labels=labels1, excluded_labels=args.excluded_labels,
-                    min_sigma=args.min_sigma, max_sigma=args.max_sigma
+                    images=half1,
+                    labels=labels1,
+                    excluded_labels=args.excluded_labels,
+                    min_sigma=args.min_sigma,
+                    max_sigma=args.max_sigma,
                 )
 
                 inputs = torch.cat((half1, half2))
