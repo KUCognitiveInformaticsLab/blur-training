@@ -29,7 +29,7 @@ from vonenet import get_model
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
 
 
-def compute_shape_bias(model, num_classes, cue_conf_data_path):
+def compute_shape_bias(model, num_classes, cue_conf_data_path, device):
     """Test with cue-conflict images and record correct decisions.
     * You need to exclude images without a cue conflict (e.g. texture=cat, shape=cat)
     Dataset: Cue-conflict

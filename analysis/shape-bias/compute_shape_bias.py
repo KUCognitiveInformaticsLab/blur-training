@@ -47,6 +47,23 @@ if __name__ == "__main__":
 
     model_names = get_model_names(arch=arch, compare=compare)
 
+    print("===== arguments =====")
+    print("arch:", arch)
+    print("num_classes:", num_classes)
+    print()
+
+    print("===== I/O =====")
+    print("IN, models_dir:", models_dir)
+    print("OUT, results_dir:", results_dir)
+    print()
+
+    print("===== models to analyze =====")
+    print(model_names)
+    print()
+
+    # ===== main =====
+    print("===== main =====")
+
     for model_name in tqdm(model_names, desc="models", leave=False):
         print(f"{model_name}: computing shape bias...")  # load model
         if "SIN" in model_name:
@@ -100,7 +117,7 @@ if __name__ == "__main__":
 
         # compute
         df_all_decisions, df_correct_decisions = compute_shape_bias(
-            model=model, num_classes=num_classes, cue_conf_data_path=cue_conf_data_path
+            model=model, num_classes=num_classes, cue_conf_data_path=cue_conf_data_path, device=device
         )
 
         # save
