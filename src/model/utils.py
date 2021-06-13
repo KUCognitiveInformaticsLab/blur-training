@@ -25,21 +25,45 @@ def load_model(
         device (str): device for map_location for loading weights. (e.g. "cuda:0")
     Returns: model (torch.model)
     """
+    # load model arch
     if arch == "vone_alexnet":
         model = vonenet.get_model(model_arch=arch.split("_")[1], pretrained=False)
-        if num_classes == 1000:
-            return model
-        elif num_classes == 16:
+        if num_classes == 16:
             model.model.classifier[-1] = nn.Linear(
                 model.model.classifier[-1].in_features, num_classes
             )
+    else:
+        model = models.__dict__[arch]()
+        if num_classes == 16:
+            if (
+                    arch.startswith("alexnet")
+                    or arch.startswith("vgg")
+                    or arch.startswith("mnasnet")
+                    or arch.startswith("mobilenet")
+            ):
+                model.classifier[-1] = nn.Linear(
+                    model.classifier[-1].in_features, num_classes
+                )
+            elif (
+                    arch.startswith("resne")
+                    or arch.startswith("shufflenet")
+                    or arch.startswith("inception")
+                    or arch.startswith("wide_resnet")
+            ):
+                model.fc = nn.Linear(model.fc.in_features, num_classes)
+            elif arch.startswith("densenet"):
+                model.classifier = nn.Linear(model.classifier.in_features, num_classes)
+            elif arch.startswith("squeezenet"):
+                model.classifier[1] = nn.Conv2d(
+                    model.classifier[1].in_channels,
+                    num_classes,
+                    kernel_size=(1, 1),
+                    stride=(1, 1),
+                )
 
-            return model
-
-    model = models.__dict__[arch]()
-
-    if num_classes == 1000:
-        if model_path:
+    # load trained weights.
+    if model_path:
+        if num_classes == 1000:
             checkpoint = torch.load(model_path, map_location=device)
             try:
                 model.load_state_dict(checkpoint["state_dict"])
@@ -50,43 +74,18 @@ def load_model(
                     model.features = model.features.module
                     # TODO: This part is different when a model is "resnet".
 
-        return model
-    else:  # num_classes == 16
-        if (
-            arch.startswith("alexnet")
-            or arch.startswith("vgg")
-            or arch.startswith("mnasnet")
-            or arch.startswith("mobilenet")
-        ):
-            model.classifier[-1] = nn.Linear(
-                model.classifier[-1].in_features, num_classes
-            )
-        elif (
-            arch.startswith("resne")
-            or arch.startswith("shufflenet")
-            or arch.startswith("inception")
-            or arch.startswith("wide_resnet")
-        ):
-            model.fc = nn.Linear(model.fc.in_features, num_classes)
-        elif arch.startswith("densenet"):
-            model.classifier = nn.Linear(model.classifier.in_features, num_classes)
-        elif arch.startswith("squeezenet"):
-            model.classifier[1] = nn.Conv2d(
-                model.classifier[1].in_channels,
-                num_classes,
-                kernel_size=(1, 1),
-                stride=(1, 1),
-            )
+            return model
 
-        # load trained weights.
-        if model_path:
+        elif num_classes == 16:
             if device:
                 checkpoint = torch.load(model_path, map_location=device)
             else:
                 checkpoint = torch.load(model_path)
             model.load_state_dict(checkpoint["state_dict"])
 
-        return model
+            return model
+
+    return model
 
 
 def save_model(state, param_path, epoch=None):

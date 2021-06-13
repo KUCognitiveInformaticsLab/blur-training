@@ -33,6 +33,8 @@ if __name__ == "__main__":
 
     analysis = f"lowpass_acc_{test_dataset}"
 
+    pretrained = False  # True if you want to use pretrained vone_alexnet.
+
     epoch = 60
     batch_size = 64
     max_sigma = 20
@@ -64,22 +66,13 @@ if __name__ == "__main__":
         os.makedirs(results_dir)
 
     # models to compare
-    model_names = [
-        f"untrained_{arch}",
-        f"{arch}_normal",
-        f"{arch}_multi-steps",
-        f"{arch}_all_s04",
-        f"{arch}_mix_s04",
-        f"vone_{arch}",
-        sin_names[arch],
-    ]
-
-    model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
-        f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
-    ]
-    model_names = [f"{arch}_mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
-        f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
-    ]
+    #
+    # model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
+    #     f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
+    # ]
+    # model_names = [f"{arch}_mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
+    #     f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
+    # ]
 
     from src.model.model_names import get_model_names
 
@@ -139,9 +132,8 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name:
-            if test_dataset == "imagenet16":
-                continue
+        elif "vone" in model_name and pretrained:
+            print("pretrained")
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
         elif "untrained" in model_name:
