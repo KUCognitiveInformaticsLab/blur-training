@@ -6,7 +6,7 @@ import torch
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(os.path.join(str(current_dir), "../../../"))
+sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.analysis.shape_bias.shape_bias import compute_shape_bias
 from src.model.load_sin_pretrained_models import load_sin_model
