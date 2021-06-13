@@ -6,10 +6,13 @@ import torch.nn as nn
 import torchvision.models as models
 
 import vonenet
+from src.model.load_sin_pretrained_models import load_sin_model
+from resnet_wider import resnet50x1, resnet50x2, resnet50x4
 
 
 def load_model(
-    arch: str,
+    arch: str = "",
+    model_name: str = "",
     num_classes: int = 16,
     parallel: bool = False,
     model_path: str = "",
@@ -25,6 +28,28 @@ def load_model(
         device (str): device for map_location for loading weights. (e.g. "cuda:0")
     Returns: model (torch.model)
     """
+    if "SIN" in model_name:
+        # Stylized-ImageNet
+        model = load_sin_model(model_name).to(device)
+
+        return model
+    elif model_name == "vone_alexnet":  # pretrained vonenet
+        model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+
+        return model
+    elif "simclr" in model_name:  # SimCLR
+        if "resnet50x1" in model_name:
+            model = resnet50x1()
+        elif "resnet50x2" in model_name:
+            model = resnet50x2()
+        elif "resnet50x4" in model_name:
+            model = resnet50x4()
+        checkpoint = torch.load(model_path, map_location=device)
+        model.load_state_dict(checkpoint['state_dict'])
+
+        return model
+
+
     # load model arch
     if arch == "vone_alexnet":
         model = vonenet.get_model(model_arch=arch.split("_")[1], pretrained=False)

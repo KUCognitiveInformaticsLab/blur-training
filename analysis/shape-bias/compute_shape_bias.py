@@ -10,10 +10,7 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.analysis.shape_bias.shape_bias import compute_shape_bias
-from src.model.load_sin_pretrained_models import load_sin_model
 from src.model.utils import load_model
-
-import vonenet
 
 
 if __name__ == "__main__":
@@ -34,6 +31,7 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
     )
+    simclr_dir = "/mnt/data1/pretrained_models/simclr/pytorch_models/"
     results_dir = f"./results/{num_classes}-class"
 
     assert os.path.exists(cue_conf_data_path), f"{cue_conf_data_path} does not exist."
@@ -66,9 +64,8 @@ if __name__ == "__main__":
 
     for model_name in tqdm(model_names, desc="models", leave=False):
         print(f"{model_name}: computing shape bias...")  # load model
-        if "SIN" in model_name:
-            # Stylized-ImageNet
-            model = load_sin_model(model_name).to(device)
+        if "SIN" in model_name or model_name == "vone_alexnet":
+            model = load_model(model_name=model_name).to(device)
             model.num_classes = num_classes
             all_file = os.path.join(
                 results_dir, "all_decisions_{}.csv".format(model_name)
@@ -76,15 +73,11 @@ if __name__ == "__main__":
             correct_file = os.path.join(
                 results_dir, "correct_decisions_{}.csv".format(model_name)
             )
-        elif model_name == "vone_alexnet":
-            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            model.num_classes = num_classes
-            all_file = os.path.join(
-                results_dir, "all_decisions_{}.csv".format(model_name)
+        if "simclr" in model_name:
+            model_path = os.path.join(
+                simclr_dir, model_name + ".pth"
             )
-            correct_file = os.path.join(
-                results_dir, "correct_decisions_{}.csv".format(model_name)
-            )
+            model = load_model(model_name=model_name, model_path=model_path)
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(

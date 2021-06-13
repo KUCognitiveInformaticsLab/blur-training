@@ -25,6 +25,12 @@ def get_model_names(arch, models="vss", num_classes=16):
                 f"vone_{arch}",
                 sin_names[arch],
             ]
+    elif models == "simclr":
+        model_names = [
+            "resnet50x1_simclr",
+            "resnet50x2_simclr",
+            "resnet50x4_simclr",
+        ]
     elif models == "all":
         model_names = [
             f"{arch}_all_s04",
