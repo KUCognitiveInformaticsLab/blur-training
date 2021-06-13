@@ -21,6 +21,7 @@ if __name__ == "__main__":
     compare = str(sys.argv[3])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
     epoch = 60
+
     pretrained = False  # True if you want to use pretrained vone_alexnet.
 
     # I/O
@@ -38,16 +39,6 @@ if __name__ == "__main__":
 
     model_names = get_model_names(arch=arch, compare=compare)
 
-    # VOneNet
-    model_names += ["{}_vonenet".format(arch)]
-
-    # Stylized-ImageNet
-    sin_names = {
-        "alexnet": "alexnet_trained_on_SIN",
-        "vgg16": "vgg16_trained_on_SIN",
-        "resnet50": "resnet50_trained_on_SIN",
-    }
-    model_names += [sin_names[arch]]
 
     for model_name in model_names:
         print(model_name)
