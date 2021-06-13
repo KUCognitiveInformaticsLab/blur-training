@@ -329,7 +329,7 @@ def main_worker(gpu, ngpus_per_node, args):
             rank=args.rank,
         )
     # create model
-    if args.pretrained_vone:
+    if args.pretrained:
         print("=> using pre-trained model '{}'".format(args.arch))
         model = models.__dict__[args.arch](pretrained=True)
     else:
