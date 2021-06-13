@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     analysis = f"lowpass_acc_{test_dataset}"
 
-    pretrained = False  # True if you want to use pretrained vone_alexnet.
+    pretrained_vone = False  # True if you want to use pretrained vone_alexnet.
 
     epoch = 60
     batch_size = 64
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name and pretrained:
+        elif "vone" in model_name and pretrained_vone:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
         elif "untrained" in model_name:

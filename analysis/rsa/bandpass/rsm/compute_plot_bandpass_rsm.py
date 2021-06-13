@@ -24,10 +24,15 @@ from src.model.load_sin_pretrained_models import load_sin_model
 
 if __name__ == "__main__":
     # ===== args =====
-    arch = "alexnet"
-    args = sys.argv
-    num_classes = int(args[1])
+    arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
+    num_classes = int(sys.argv[2])
+    compare = str(
+        sys.argv[3]
+    )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+
     epoch = 60
+
+    pretrained_vone = False  # True if you want to use pretrained vone_alexnet.
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
@@ -38,7 +43,7 @@ if __name__ == "__main__":
 
     # I/O settings
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+        16 if num_classes == 16 else 1000
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
@@ -46,6 +51,10 @@ if __name__ == "__main__":
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
+
+    from src.model.model_names import get_model_names
+
+    model_names = get_model_names(arch=arch, compare=compare)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -61,24 +70,6 @@ if __name__ == "__main__":
     print("OUT, results_dir:", results_dir)
     print("OUT, plots_dir:", plots_dir)
     print()
-
-    # models to compare
-    # model_names = [
-    #     # "alexnet_normal",
-    #     # "alexnet_all_s04",
-    #     # "alexnet_mix_s04",
-    #     # sin_names[arch],
-    #     # "vone_alexnet",
-    #     "untrained_alexnet",
-    # ]
-    # model_names = [
-    #     f"{arch}_normal",
-    #     # f"{arch}_multi-steps",
-    # ]
-
-    from src.model.model_names import get_model_names
-
-    model_names = get_model_names(arch=arch)
 
     print("===== models to analyze =====")
     print(model_names)
@@ -114,8 +105,16 @@ if __name__ == "__main__":
             model = load_sin_model(model_name).to(device)
             model.features = model.features.module
             RSA = AlexNetRSA(model)
-        elif num_classes == 1000 and "vone" in model_name:
-            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+        elif "vone" in model_name:
+            if pretrained_vone:
+                model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            else:
+                model_path = os.path.join(
+                    models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
+                )
+                model = load_model(
+                    arch=arch, num_classes=num_classes, model_path=model_path
+                ).to(device)
             RSA = VOneNetAlexNetRSA(model)
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
