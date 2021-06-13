@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 results_dir, "correct_decisions_{}.csv".format(model_name)
             )
         if "simclr" in model_name:
-            model_path = os.path.join(simclr_dir, model_name + ".pth")
+            model_path = os.path.join(simclr_dir, model_name.replace("_simclr") + ".pth")
             model = load_model(model_name=model_name, model_path=model_path)
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
