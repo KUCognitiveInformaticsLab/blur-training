@@ -7,7 +7,7 @@ import torchvision.models as models
 
 import vonenet
 from src.model.load_sin_pretrained_models import load_sin_model
-from resnet_wider import resnet50x1, resnet50x2, resnet50x4
+from src.model.resnet_wider import resnet50x1, resnet50x2, resnet50x4
 
 
 def load_model(
@@ -45,10 +45,9 @@ def load_model(
         elif "resnet50x4" in model_name:
             model = resnet50x4()
         checkpoint = torch.load(model_path, map_location=device)
-        model.load_state_dict(checkpoint['state_dict'])
+        model.load_state_dict(checkpoint["state_dict"])
 
         return model
-
 
     # load model arch
     if arch == "vone_alexnet":
