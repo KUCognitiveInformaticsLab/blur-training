@@ -117,7 +117,10 @@ if __name__ == "__main__":
 
         # compute
         df_all_decisions, df_correct_decisions = compute_shape_bias(
-            model=model, num_classes=num_classes, cue_conf_data_path=cue_conf_data_path, device=device
+            model=model,
+            num_classes=num_classes,
+            cue_conf_data_path=cue_conf_data_path,
+            device=device,
         )
 
         # save
