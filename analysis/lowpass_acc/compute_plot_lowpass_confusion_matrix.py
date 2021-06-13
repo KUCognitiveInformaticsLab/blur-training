@@ -40,8 +40,6 @@ if __name__ == "__main__":
     analysis = f"{stimuli}_confusion_matrix_{test_dataset}"
     max_sigma = 20
 
-    compare = str(sys.argv[3])  # models to compare
-
     pretrained = False  # True if you want to use pretrained vone_alexnet.
 
     machine = "server"  # ("server", "local")
