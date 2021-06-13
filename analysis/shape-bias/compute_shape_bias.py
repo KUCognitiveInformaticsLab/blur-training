@@ -77,7 +77,7 @@ if __name__ == "__main__":
             model_path = os.path.join(
                 simclr_dir, model_name.replace("_simclr", "") + ".pth"
             )
-            model = load_model(model_name=model_name, model_path=model_path)
+            model = load_model(model_name=model_name, model_path=model_path).to(device)
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(
