@@ -544,13 +544,13 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
             half1, half2 = images.chunk(2)
             targets1, _ = targets.chunk(2)
             # blur first half images
-            # half1 = GaussianBlurAll(half1, args.sigma)
-            half1 = GaussianBlurAllNotInExcludedLabels(
-                images=half1,
-                labels=targets1,
-                excluded_labels=args.excluded_labels,
-                sigma=args.sigma,
-            )
+            half1 = GaussianBlurAll(half1, args.sigma)
+            # half1 = GaussianBlurAllNotInExcludedLabels(
+            #     images=half1,
+            #     labels=targets1,
+            #     excluded_labels=args.excluded_labels,
+            #     sigma=args.sigma,
+            # )
             images = torch.cat((half1, half2))
         elif args.mode == "mix_no-sharp":
             half1, half2 = images.chunk(2)
