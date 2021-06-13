@@ -166,6 +166,8 @@ if __name__ == "__main__":
             results_dir, f"{analysis}_{num_classes}-class_{model_name}_acc1.csv"
         )  # acc1&acc5 will be saved (when ImageNet is test dataset)
 
+        print(model)
+
         test_performance(
             model=model,
             test_loader=test_loader,
