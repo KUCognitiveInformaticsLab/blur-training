@@ -36,10 +36,9 @@ def get_model_names(arch, models="vss", num_classes=16):
             f"{arch}_all_s04",
         ]
     elif models == "random-mix":
-        s = 4
         model_names = [
-            f"{arch}_random-mix_s{s:02d}",
-            f"{arch}_random-mix_s{s:02d}",
+            f"{arch}_random-mix_s00-04",
+            f"{arch}_random-mix_s00-04",
         ]
     elif models == "mix_p-blur":
         model_names = [
