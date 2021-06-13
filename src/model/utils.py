@@ -81,7 +81,12 @@ def load_model(
                 checkpoint = torch.load(model_path, map_location=device)
             else:
                 checkpoint = torch.load(model_path)
-            model.load_state_dict(checkpoint["state_dict"])
+
+            try:
+                model.load_state_dict(checkpoint["state_dict"])
+            except RuntimeError:
+                model.features = torch.nn.DataParallel(model.features)
+                model.load_state_dict(checkpoint["state_dict"])
 
             return model
 
