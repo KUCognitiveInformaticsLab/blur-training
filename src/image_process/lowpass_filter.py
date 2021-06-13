@@ -128,6 +128,39 @@ def GaussianBlurAllRandomSigma(
     return torch.from_numpy(imgs_list)
 
 
+def GaussianBlurAllRandomSigmaNotInEx(
+    images, labels, min_sigma, max_sigma, kernel_size=(0, 0), excluded_labels=[],
+) -> torch.Tensor:
+    """Return Blurred images by random sigma.
+    Each image is blurred by a sigma chosen by randomly from [min_sigma, max_sigma].
+
+    Args:
+        images: Images (torch.Tensor)
+            size: (N, 3, 224, 224)
+        kernel_size: This size will be automatically adjusted.
+    Returns: Blurred images (torch.Tensor)
+            size: (N, 3, 224, 224)
+    """
+    images = images.numpy()
+
+    images_list = []
+    for image, label in zip(images, labels):
+        if label not in excluded_labels:
+            # Choose a random sigma for each image
+            sigma = random.uniform(min_sigma, max_sigma)
+            images_list.append(
+                cv2.GaussianBlur(image.transpose(1, 2, 0), kernel_size, sigma)
+            )  # blur
+        else:
+            images_list.append(image.transpose(1, 2, 0))  # sharp (no blur)
+
+    images_list = np.array(images_list)
+    # Change the order of dimension for pytorch (B, C, H, W)
+    images_list = images_list.transpose(0, 3, 1, 2)
+
+    return torch.from_numpy(images_list)
+
+
 def GaussianBlurProb(images, sigma, p_blur, kernel_size=(0, 0)) -> torch.Tensor:
     """
     Args:

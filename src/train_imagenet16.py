@@ -20,7 +20,7 @@ from src.image_process.lowpass_filter import (
     GaussianBlurAll,
     GaussianBlurAllNotInExcludedLabels,
     GaussianBlurAllInExcludedLabels,
-    GaussianBlurAllRandomSigma,
+    GaussianBlurAllRandomSigmaNotInEx,
     GaussianBlurProbExcludeLabels,
 )
 from src.dataset.imagenet16 import load_imagenet16
@@ -311,11 +311,18 @@ def main():
                 )
             elif args.mode == "random-mix":
                 half1, half2 = inputs.chunk(2)
+                labels1, _ = labels.chunk(2)
                 # blur first half images
-                half1 = GaussianBlurAllRandomSigma(
-                    half1, args.min_sigma, args.max_sigma
+                # half1 = GaussianBlurAllRandomSigma(
+                #     half1, args.min_sigma, args.max_sigma
+                # )
+                half1 = GaussianBlurAllRandomSigmaNotInEx(
+                    images=half1, labels=labels1, excluded_labels=args.excluded_labels,
+                    min_sigma=args.min_sigma, max_sigma=args.max_sigma
                 )
+
                 inputs = torch.cat((half1, half2))
+
                 # inputs = GaussianBlurProbExcludeLabels(
                 #     images=inputs,
                 #     labels=labels,
