@@ -20,7 +20,7 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
 from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
+from src.model.load_sin_pretrained_models import load_sin_model
 from src.analysis.lowpass_acc.lowpass_acc import test_performance
 
 
@@ -29,7 +29,9 @@ if __name__ == "__main__":
     arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])  # number of last output of the models
     test_dataset = str(sys.argv[3])  # test_dataset to use
-    compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+    compare = str(
+        sys.argv[4]
+    )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
     analysis = f"lowpass_acc_{test_dataset}"
 
@@ -62,8 +64,7 @@ if __name__ == "__main__":
     results_dir = f"./results/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
+    os.makedirs(results_dir, exist_ok=True)
 
     # models to compare
     from src.model.model_names import get_model_names

@@ -43,12 +43,13 @@ def get_model_names(arch, compare="vss"):
             f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
         ]
     elif compare == "all_blur-training":
-        model_names = \
-              [f"{arch}_normal"] \
-            + [f"{arch}_multi-steps"] \
-            + [f"{arch}_mix_s{s:02d}" for s in range(1, 5)] \
-            + [f"{arch}_all_s{s:02d}" for s in range(1, 5)] \
+        model_names = (
+            [f"{arch}_normal"]
+            + [f"{arch}_multi-steps"]
+            + [f"{arch}_mix_s{s:02d}" for s in range(1, 5)]
+            + [f"{arch}_all_s{s:02d}" for s in range(1, 5)]
             + [f"{arch}_random-mix_s{s}" for s in ["00-02", "00-04", "00-08", "00-16"]]
+        )
     elif compare == "all_blur-training_old":
         modes = [
             f"{arch}_all",

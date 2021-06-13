@@ -25,7 +25,9 @@ if __name__ == "__main__":
     arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])  # number of last output of the models
     test_dataset = str(sys.argv[3])  # test_dataset to use
-    compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+    compare = str(
+        sys.argv[4]
+    )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
     analysis = f"bandpass_acc_{test_dataset}"
 

@@ -20,7 +20,7 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.dataset.imagenet16 import load_imagenet16
 from src.dataset.imagenet import load_imagenet
 from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
+from src.model.load_sin_pretrained_models import load_sin_model
 from src.analysis.lowpass_acc.lowpass_acc import (
     compute_confusion_matrix,
     plot_confusion_matrix,
@@ -32,7 +32,9 @@ if __name__ == "__main__":
     arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])  # number of last output of the models
     test_dataset = str(sys.argv[3])  # test_dataset to use
-    compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+    compare = str(
+        sys.argv[4]
+    )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
     epoch = 60
     batch_size = 64

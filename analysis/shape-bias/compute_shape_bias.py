@@ -3,6 +3,7 @@ import pathlib
 import sys
 
 import torch
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -18,19 +19,26 @@ import vonenet
 if __name__ == "__main__":
     arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])  # number of last output of the models
-    compare = str(sys.argv[3])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+    compare = str(
+        sys.argv[3]
+    )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
     epoch = 60
 
     pretrained = False  # True if you want to use pretrained vone_alexnet.
 
+    analysis = "shape_bias"
+
     # I/O
+    cue_conf_data_path = "/mnt/data1/shape-texture-cue-conflict/"
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
     results_dir = f"./results/{num_classes}-class-{arch}"
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
+
+    assert os.path.exists(cue_conf_data_path), f"{cue_conf_data_path} does not exist."
+    assert os.path.exists(models_dir), f"{models_dir} does not exist."
+    os.makedirs(results_dir, exist_ok=True)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -39,10 +47,8 @@ if __name__ == "__main__":
 
     model_names = get_model_names(arch=arch, compare=compare)
 
-
-    for model_name in model_names:
-        print(model_name)
-        # load model
+    for model_name in tqdm(model_names, desc="models", leave=False):
+        print(f"{model_name}: computing shape bias...")  # load model
         if "SIN" in model_name:
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
@@ -93,8 +99,12 @@ if __name__ == "__main__":
             )
 
         # compute
-        df_all_decisions, df_correct_decisions = compute_shape_bias(model=model, num_classes=num_classes)
+        df_all_decisions, df_correct_decisions = compute_shape_bias(
+            model=model, num_classes=num_classes, cue_conf_data_path=cue_conf_data_path
+        )
 
         # save
         df_all_decisions.to_csv(all_file)
         df_correct_decisions.to_csv(correct_file)
+
+    print(f"{analysis}: All done!!")

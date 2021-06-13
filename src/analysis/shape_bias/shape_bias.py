@@ -9,6 +9,7 @@ import sys
 import numpy as np
 import pandas as pd
 import torch
+from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -28,7 +29,7 @@ from vonenet import get_model
 mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
 
 
-def compute_shape_bias(model, num_classes):
+def compute_shape_bias(model, num_classes, cue_conf_data_path):
     """Test with cue-conflict images and record correct decisions.
     * You need to exclude images without a cue conflict (e.g. texture=cat, shape=cat)
     Dataset: Cue-conflict
@@ -49,10 +50,12 @@ def compute_shape_bias(model, num_classes):
     all_results = []
     all_file_names = []
     # make dataloader
-    cue_conf_loader = load_cue_conflict()
+    cue_conf_loader = load_cue_conflict(data_path=cue_conf_data_path)
     model.eval()
     with torch.no_grad():
-        for images, _, file_names in cue_conf_loader:
+        for images, _, file_names in tqdm(
+            cue_conf_loader, desc="cue-conf images", leave=False
+        ):
             all_file_names.extend(file_names)
             images = images.to(device)
             # get labels from file names

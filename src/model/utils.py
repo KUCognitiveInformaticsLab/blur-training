@@ -36,19 +36,19 @@ def load_model(
         model = models.__dict__[arch]()
         if num_classes == 16:
             if (
-                    arch.startswith("alexnet")
-                    or arch.startswith("vgg")
-                    or arch.startswith("mnasnet")
-                    or arch.startswith("mobilenet")
+                arch.startswith("alexnet")
+                or arch.startswith("vgg")
+                or arch.startswith("mnasnet")
+                or arch.startswith("mobilenet")
             ):
                 model.classifier[-1] = nn.Linear(
                     model.classifier[-1].in_features, num_classes
                 )
             elif (
-                    arch.startswith("resne")
-                    or arch.startswith("shufflenet")
-                    or arch.startswith("inception")
-                    or arch.startswith("wide_resnet")
+                arch.startswith("resne")
+                or arch.startswith("shufflenet")
+                or arch.startswith("inception")
+                or arch.startswith("wide_resnet")
             ):
                 model.fc = nn.Linear(model.fc.in_features, num_classes)
             elif arch.startswith("densenet"):
