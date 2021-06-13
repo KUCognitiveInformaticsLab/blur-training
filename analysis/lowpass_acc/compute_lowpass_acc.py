@@ -29,7 +29,7 @@ if __name__ == "__main__":
     arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])  # number of last output of the models
     test_dataset = str(sys.argv[3])  # test_dataset to use
-    compare = str(
+    models = str(
         sys.argv[4]
     )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     # models to compare
     from src.model.model_names import get_model_names
 
-    model_names = get_model_names(arch=arch, models=compare)
+    model_names = get_model_names(arch=arch, models=models)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)

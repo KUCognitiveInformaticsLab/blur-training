@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     metrics = "acc1"
 
-    arch = "alexnet"
+    arch = "vone_alexnet"
     epoch = 60
     batch_size = 64
 
@@ -100,9 +100,9 @@ if __name__ == "__main__":
                         in_dir,
                         f"{num_classes}-class_{model_name}_{stimulus}_{test_dataset}_{div_v}x{div_h}_{metrics}.csv",
                     )
-                    if "vone" in model_name or "SIN" in model_name:
-                        file_path = file_path.replace("16-class", "1000-class")
-                        file_path = file_path.replace("imagenet16", "imagenet1000")
+                    # if "vone" in model_name or "SIN" in model_name:
+                    #     file_path = file_path.replace("16-class", "1000-class")
+                    #     file_path = file_path.replace("imagenet16", "imagenet1000")
 
                     acc_all += load_acc1(file_path=file_path)
 

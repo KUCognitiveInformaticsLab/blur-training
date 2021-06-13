@@ -33,7 +33,7 @@ if __name__ == "__main__":
         f"{arch}_mix_s04",
         f"{arch}_multi-steps",
         f"vone_{arch}_normal",
-        sin_names[arch],
+        sin_names[arch.replace("vone_", "")],
     ]
 
     filename = f"shape-bias_{model_names}.png"
