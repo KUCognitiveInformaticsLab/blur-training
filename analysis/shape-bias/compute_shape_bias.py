@@ -12,13 +12,18 @@ from src.analysis.shape_bias.shape_bias import compute_shape_bias
 from src.model.load_sin_pretrained_models import load_sin_model
 from src.model.utils import load_model
 
-from vonenet import get_model
+import vonenet
 
 
 if __name__ == "__main__":
-    arch = "alexnet"
-    num_classes = 1000
+    arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
+    num_classes = int(sys.argv[2])  # number of last output of the models
+    compare = str(sys.argv[3])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+
     epoch = 60
+    pretrained = False  # True if you want to use pretrained vone_alexnet.
+
+    # I/O
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else ""  # else is (num_classes == 1000)
     )
@@ -29,34 +34,9 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # models to compare
-    model_names = [
-        f"{arch}_normal",
-        f"{arch}_multi-steps",
-    ]
-    modes = [
-        f"{arch}_all",
-        f"{arch}_mix",
-        f"{arch}_random-mix",
-        f"{arch}_single-step",
-        # f"{arch}_fixed-single-step",
-        # f"{arch}_reversed-single-step",
-    ]
+    from src.model.model_names import get_model_names
 
-    # sigmas to compare
-    sigmas_mix = [s for s in range(1, 6)] + [10]
-    sigmas_random_mix = ["00-05", "00-10"]
-
-    # add sigma to compare to the model names
-    for mode in modes:
-        if mode == f"{arch}_random-mix":
-            for min_max in sigmas_random_mix:
-                model_names += [f"{mode}_s{min_max}"]
-        elif mode == f"{arch}_mix":
-            for sigma in sigmas_mix:
-                model_names += [f"{mode}_s{sigma:02d}"]
-        else:
-            for sigma in range(1, 5):
-                model_names += [f"{mode}_s{sigma:02d}"]
+    model_names = get_model_names(arch=arch, compare=compare)
 
     # VOneNet
     model_names += ["{}_vonenet".format(arch)]
@@ -72,16 +52,31 @@ if __name__ == "__main__":
     for model_name in model_names:
         print(model_name)
         # load model
-        if "vonenet" in model_name:
-            model = get_model(model_arch=arch, pretrained=True).to(device)
+        if "SIN" in model_name:
+            # Stylized-ImageNet
+            model = load_sin_model(model_name).to(device)
+            model.num_classes = num_classes
             all_file = os.path.join(
                 results_dir, "all_decisions_{}.csv".format(model_name)
             )
             correct_file = os.path.join(
                 results_dir, "correct_decisions_{}.csv".format(model_name)
             )
-        elif "SIN" in model_name:
-            model = load_sin_model(model_name).to(device)
+        elif "vone" in model_name and pretrained:
+            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            model.num_classes = num_classes
+            all_file = os.path.join(
+                results_dir, "all_decisions_{}.csv".format(model_name)
+            )
+            correct_file = os.path.join(
+                results_dir, "correct_decisions_{}.csv".format(model_name)
+            )
+        elif "untrained" in model_name:
+            model_path = ""  # load untrained model
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            ).to(device)
+            model.num_classes = num_classes
             all_file = os.path.join(
                 results_dir, "all_decisions_{}.csv".format(model_name)
             )
@@ -92,7 +87,13 @@ if __name__ == "__main__":
             model_path = os.path.join(
                 models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
             )
-            model = load_model(model_path).to(device)
+            model = load_model(
+                arch=arch,
+                num_classes=num_classes,
+                model_path=model_path,
+                device="cuda:0" if torch.cuda.is_available() else "cpu",
+            ).to(device)
+            model.num_classes = num_classes
             all_file = os.path.join(
                 results_dir, "all_decisions_{}_e{}.csv".format(model_name, epoch)
             )
@@ -101,7 +102,7 @@ if __name__ == "__main__":
             )
 
         # compute
-        df_all_decisions, df_correct_decisions = compute_shape_bias(model=model)
+        df_all_decisions, df_correct_decisions = compute_shape_bias(model=model, num_classes=num_classes)
 
         # save
         df_all_decisions.to_csv(all_file)
