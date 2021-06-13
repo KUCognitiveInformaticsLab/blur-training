@@ -76,7 +76,7 @@ if __name__ == "__main__":
             correct_file = os.path.join(
                 results_dir, "correct_decisions_{}.csv".format(model_name)
             )
-        elif "vone" in model_name and pretrained:
+        elif model_name == "vone_alexnet":
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
             model.num_classes = num_classes
             all_file = os.path.join(

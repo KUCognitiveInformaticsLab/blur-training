@@ -10,17 +10,17 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.model.load_sin_pretrained_models import sin_names
 
 
-def get_model_names(arch, models="vss"):
+def get_model_names(arch, models="vss", num_classes=16):
     # models to compare
     if models == "vss":
         model_names = [
             f"untrained_{arch}",
             f"{arch}_normal",
-            # f"{arch}_all_s04",
+            f"{arch}_all_s04",
             f"{arch}_mix_s04",
             f"{arch}_multi-steps",
         ]
-        if arch != "vone_alexnet":
+        if arch != "vone_alexnet" and num_classes == 1000:
             model_names += [
                 f"vone_{arch}",
                 sin_names[arch],
