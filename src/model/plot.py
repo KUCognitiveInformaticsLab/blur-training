@@ -23,6 +23,8 @@ colors = {
     f"alexnet_random-mix_s00-10": "darkgreen",
     f"alexnet_trained_on_SIN": "brown",
     f"vone_alexnet": "navy",
+    f"vone_alexnet_normal": "navy",
+    "humans": "crimson",
 }
 
 lines = {
@@ -50,4 +52,6 @@ lines = {
     f"alexnet_random-mix_s00-10": "-",
     f"alexnet_trained_on_SIN": "-",
     f"vone_alexnet": "-",
+    f"vone_alexnet_normal": "-",
+    "humans": "-",
 }
