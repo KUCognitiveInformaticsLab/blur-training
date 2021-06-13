@@ -16,13 +16,13 @@ from src.model.model_names import rename_model_name
 
 
 if __name__ == "__main__":
-    arch = "alexnet"
+    arch = "vone_alexnet"
     num_classes = 16
     epoch = 60
 
     in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/shape-bias/results/{num_classes}-class/"
-    # in_dir = f'./results/16-class'
-    out_dir = f"./plots/16-class"
+    # in_dir = f'./results/{num_classes}-class'
+    out_dir = f"./plots/{num_classes}-class"
     assert in_dir
     os.makedirs(out_dir, exist_ok=True)
 
@@ -32,7 +32,11 @@ if __name__ == "__main__":
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
         f"{arch}_multi-steps",
-        f"vone_{arch}_normal",
+        # f"vone_{arch}_normal",
+        # f"{arch}_vonenet",
+        # "resnet50-1x_simclr",
+        # "resnet50-2x_simclr",
+        # "resnet50-4x_simclr",
         sin_names[arch.replace("vone_", "")],
     ]
 
@@ -43,7 +47,7 @@ if __name__ == "__main__":
 
     # load and get results
     for model_name in model_names:
-        if "SIN" in model_name:
+        if "SIN" in model_name or model_name == "alexnet_vonenet" or "simclr" in model_name:
             file_path = os.path.join(
                 in_dir.replace("16", "1000"), f"correct_decisions_{model_name}.csv"
             )

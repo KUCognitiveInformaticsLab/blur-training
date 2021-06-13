@@ -23,6 +23,7 @@ colors = {
     f"alexnet_random-mix_s00-10": "darkgreen",
     f"alexnet_trained_on_SIN": "brown",
     f"vone_alexnet": "navy",
+    f"alexnet_vonenet": "deepskyblue",
     f"untrained_vone_alexnet": "gray",
     f"vone_alexnet_normal": "#1f77b4",
     f"vone_alexnet_multi-steps": "mediumvioletred",
@@ -36,6 +37,9 @@ colors = {
     f"vone_alexnet_mix_s04_no-blur-8label": "gold",
     f"vone_alexnet_mix_s04_no-sharp-1label": "orangered",
     f"vone_alexnet_mix_s04_no-sharp-8label": "gold",
+    "resnet50-1x_simclr": "plum",
+    "resnet50-2x_simclr": "mediumorchid",
+    "resnet50-4x_simclr": "darkviolet",
     "humans": "crimson",
 }
 
@@ -76,5 +80,8 @@ lines = {
     f"vone_alexnet_mix_s04_no-blur-8label": "-",
     f"vone_alexnet_mix_s04_no-sharp-1label": "-",
     f"vone_alexnet_mix_s04_no-sharp-8label": "-",
+    "resnet50-1x_simclr": "-",
+    "resnet50-2x_simclr": "-",
+    "resnet50-4x_simclr": "-",
     "humans": "-",
 }
