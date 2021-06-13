@@ -85,6 +85,9 @@ def load_model(
             try:
                 model.load_state_dict(checkpoint["state_dict"])
             except RuntimeError:
+                print(model)
+                if arch == "vone_alexnet":
+                    model = torch.nn.DataParallel(model)
                 model.features = torch.nn.DataParallel(model.features)
                 model.load_state_dict(checkpoint["state_dict"])
 
