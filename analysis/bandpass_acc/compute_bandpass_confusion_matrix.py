@@ -24,25 +24,33 @@ from src.analysis.bandpass_acc.bandpass_acc import compute_confusion_matrix
 
 if __name__ == "__main__":
     # ===== args =====
+    arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
+    num_classes = int(sys.argv[2])  # number of last output of the models
+    test_dataset = str(sys.argv[3])  # test_dataset to use
+    compare = str(sys.argv[4])  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+
     analysis = "bandpass_confusion_matrix"
-    arch = "alexnet"
-    num_classes = int(sys.argv[1])  # number of last output of the models
     epoch = 60
     batch_size = 64
 
-    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
+    pretrained = False  # True if you want to use pretrained vone_alexnet.
 
-    test_dataset = "imagenet16"  # test_dataset to use
+    machine = "server"  # ("server", "local")
+
+    imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     num_filters = 6  # the number of bandpass filters
 
     # I/O
-    # models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-    #     16 if num_classes == 16 else ""  # else means (num_classes == 1000)
-    # )
     models_dir = (
-        "/home/sou/work/blur-training-dev/train-logs/imagenet{}/models/".format(
-            16 if num_classes == 16 else ""  # else means (num_classes == 1000)
+        "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+            16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
+        )
+        if machine == "server"
+        else (
+            "/Users/sou/lab2-mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
+                16 if num_classes == 16 else 1000  # else means (num_classes == 1000)
+            )
         )
     )
     results_dir = f"./results/{analysis}/{num_classes}-class/"
@@ -53,23 +61,9 @@ if __name__ == "__main__":
     os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        "mix_no-blur-1label",
-        "mix_no-blur-8label",
-    ]
-
-    # model_names = [
-    #     "untrained_alexnet",
-    #     "alexnet_normal",
-    #     "alexnet_all_s04",
-    #     "alexnet_mix_s04",
-    #     "vone_alexnet",
-    #     sin_names[arch],  # SIN
-    # ]
-
     from src.model.model_names import get_model_names
 
-    # model_names = get_model_names(arch=arch)
+    model_names = get_model_names(arch=arch, compare=compare)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -122,16 +116,21 @@ if __name__ == "__main__":
         print()
         print(f"{model_name}: computing bandpass acc...")
         # load model
-        if (num_classes == 1000) and ("SIN" in model_name):
+        if "SIN" in model_name:
+            if test_dataset == "imagenet16":
+                continue
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
-        elif (num_classes == 1000) and ("vone" in model_name):
+            model.num_classes = num_classes
+        elif "vone" in model_name and pretrained:
             model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            model.num_classes = num_classes
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(
                 arch=arch, num_classes=num_classes, model_path=model_path
             ).to(device)
+            model.num_classes = num_classes
         else:
             model_path = os.path.join(
                 models_dir, model_name, "epoch_{}.pth.tar".format(epoch)
@@ -142,6 +141,7 @@ if __name__ == "__main__":
                 model_path=model_path,
                 device="cuda:0" if torch.cuda.is_available() else "cpu",
             ).to(device)
+            model.num_classes = num_classes
 
         model.num_classes = num_classes
 
