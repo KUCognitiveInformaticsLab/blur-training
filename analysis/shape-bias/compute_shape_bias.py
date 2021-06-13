@@ -75,7 +75,7 @@ if __name__ == "__main__":
             )
         if "simclr" in model_name:
             model_path = os.path.join(
-                simclr_dir, model_name.replace("_simclr") + ".pth"
+                simclr_dir, model_name.replace("_simclr", "") + ".pth"
             )
             model = load_model(model_name=model_name, model_path=model_path)
         elif "untrained" in model_name:
