@@ -28,6 +28,7 @@ def load_model(
         device (str): device for map_location for loading weights. (e.g. "cuda:0")
     Returns: model (torch.model)
     """
+    # pretrained models
     if "SIN" in model_name:
         # Stylized-ImageNet
         model = load_sin_model(model_name).to(device)

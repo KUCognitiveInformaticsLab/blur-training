@@ -109,9 +109,9 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name and pretrained:
-            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            model.num_classes = num_classes
+        # elif "vone" in model_name and pretrained:
+        #     model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+        #     model.num_classes = num_classes
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(
