@@ -63,7 +63,14 @@ if __name__ == "__main__":
     )
     results_dir = f"./results_test/{analysis}/{num_classes}-class/"
 
-    assert os.path.exists(models_dir), f"{models_dir} does not exist."
+    # assert os.path.exists(models_dir), f"{models_dir} does not exist."
+    try:
+        os.path.exists(models_dir)
+    except:
+        models_dir = (
+            "/mnt/data/pretrained_models/blur-training/imagenet{}/models/".format(
+                16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
+            ))
     os.makedirs(results_dir, exist_ok=True)
 
     # models to compare
