@@ -145,7 +145,6 @@ if __name__ == "__main__":
                 device="cuda:0" if torch.cuda.is_available() else "cpu",
             ).to(device)
             model.num_classes = num_classes
-            print(model)
 
         # set path to output
         out_path = os.path.join(
