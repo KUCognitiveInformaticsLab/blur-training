@@ -62,15 +62,11 @@ def calc_lowpass_acc(model, test_loader, sigma, device=torch.device("cuda:0")):
         for data in tqdm(test_loader, desc="test images", leave=False):
             inputs, labels = data[0], data[1].to(device)
             if sigma != 0:
-                inputs = GaussianBlurAll(inputs, sigma)
-
-            print(inputs.shape)
+                inputs = GaussianBlurAll(imgs=inputs, sigma=sigma)
 
             inputs = inputs.to(device)
 
             outputs = model(inputs)
-
-            print(outputs.shape)
 
             acc1, acc5 = accuracy(outputs, labels, topk=(1, 5))
 

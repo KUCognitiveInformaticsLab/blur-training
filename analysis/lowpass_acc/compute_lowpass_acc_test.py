@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     epoch = 60
     batch_size = 64
-    max_sigma = 5
+    max_sigma = 20
 
     machine = "server"  # ("server", "local")
 
@@ -77,9 +77,6 @@ if __name__ == "__main__":
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, models=models)
-    model_names = [
-        f"{arch}_normal",
-        ]
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
