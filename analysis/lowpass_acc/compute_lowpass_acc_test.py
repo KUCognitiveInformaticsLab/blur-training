@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     epoch = 60
     batch_size = 64
-    max_sigma = 20
+    max_sigma = 5
 
     machine = "server"  # ("server", "local")
 
