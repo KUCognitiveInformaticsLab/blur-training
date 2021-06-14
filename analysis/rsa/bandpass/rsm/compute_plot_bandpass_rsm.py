@@ -110,19 +110,19 @@ if __name__ == "__main__":
             model.features = model.features.module
             RSA = AlexNetRSA(model)
         elif "vone" in model_name:
-            if pretrained_vone:
-                model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-                RSA = VOneNetAlexNetRSAParallel(model)
+            # if pretrained_vone:
+            #     model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+            #     RSA = VOneNetAlexNetRSAParallel(model)
+            # else:
+            if "untrained" in model_name:
+                model_path = ""  # load untrained
             else:
-                if "untrained" in model_name:
-                    model_path = ""  # load untrained
-                else:
-                    model_path = os.path.join(
-                        models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
-                    )
-                model = load_model(
-                    arch=arch, num_classes=num_classes, model_path=model_path
-                ).to(device)
+                model_path = os.path.join(
+                    models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
+                )
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            ).to(device)
             RSA = VOneNetAlexNetRSA(model)
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
