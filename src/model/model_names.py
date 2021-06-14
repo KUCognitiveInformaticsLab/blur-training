@@ -84,7 +84,7 @@ def get_model_names(arch, models="vss", num_classes=16):
             f"{arch}_random-mix_s00-{s:02d}_no-sharp-1label",
             f"{arch}_random-mix_s00-{s:02d}_no-sharp-8label",
         ]
-    elif models == "all_blur-training":
+    elif models == "all-blur-training":
         model_names = (
             [f"{arch}_normal"]
             + [f"{arch}_multi-steps"]
