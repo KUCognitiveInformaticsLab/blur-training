@@ -58,6 +58,12 @@ if __name__ == "__main__":
     results_dir = f"./results/{analysis}/{num_classes}-class/"
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
 
+    server = str(sys.argv[5])
+    if server == "gpu1":
+        models_dir.replace("data1", "data")
+        results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/bandpass_acc/results/{analysis}/{num_classes}-class/"
+        plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/bandpass_acc/plots/{analysis}/{num_classes}-class/"
+
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
