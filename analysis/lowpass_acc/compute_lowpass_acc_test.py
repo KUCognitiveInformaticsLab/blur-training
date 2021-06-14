@@ -61,7 +61,7 @@ if __name__ == "__main__":
             )
         )
     )
-    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    results_dir = f"./results_test/{analysis}/{num_classes}-class/"
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
