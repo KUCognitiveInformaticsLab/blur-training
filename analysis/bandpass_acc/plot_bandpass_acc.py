@@ -15,16 +15,16 @@ from src.model.plot import colors, lines
 
 
 if __name__ == "__main__":
-    analysis = "bandpass_acc"
     arch = "alexnet"
     epoch = 60
     num_classes = int(sys.argv[1])  # number of last output of the models
     test_dataset = "imagenet16"
+    analysis = f"bandpass_acc_{test_dataset}"
 
     # directories and model settings
-    in_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
+    in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/plots/{num_classes}-class/"
-    out_dir = f"./plots_vss/{num_classes}-class/"
+    out_dir = f"./plots/{num_classes}-class/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -41,6 +41,16 @@ if __name__ == "__main__":
         # f"{arch}_random-mix_s00-10",
         # f"{arch}_trained_on_SIN",
         # f"vone_{arch}",
+    ]
+    model_names = [
+        f"{arch}_normal",
+        f"{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"{arch}_multi-steps",
+        f"vone_{arch}_normal",
+        f"vone_{arch}_all_s04",
+        f"vone_{arch}_mix_s04",
+        f"vone_{arch}_multi-steps",
     ]
 
     # set plot file name.
@@ -64,7 +74,7 @@ if __name__ == "__main__":
         file_path = os.path.join(
             in_dir, f"{analysis}_{num_classes}-class_{model_name}_{metrics}.csv"
         )
-        if "vone" in model_name or "SIN" in model_name:
+        if "SIN" in model_name:
             file_path = file_path.replace("16-class", "1000-class")
 
         acc1[model_name] = load_result(file_path=file_path).values[0]

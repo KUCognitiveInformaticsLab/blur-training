@@ -73,6 +73,17 @@ if __name__ == "__main__":
         # f"{arch}_multi-steps",
     ]
 
+    model_names = [
+        f"{arch}_normal",
+        f"{arch}_all_s04",
+        f"{arch}_mix_s04",
+        f"{arch}_multi-steps",
+        f"vone_{arch}_normal",
+        f"vone_{arch}_all_s04",
+        f"vone_{arch}_mix_s04",
+        f"vone_{arch}_multi-steps",
+    ]
+
     # set plot file name.
     plot_file = (
         f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.png"
@@ -98,7 +109,7 @@ if __name__ == "__main__":
         file_path = os.path.join(
             in_dir, f"{analysis}_{num_classes}-class_{model_name}_{metrics}.csv"
         )
-        if "vone" in model_name or "SIN" in model_name:
+        if "SIN" in model_name:
             file_path = file_path.replace("16-class", "1000-class")
             file_path = file_path.replace("imagenet16", "imagenet1000")
 
