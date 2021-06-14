@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     server = str(sys.argv[5])
     if server == "gpu1":
-        models_dir.replace("data1", "data")
+        models_dir = models_dir.replace("data1", "data")
         results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
         plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/bandpass_acc/plots/{num_classes}-class/"
 
