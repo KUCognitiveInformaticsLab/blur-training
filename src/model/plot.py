@@ -42,13 +42,13 @@ colors = {
     "resnet50-1x_simclr": "plum",
     "resnet50-2x_simclr": "mediumorchid",
     "resnet50-4x_simclr": "darkviolet",
-    "humans": "crimson",
+    "humans": "crimson",  # ("dimgray", "crimson")
 }
 
 lines = {
     f"raw_images": "--",
     f"untrained_alexnet": ":",
-    f"alexnet_normal": "-",
+    f"alexnet_normal": ":",
     f"alexnet_multi-steps": "-",
     f"alexnet_all_s04": "-",
     f"alexnet_mix_s01": "-",
@@ -87,5 +87,5 @@ lines = {
     "resnet50-1x_simclr": "-",
     "resnet50-2x_simclr": "-",
     "resnet50-4x_simclr": "-",
-    "humans": "-",
+    "humans": "--",
 }

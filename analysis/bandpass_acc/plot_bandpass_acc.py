@@ -48,13 +48,15 @@ if __name__ == "__main__":
         f"{arch}_mix_s04",
         f"{arch}_multi-steps",
         f"vone_{arch}_normal",
-        f"vone_{arch}_all_s04",
-        f"vone_{arch}_mix_s04",
-        f"vone_{arch}_multi-steps",
+        # f"vone_{arch}_all_s04",
+        # f"vone_{arch}_mix_s04",
+        # f"vone_{arch}_multi-steps",
+        f"{arch}_trained_on_SIN",
+        "humans",
     ]
 
     # set plot file name.
-    plot_file = f"{analysis}_{num_classes}-class_{arch}_normal_all-s04_mix-s04.png"
+    plot_file = f"{analysis}_{num_classes}-class_{arch}_{model_names}.png"
 
     x = ["{}-{}".format(2 ** i, 2 ** (i + 1)) for i in range(4)] + ["16-"]
     x.insert(0, "0-1")
@@ -76,6 +78,10 @@ if __name__ == "__main__":
         )
         if "SIN" in model_name:
             file_path = file_path.replace("16-class", "1000-class")
+            file_path = file_path.replace("imagenet16_", "")
+
+        if model_name == "humans":
+            continue
 
         acc1[model_name] = load_result(file_path=file_path).values[0]
 
@@ -94,15 +100,28 @@ if __name__ == "__main__":
         ylim=(0, 1),
     )
     for model_name in model_names:
-        ax.plot(x[0], acc1[model_name][0], marker="o", color=colors[model_name])
-        ax.plot(
-            x[1:],
-            acc1[model_name][1:],
-            label=rename_model_name(model_name),
-            marker="o",
-            ls=lines[model_name],
-            color=colors[model_name],
-        )
+        if model_name == "humans":
+            # plot humans data
+            ax.plot(x[0], [89.32], marker="x", color=colors[model_name])
+            ax.plot(
+                ["1-2", "4-8", "16-"],
+                [78.85, 63.91, 23.36],
+                label=rename_model_name(model_name),
+                marker="x",
+                ls=lines[model_name],
+                # ls=":" if model_name == f"{arch}_normal" else "-",
+                color=colors[model_name],
+            )
+        else:
+            ax.plot(x[0], acc1[model_name][0], marker="o", color=colors[model_name])
+            ax.plot(
+                x[1:],
+                acc1[model_name][1:],
+                label=rename_model_name(model_name),
+                marker="o",
+                ls=lines[model_name],
+                color=colors[model_name],
+            )
 
     ax.legend()
     # ax.set_xticks(np.arange(0, max_sigma+1, 5))

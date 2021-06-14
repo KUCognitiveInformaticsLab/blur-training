@@ -29,9 +29,13 @@ if __name__ == "__main__":
     # models to plot
     model_names = [
         f"{arch}_normal",
+        f"vone_{arch}_normal",
         f"{arch}_all_s04",
+        f"vone_{arch}_all_s04",
         f"{arch}_mix_s04",
+        f"vone_{arch}_mix_s04",
         f"{arch}_multi-steps",
+        f"vone_{arch}_multi-steps",
         # f"vone_{arch}_normal",
         # f"{arch}_vonenet",
         # "resnet50-1x_simclr",
@@ -41,13 +45,9 @@ if __name__ == "__main__":
     ]
     model_names = [
         f"{arch}_normal",
-        f"vone_{arch}_normal",
         f"{arch}_all_s04",
-        f"vone_{arch}_all_s04",
         f"{arch}_mix_s04",
-        f"vone_{arch}_mix_s04",
         f"{arch}_multi-steps",
-        f"vone_{arch}_multi-steps",
         # f"vone_{arch}_normal",
         # f"{arch}_vonenet",
         # "resnet50-1x_simclr",

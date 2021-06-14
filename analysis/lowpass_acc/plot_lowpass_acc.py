@@ -78,10 +78,11 @@ if __name__ == "__main__":
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
         f"{arch}_multi-steps",
-        f"vone_{arch}_normal",
-        f"vone_{arch}_all_s04",
-        f"vone_{arch}_mix_s04",
-        f"vone_{arch}_multi-steps",
+        # f"vone_{arch}_normal",
+        # f"vone_{arch}_all_s04",
+        # f"vone_{arch}_mix_s04",
+        # f"vone_{arch}_multi-steps",
+        "humans",
     ]
 
     # set plot file name.
@@ -96,8 +97,8 @@ if __name__ == "__main__":
     x = [s for s in range(max_sigma + 1)]
     x[0] = "0(sharp)"
 
-    # read band-pass accuracy results
     acc = {}
+    # read band-pass accuracy results
     for model_name in model_names:
         # if "SIN" in model_name or "vone" in model_name:
         #     # Stylized-ImageNet
@@ -112,6 +113,9 @@ if __name__ == "__main__":
         if "SIN" in model_name:
             file_path = file_path.replace("16-class", "1000-class")
             file_path = file_path.replace("imagenet16", "imagenet1000")
+
+        if model_name == "humans":
+            continue
 
         acc[model_name] = pd.read_csv(file_path, index_col=0).values[0]
 
@@ -131,15 +135,29 @@ if __name__ == "__main__":
     )
     for model_name in model_names:
         # ax.plot(x[0], acc[model_name][0], marker="o", color=colors[model_name])
-        ax.plot(
-            x,
-            acc[model_name][: max_sigma + 1],
-            label=rename_model_name(model_name),
-            marker="o",
-            ls=lines[model_name],
-            # ls=":" if model_name == f"{arch}_normal" else "-",
-            color=colors[model_name],
-        )
+        if model_name == "humans":
+            # plot humans data
+            ax.plot(
+                [0, 4, 8],
+                [89.32, 72.61, 50.67],
+                label=rename_model_name(model_name),
+                marker="x",
+                ls=lines[model_name],
+                # ls=":" if model_name == f"{arch}_normal" else "-",
+                color=colors[model_name],
+            )
+        else:
+            ax.plot(
+                x,
+                acc[model_name][: max_sigma + 1],
+                label=rename_model_name(model_name),
+                marker="o",
+                ls=lines[model_name],
+                # ls=":" if model_name == f"{arch}_normal" else "-",
+                color=colors[model_name],
+            )
+
+
 
     ax.legend()
     # ax.set_xticks(np.arange(0, max_sigma+1, 5))
