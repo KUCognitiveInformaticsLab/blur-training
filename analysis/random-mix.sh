@@ -1,4 +1,4 @@
-#cd lowpass_acc
+cd lowpass_acc
 #python compute_lowpass_acc.py alexnet 16 imagenet16 random-mix
 #python compute_lowpass_acc.py vone_alexnet 16 imagenet16 random-mix
 #python compute_plot_lowpass_confusion_matrix.py alexnet 16 imagenet16 random-mix
