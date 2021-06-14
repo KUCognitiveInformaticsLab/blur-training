@@ -70,6 +70,9 @@ if __name__ == "__main__":
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, models=models)
+    model_names = [
+        f"{arch}_normal",
+        ]
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -125,9 +128,9 @@ if __name__ == "__main__":
             # Stylized-ImageNet
             model = load_sin_model(model_name).to(device)
             model.num_classes = num_classes
-        elif "vone" in model_name and pretrained_vone:
-            model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-            model.num_classes = num_classes
+        # elif "vone" in model_name and pretrained_vone:
+        #     model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
+        #     model.num_classes = num_classes
         elif "untrained" in model_name:
             model_path = ""  # load untrained model
             model = load_model(
@@ -145,6 +148,7 @@ if __name__ == "__main__":
                 device="cuda:0" if torch.cuda.is_available() else "cpu",
             ).to(device)
             model.num_classes = num_classes
+            print(model)
 
         # set path to output
         out_path = os.path.join(
