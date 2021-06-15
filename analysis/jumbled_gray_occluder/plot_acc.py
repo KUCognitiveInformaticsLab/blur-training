@@ -85,10 +85,12 @@ if __name__ == "__main__":
         f"{arch}_normal",
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
+        f"{arch}_mix_s04",
         f"{arch}_multi-steps",
         f"vone_{arch}_normal",
         f"vone_{arch}_all_s04",
         f"vone_{arch}_mix_s04",
+        f"vone_{arch}_random-mix_s00-04",
         f"vone_{arch}_multi-steps",
     ]
 
