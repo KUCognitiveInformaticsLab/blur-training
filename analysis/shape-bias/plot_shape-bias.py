@@ -118,7 +118,7 @@ if __name__ == "__main__":
         ha="right",
     )
     ax.yaxis.set_major_locator(ticker.MultipleLocator(0.1))
-    ax.grid(ls=":")
+    # ax.grid(ls=":")
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, filename), bbox_inches="tight")
