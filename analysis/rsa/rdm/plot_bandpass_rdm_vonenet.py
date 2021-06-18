@@ -4,7 +4,7 @@ import sys
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(os.path.join(str(current_dir), "../../../../"))
+sys.path.append(os.path.join(str(current_dir), "../../../"))
 
 from src.analysis.rsa.utils import load_rdms
 from src.analysis.rsa.rsa import vone_alexnet_layers

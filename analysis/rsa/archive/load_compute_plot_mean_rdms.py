@@ -21,7 +21,7 @@ if __name__ == "__main__":
     )
 
     # I/O settings
-    analysis_dir = "../"
+    analysis_dir = "../bandpass/"
     data_dir = os.path.join(
         analysis_dir, f"results/activations/{num_classes}-class-{arch}/"
     )
