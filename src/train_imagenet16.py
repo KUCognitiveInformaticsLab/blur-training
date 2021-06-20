@@ -153,6 +153,10 @@ parser.add_argument(
     help="path to latest checkpoint (default: none)",
 )
 parser.add_argument(
+    "--save_model_every_10e", action="store_true", default=False,
+    help="Save the model every 10 epoch."
+)
+parser.add_argument(
     "--excluded_labels",
     type=int,
     nargs="+",
@@ -416,8 +420,9 @@ def main():
             },
             model_path,
         )
-        # save every 10 epoch
-        if (epoch + 1) % 10 == 0:
+        # save the model every 10 epochs or save it at the last epoch
+        if args.save_model_every_10e and (epoch + 1) % 10 == 0\
+                or (epoch + 1) == args.epochs:
             save_model(
                 {
                     "epoch": epoch + 1,

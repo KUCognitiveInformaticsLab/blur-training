@@ -140,6 +140,10 @@ parser.add_argument(
     "--pretrained", dest="pretrained", action="store_true", help="use pre-trained model"
 )
 parser.add_argument(
+    "--save_model_every_10e", action="store_true", default=False,
+    help="Save the model every 10 epoch."
+)
+parser.add_argument(
     "--world_size",
     default=-1,
     type=int,
@@ -479,7 +483,9 @@ def main_worker(gpu, ngpus_per_node, args):
                 models_path,
                 epoch + 1,
             )
-            if (epoch + 1) % 10 == 0:  # save model every 10 epochs
+            # save the model every 10 epochs or save it at the last epoch
+            if args.save_model_every_10e and (epoch + 1) % 10 == 0 \
+                    or (epoch + 1) == args.epochs:
                 save_model(
                     {
                         "epoch": epoch + 1,
