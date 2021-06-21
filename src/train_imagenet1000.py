@@ -188,7 +188,6 @@ parser.add_argument(
         "normal",
         "all",
         "mix",
-        "mix_no-sharp",
         "mix_p-blur",
         "random-mix",
         "single-step",
@@ -557,18 +556,6 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
             #     excluded_labels=args.excluded_labels,
             #     sigma=args.sigma,
             # )
-            images = torch.cat((half1, half2))
-        elif args.mode == "mix_no-sharp":
-            half1, half2 = images.chunk(2)
-            _, targets2 = targets.chunk(2)
-            # blur first half images
-            half1 = GaussianBlurAll(half1, args.sigma)
-            half2 = GaussianBlurAllInExcludedLabels(
-                images=half2,
-                labels=targets2,
-                excluded_labels=args.excluded_labels,
-                sigma=args.sigma,
-            )
             images = torch.cat((half1, half2))
         elif args.mode == "mix_p-blur":
             images = GaussianBlurProbExcludeLabels(

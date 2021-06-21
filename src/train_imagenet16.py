@@ -20,6 +20,7 @@ from src.image_process.lowpass_filter import (
     GaussianBlurAll,
     GaussianBlurAllNotInExcludedLabels,
     GaussianBlurAllInExcludedLabels,
+    GaussianBlurAllRandomSigma,
     GaussianBlurAllRandomSigmaNotInEx,
     GaussianBlurAllRandomSigmaInEx,
     GaussianBlurProbExcludeLabels,
@@ -300,6 +301,7 @@ def main():
                 _, labels2 = labels.chunk(2)
                 # blur first half images
                 half1 = GaussianBlurAll(half1, args.sigma)
+                # no-sharp with excluded labels for the second half
                 half2 = GaussianBlurAllInExcludedLabels(
                     images=half2,
                     labels=labels2,
@@ -343,14 +345,15 @@ def main():
                 # )
             elif args.mode == "random-mix_no-sharp":
                 half1, half2 = inputs.chunk(2)
-                labels1, _ = labels.chunk(2)
+                labels1, labels2 = labels.chunk(2)
                 # blur first half images
-                # half1 = GaussianBlurAllRandomSigma(
-                #     half1, args.min_sigma, args.max_sigma
-                # )
-                half1 = GaussianBlurAllRandomSigmaInEx(
-                    images=half1,
-                    labels=labels1,
+                half1 = GaussianBlurAllRandomSigma(
+                    half1, args.min_sigma, args.max_sigma
+                )
+                # no-sharp with excluded labels for the second half
+                half2 = GaussianBlurAllRandomSigmaInEx(
+                    images=half2,
+                    labels=labels2,
                     excluded_labels=args.excluded_labels,
                     min_sigma=args.min_sigma,
                     max_sigma=args.max_sigma,
@@ -421,8 +424,8 @@ def main():
             model_path,
         )
         # save the model every 10 epochs or save it at the last epoch
-        if args.save_model_every_10e and (epoch + 1) % 10 == 0\
-                or (epoch + 1) == args.epochs:
+        if (args.save_model_every_10e and (epoch + 1) % 10 == 0)\
+                or ((epoch + 1) == args.epochs):  # last epoch
             save_model(
                 {
                     "epoch": epoch + 1,
