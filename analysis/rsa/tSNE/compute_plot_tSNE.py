@@ -161,8 +161,10 @@ if __name__ == "__main__":
     print("===== I/O =====")
     if args.compute:
         print("IN, models_dir:", models_dir)
-    print("OUT, results_dir:", results_dir)
-    print("OUT, plots_dir:", plots_dir)
+        print("OUT, results_dir:", results_dir)
+    if args.plot:
+        print("IN, results_dir:", results_dir)
+        print("OUT, plots_dir:", plots_dir)
     print()
 
     print("===== models to analyze =====")
