@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
     # I/O settings
     if args.compute:
-        imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
+        # imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
         in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
         models_dir = os.path.join(
             args.data_dir,
@@ -126,7 +126,7 @@ if __name__ == "__main__":
                 16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
             ),
         )
-        assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
+        # assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
         assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
         assert os.path.exists(models_dir), f"{models_dir} does not exist."
 
