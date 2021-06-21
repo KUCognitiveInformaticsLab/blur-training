@@ -57,6 +57,12 @@ def get_model_names(arch, models="vss", num_classes=16):
             f"{arch}_mix_s{s:02d}_no-blur-1label",
             f"{arch}_mix_s{s:02d}_no-blur-8label",
         ]
+    elif models == "mix_no-blur_seed0":
+        s = 4
+        model_names = [
+            f"{arch}_mix_s{s:02d}_no-blur-1label",
+            f"{arch}_mix_s{s:02d}_no-blur-8label",
+        ]
     elif models == "mix_no-sharp":
         model_names = [f"{arch}_mix_s{s:02d}_no-sharp-1label" for s in range(1, 5)] + [
             f"{arch}_mix_s{s:02d}_no-sharp-8label" for s in range(1, 5)
