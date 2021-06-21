@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
-sys.path.append(str(current_dir) + "/../../../../")
+sys.path.append(str(current_dir) + "/../../../")
 
 from src.analysis.rsa.bandpass.t_sne import (
     compute_tSNE_each_bandpass,
