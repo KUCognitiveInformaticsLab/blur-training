@@ -136,8 +136,8 @@ if __name__ == "__main__":
         assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
         assert os.path.exists(models_dir), f"{models_dir} does not exist."
 
-    # results_dir = f"./results/{analysis}/{num_classes}-class/"
-    results_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
+    results_dir = f"./results/{analysis}/{num_classes}-class/"
+    # results_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
     os.makedirs(results_dir, exist_ok=True)
 
     if args.plot:
