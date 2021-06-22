@@ -132,7 +132,7 @@ def compute_tSNE_all_bandpass(
         image (torch.Tensor): torch.Size([1, C, H, W])
         label (torch.Tensor): e.g. tensor([0])
         """
-        labels += [f"l{label.item()}_f{i}" for i in range(num_filters + 1)]
+        labels += [f"l{label.item():02d}_f{i}" for i in range(num_filters + 1)]
 
         activations = compute_activations_with_bandpass(
             RSA=RSA,
@@ -338,13 +338,47 @@ def plot_tSNE_s_b(
     embedded_activations (np.ndarray): (L, N * (1+F), D)
     labels (list): (N * (1+F))
     """
+    colors = {
+        0: "blue",
+        1: "orange",
+    }
+
     for layer_id, layer in tqdm(
         enumerate(layers), "plotting (each layer)", leave=False
     ):
         idx = np.random.permutation(len(labels))[:100]
-        target = embedded_activations[layer_id][idx]
 
-        labs = list(np.array([int(l[-1]) for l in labels])[idx])
+        target = embedded_activations[layer_id][idx]
+        target_labels = np.array(labels)[idx]
+
+        fig = plt.figure(dpi=150)
+        for i in range(len(target)):
+            if num_dim == 2:
+                # get (x, y)
+                x, y = target[i]
+
+                # get label and filter_id
+                # l (int): label (0 - 15)
+                # f (int): filter id (0: sharp, 1: blur)
+                l, f = map(int, target_labels[i].replace("l", "").replace("f", "").split("_"))
+
+                plt.scatter(
+                    x=x,
+                    y=y,
+                    c=colors[f],
+                    alpha=0.5,
+                )
+                plt.annotate(l, xy=(x, y))
+
+        if title:
+            plt.title(
+                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                fontsize=8,
+            )
+
+        '''Only S and B
+        target = embedded_activations[layer_id][idx]
+        target_labels = list(np.array([int(l[-1]) for l in labels])[idx])
 
         if num_dim == 2:
             fig = plt.figure(dpi=150)
@@ -352,65 +386,22 @@ def plot_tSNE_s_b(
             plt.scatter(
                 x=target[:, 0],
                 y=target[:, 1],
-                c=labs,
+                c=target_labels,
                 cmap="jet",
                 alpha=0.5,
             )
 
             plt.colorbar()
-
+        
             if title:
                 plt.title(
                     f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
                     fontsize=8,
                 )
-
-        # fig = plt.figure(dpi=150)
-        # for image_i in range(embedded_activations.shape[1]):
-        #     target = embedded_activations[layer_id, image_i]
-        #
-        #     if num_dim == 2:
-        #         plt.scatter(
-        #             x=target[0],
-        #             y=target[1],
-        #             label=labels[image_i],
-        #             # cmap="jet",
-        #             alpha=0.5,
-        #         )
-        #
-        #         # plt.colorbar()
-        #     # elif num_dim == 3:
-        #     #     pass
-        #     #     # fig = plt.figure(dpi=150).gca(projection="3d")
-        #     #     fig = plt.figure(dpi=150)
-        #     #     ax = Axes3D(fig)
-        #     #
-        #     #     sc = ax.scatter(
-        #     #         xs=target[:, 0],
-        #     #         ys=target[:, 1],
-        #     #         zs=target[:, 2],
-        #     #         c=labels,
-        #     #         cmap="jet",
-        #     #         alpha=0.5,
-        #     #     )
-        #     #
-        #     #     fig.colorbar(sc, shrink=0.75)
-        #     #
-        #     #     if title:
-        #     #         ax.set_title(
-        #     #             title=title,
-        #     #             fontsize=10,
-        #     #         )
-
-        # if title:
-        #     plt.title(
-        #         f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
-        #         fontsize=8,
-        #     )
-        #
-        # plt.legend()
+        '''
 
         # fig.tight_layout()
+        # plt.legend()
         plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
         plot_path = os.path.join(plots_dir, plot_file)
         plt.savefig(plot_path)

@@ -1,73 +1,18 @@
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 2 \
-#  --perplexity 30
-#
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 2 \
-#  --perplexity 10
-#
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 2 \
-#  --perplexity 20
-#
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 2 \
-#  --perplexity 40
-#
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 2 \
-#  --perplexity 50
+# vone_alexnet
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 16 --models vss
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 1000 --models vss
+# alexnet
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 16 --models vss
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 1000 --models vss
 
-## dim = 3
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 3 \
-#  --perplexity 20
+# vone_alexnet
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 16 --models mix_no-blur
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 16 --models mix_no-sharp
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 1000 --models mix_no-blur
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 1000 --models mix_no-sharp
 
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 3 \
-#  --perplexity 30 \
-#  --n_iter 1000
-
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 3 \
-#  --perplexity 40
-#
-#python compute_plot_tSNE.py \
-#  --num_classes 1000 \
-#  --plot \
-#  --num_dim 3 \
-#  --perplexity 50
-
-python compute_plot_tSNE.py --compute --perplexity 10 --n_iter 500
-python compute_plot_tSNE.py --compute --perplexity 10 --n_iter 1000
-python compute_plot_tSNE.py --compute --perplexity 10 --n_iter 5000
-python compute_plot_tSNE.py --compute --perplexity 10 --n_iter 10000
-python compute_plot_tSNE.py --compute --perplexity 10 --n_iter 20000
-
-python compute_plot_tSNE.py --compute --perplexity 30 --n_iter 500
-python compute_plot_tSNE.py --compute --perplexity 30 --n_iter 1000
-python compute_plot_tSNE.py --compute --perplexity 30 --n_iter 5000
-python compute_plot_tSNE.py --compute --perplexity 30 --n_iter 10000
-python compute_plot_tSNE.py --compute --perplexity 30 --n_iter 20000
-
-python compute_plot_tSNE.py --compute --perplexity 50 --n_iter 500
-python compute_plot_tSNE.py --compute --perplexity 50 --n_iter 1000
-python compute_plot_tSNE.py --compute --perplexity 50 --n_iter 5000
-python compute_plot_tSNE.py --compute --perplexity 50 --n_iter 10000
-python compute_plot_tSNE.py --compute --perplexity 50 --n_iter 20000
+# alexnet
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 16 --models mix_no-blur
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 16 --models mix_no-sharp
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 1000 --models mix_no-blur
+python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 1000 --models mix_no-sharp

@@ -38,7 +38,13 @@ parser.add_argument(
     "--stimuli",
     default="each_bandpass",
     type=str,
-    choices=["each_bandpass", "all_bandpass", "S_B"],
+    choices=["each_bandpass", "all_bandpass", "s-b"],
+)
+parser.add_argument(
+    "--models",
+    default="vss",
+    type=str,
+    choices=["vss", "mix_no-blur", "mix_no-sharp"],
 )
 parser.add_argument(
     "--compute",
@@ -110,7 +116,7 @@ if __name__ == "__main__":
     compute = args.compute
     plot = args.plot
     num_filters = args.num_filters
-    if stimuli == "S_B":
+    if stimuli == "s-b":
         num_filters = 1
     num_dim = args.num_dim
     perplexity = args.perplexity
@@ -130,8 +136,8 @@ if __name__ == "__main__":
         assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
         assert os.path.exists(models_dir), f"{models_dir} does not exist."
 
-    results_dir = f"./results/{analysis}/{num_classes}-class/"
-    # results_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
+    # results_dir = f"./results/{analysis}/{num_classes}-class/"
+    results_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
     os.makedirs(results_dir, exist_ok=True)
 
     if args.plot:
@@ -139,14 +145,17 @@ if __name__ == "__main__":
         os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
-    model_names = [
-        "alexnet_normal",
-        # "alexnet_all_s04",
-        "alexnet_mix_s04",
-        # sin_names[arch],
-        # "vone_alexnet",
-        "untrained_alexnet",
-    ]
+    from src.model.model_names import get_model_names
+    model_names = get_model_names(arch=arch, models=args.models)
+
+    # model_names = [
+    #     "alexnet_normal",
+    #     # "alexnet_all_s04",
+    #     "alexnet_mix_s04",
+    #     # sin_names[arch],
+    #     # "vone_alexnet",
+    #     "untrained_alexnet",
+    # ]
 
     print("===== arguments =====")
     print("analysis:", analysis)
@@ -194,7 +203,7 @@ if __name__ == "__main__":
 
         # make filters
         filters = make_bandpass_filters(num_filters=num_filters)
-        if stimuli == "S_B":
+        if stimuli == "s-b":
             filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
 
     for model_name in tqdm(model_names, desc="models"):
@@ -237,7 +246,7 @@ if __name__ == "__main__":
                     n_iter=n_iter,
                     device=device,
                 )  # (F+1, L, N, D), (N)
-            elif stimuli == "all_bandpass" or stimuli == "S_B":
+            elif stimuli == "all_bandpass" or stimuli == "s-b":
                 embed, labels = compute_tSNE_all_bandpass(
                     RSA=RSA,
                     num_images=test_loader.num_images,
@@ -298,7 +307,7 @@ if __name__ == "__main__":
                     model_name=model_name,
                     title=True,
                 )
-            elif stimuli == "S_B":
+            elif stimuli == "s-b":
                 plot_tSNE_s_b(
                     embedded_activations=embed,
                     labels=labels,
