@@ -321,6 +321,33 @@ def plot_tSNE_all_bandpass(
         plt.close()
 
 
+markers = {
+    0: "s",
+    1: "P",
+}
+# colors = {
+#     0: "blue",
+#     1: "orange",
+# }
+colors = {
+    0: "k",
+    1: "red",
+    2: "coral",
+    3: "orange",
+    4: "gold",
+    5: "yellow",
+    6: "green",
+    7: "lime",
+    8: "blue",
+    9: "cyan",
+    10: "purple",
+    11: "magenta",
+    12: "brown",
+    13: "gray",
+    14: "skyblue",
+    15: "yellowgreen",
+}
+
 def plot_tSNE_s_b(
     embedded_activations: np.ndarray,
     labels: list,
@@ -338,10 +365,6 @@ def plot_tSNE_s_b(
     embedded_activations (np.ndarray): (L, N * (1+F), D)
     labels (list): (N * (1+F))
     """
-    colors = {
-        0: "blue",
-        1: "orange",
-    }
 
     for layer_id, layer in tqdm(
         enumerate(layers), "plotting (each layer)", leave=False
@@ -365,10 +388,11 @@ def plot_tSNE_s_b(
                 plt.scatter(
                     x=x,
                     y=y,
-                    c=colors[f],
+                    marker=markers[f],  # Change the marker according to "sharpe" or "blur"
+                    c=colors[l],  # Change the color according to the colour
                     alpha=0.5,
                 )
-                plt.annotate(l, xy=(x, y))
+                # plt.annotate(l, xy=(x, y))
 
         if title:
             plt.title(
