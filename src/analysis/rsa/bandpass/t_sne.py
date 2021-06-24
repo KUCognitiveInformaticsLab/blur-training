@@ -330,22 +330,22 @@ markers = {
 #     1: "orange",
 # }
 colors = {
-    0: "k",
+    0: "magenta",
     1: "red",
     2: "coral",
     3: "orange",
     4: "gold",
     5: "yellow",
-    6: "green",
-    7: "lime",
-    8: "blue",
-    9: "cyan",
-    10: "purple",
-    11: "magenta",
-    12: "brown",
-    13: "gray",
-    14: "skyblue",
-    15: "yellowgreen",
+    6: "cyan",
+    7: "blue",
+    8: "skyblue",
+    9: "lime",
+    10: "green",
+    11: "yellowgreen",
+    12: "purple",
+    13: "brown",
+    14: "gray",
+    15: "k",
 }
 
 def plot_tSNE_s_b(
@@ -370,6 +370,7 @@ def plot_tSNE_s_b(
         enumerate(layers), "plotting (each layer)", leave=False
     ):
         idx = np.random.permutation(len(labels))[:100]
+        # idx = [i for i in range(0, 3200, 200)]  # for showing a legend
 
         target = embedded_activations[layer_id][idx]
         target_labels = np.array(labels)[idx]
@@ -391,6 +392,7 @@ def plot_tSNE_s_b(
                     marker=markers[f],  # Change the marker according to "sharpe" or "blur"
                     c=colors[l],  # Change the color according to the colour
                     alpha=0.5,
+                    label=f"{l:02d} " + ("S" if f == 0 else "B")
                 )
                 # plt.annotate(l, xy=(x, y))
 
@@ -424,8 +426,8 @@ def plot_tSNE_s_b(
                 )
         '''
 
+        # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
         # fig.tight_layout()
-        # plt.legend()
         plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}_{layer}.png"
         plot_path = os.path.join(plots_dir, plot_file)
         plt.savefig(plot_path)

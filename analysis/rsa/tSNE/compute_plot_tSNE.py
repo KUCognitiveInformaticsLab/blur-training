@@ -24,6 +24,7 @@ from src.analysis.rsa.bandpass.t_sne import (
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
     VOneNetAlexNetRSAParallel,
+    VOneNetAlexNetRSA,
     alexnet_layers,
     vone_alexnet_layers,
 )
@@ -142,6 +143,7 @@ if __name__ == "__main__":
 
     if args.plot:
         plots_dir = f"./plots/{analysis}/{num_classes}-class/"
+        plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
         os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
@@ -209,28 +211,22 @@ if __name__ == "__main__":
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
         if args.compute:
-            # make RSA instance
-            if num_classes == 1000 and "SIN" in model_name:
-                # Stylized-ImageNet
-                model = load_sin_model(model_name).to(device)
-                model.features = model.features.module
-                RSA = AlexNetRSA(model)
-            elif num_classes == 1000 and "vone" in model_name:
-                model = vonenet.get_model(model_arch=arch, pretrained=True).to(device)
-                RSA = VOneNetAlexNetRSAParallel(model)
-            elif "untrained" in model_name:
+            # load model
+            if "untrained" in model_name:
                 model_path = ""  # load untrained model
-                model = load_model(
-                    arch=arch, num_classes=num_classes, model_path=model_path
-                ).to(device)
-                RSA = AlexNetRSA(model)
             else:
                 model_path = os.path.join(
                     models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
                 )
-                model = load_model(
-                    arch=arch, num_classes=num_classes, model_path=model_path
-                ).to(device)
+            model = load_model(
+                arch=arch, num_classes=num_classes, model_path=model_path
+            ).to(device)
+
+            # make RSA instance
+            if "vone" in model_name:
+                RSA = VOneNetAlexNetRSA(model)
+                # RSA = VOneNetAlexNetRSAParallel(model)
+            else:
                 RSA = AlexNetRSA(model)
 
             # compute bandpass tSNE
