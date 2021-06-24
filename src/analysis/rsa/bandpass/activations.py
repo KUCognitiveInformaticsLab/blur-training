@@ -114,7 +114,6 @@ def compute_activations_with_bandpass(
     """Computes activations of a single image with band-pass filters applied.
     Args:
         image (torch.Tensor): torch.Size([1, C, H, W])
-        label (torch.Tensor): e.g. tensor([0])
 
     Returns:
         activations (Dict): {L: (F+1, C, H, W)}
@@ -153,7 +152,6 @@ def get_pixel_statics_with_bandpass(
     """Computes activations of a single image with band-pass filters applied.
     Args:
         image (torch.Tensor): torch.Size([1, C, H, W])
-        label (torch.Tensor): e.g. tensor([0])
 
     Returns:
         statics (activations): (1, F+1, C, H, W)

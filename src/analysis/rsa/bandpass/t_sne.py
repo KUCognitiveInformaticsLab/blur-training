@@ -348,6 +348,7 @@ colors = {
     15: "k",
 }
 
+
 def plot_tSNE_s_b(
     embedded_activations: np.ndarray,
     labels: list,
@@ -384,15 +385,19 @@ def plot_tSNE_s_b(
                 # get label and filter_id
                 # l (int): label (0 - 15)
                 # f (int): filter id (0: sharp, 1: blur)
-                l, f = map(int, target_labels[i].replace("l", "").replace("f", "").split("_"))
+                l, f = map(
+                    int, target_labels[i].replace("l", "").replace("f", "").split("_")
+                )
 
                 plt.scatter(
                     x=x,
                     y=y,
-                    marker=markers[f],  # Change the marker according to "sharpe" or "blur"
+                    marker=markers[
+                        f
+                    ],  # Change the marker according to "sharpe" or "blur"
                     c=colors[l],  # Change the color according to the colour
                     alpha=0.5,
-                    label=f"{l:02d} " + ("S" if f == 0 else "B")
+                    label=f"{l:02d} " + ("S" if f == 0 else "B"),
                 )
                 # plt.annotate(l, xy=(x, y))
 
@@ -402,7 +407,7 @@ def plot_tSNE_s_b(
                 fontsize=8,
             )
 
-        '''Only S and B
+        """Only S and B
         target = embedded_activations[layer_id][idx]
         target_labels = list(np.array([int(l[-1]) for l in labels])[idx])
 
@@ -424,7 +429,7 @@ def plot_tSNE_s_b(
                     f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
                     fontsize=8,
                 )
-        '''
+        """
 
         # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
         # fig.tight_layout()

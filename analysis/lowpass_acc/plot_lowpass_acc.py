@@ -158,8 +158,6 @@ if __name__ == "__main__":
                 color=colors[model_name],
             )
 
-
-
     ax.legend()
     # ax.set_xticks(np.arange(0, max_sigma+1, 5))
     plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))

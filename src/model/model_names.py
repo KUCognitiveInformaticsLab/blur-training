@@ -185,5 +185,4 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
 
     model_name = model_name.replace("humans", "Humans")
 
-
     return model_name

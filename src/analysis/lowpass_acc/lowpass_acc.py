@@ -35,7 +35,10 @@ def test_performance(
     acc5_list = []
     for i in tqdm(range(max_sigma + 1), desc="lowpass filters", leave=False):
         acc1, acc5 = calc_lowpass_acc(
-            model, test_loader=test_loader, sigma=i, device=device,
+            model,
+            test_loader=test_loader,
+            sigma=i,
+            device=device,
         )
         acc1_list.append(acc1.item())
         acc5_list.append(acc5.item())
