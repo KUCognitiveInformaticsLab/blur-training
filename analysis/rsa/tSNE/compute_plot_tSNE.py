@@ -5,7 +5,6 @@ import sys
 
 import numpy as np
 import torch
-import vonenet
 from tqdm import tqdm
 
 # add the path to load src module
@@ -23,7 +22,6 @@ from src.analysis.rsa.bandpass.t_sne import (
 )
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
-    VOneNetAlexNetRSAParallel,
     VOneNetAlexNetRSA,
     alexnet_layers,
     vone_alexnet_layers,
@@ -31,8 +29,6 @@ from src.analysis.rsa.rsa import (
 from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
-from src.model.load_sin_pretrained_models import load_sin_model, sin_names
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -329,3 +325,17 @@ if __name__ == "__main__":
                     model_name=model_name,
                     title=True,
                 )
+                # plot each layer
+                # plot_tSNE_s_b_each_layer(
+                #     embedded_activations=embed,
+                #     labels=labels,
+                #     layers=layers,
+                #     num_dim=num_dim,
+                #     plots_dir=plots_dir,
+                #     analysis=analysis,
+                #     perplexity=perplexity,
+                #     n_iter=n_iter,
+                #     num_classes=num_classes,
+                #     model_name=model_name,
+                #     title=True,
+                # )
