@@ -233,7 +233,6 @@ if __name__ == "__main__":
             # make RSA instance
             if "vone" in model_name:
                 RSA = VOneNetAlexNetRSA(model)
-                # RSA = VOneNetAlexNetRSAParallel(model)
             else:
                 RSA = AlexNetRSA(model)
 

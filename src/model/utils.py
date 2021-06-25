@@ -92,15 +92,20 @@ def load_model(
             checkpoint = torch.load(model_path, map_location=device)
             try:
                 model.load_state_dict(checkpoint["state_dict"])
-            except RuntimeError:
-                if "vone" in model_name:
+            except RuntimeError:  # Apply parallel for loading weights
+                if arch == "vone_alexnet":
                     model = torch.nn.DataParallel(model)
                 else:
                     model.features = torch.nn.DataParallel(model.features)
                 model.load_state_dict(checkpoint["state_dict"])
+
+                # Disable parallel
                 if not parallel:
-                    model.features = model.features.module
-                    # TODO: This part is different when a model is "resnet".
+                    if arch == "vone_alexnet":
+                        model = model.module
+                    else:
+                        model.features = model.features.module
+                        # TODO: This part is different when a model is "resnet".
 
             return model
         elif num_classes == 16:
@@ -114,6 +119,7 @@ def load_model(
             return model
 
     return model
+
 
 
 def save_model(state, param_path, epoch=None):
