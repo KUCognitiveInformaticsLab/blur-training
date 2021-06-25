@@ -93,7 +93,10 @@ def load_model(
             try:
                 model.load_state_dict(checkpoint["state_dict"])
             except RuntimeError:
-                model.features = torch.nn.DataParallel(model.features)
+                if "vone" in model_name:
+                    model = torch.nn.DataParallel(model)
+                else:
+                    model.features = torch.nn.DataParallel(model.features)
                 model.load_state_dict(checkpoint["state_dict"])
                 if not parallel:
                     model.features = model.features.module
