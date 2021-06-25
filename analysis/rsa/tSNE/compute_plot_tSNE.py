@@ -96,6 +96,8 @@ parser.add_argument(
     default=1000,
     type=int,
 )
+parser.add_argument("--server", default="gpu2", type=str)
+parser.add_argument("--machine", default="server", type=str)
 # parser.add_argument(
 #     "--compute",
 #     type=strtobool,
@@ -127,6 +129,8 @@ if __name__ == "__main__":
     if args.compute:
         # imagenet_path = os.path.join(args.data_dir, "ImageNet/ILSVRC2012/")
         in16_test_path = os.path.join(args.data_dir, "imagenet16/test/")
+        if args.server != "gpu2":
+            args.data_dir = "/mnt/data"
         models_dir = os.path.join(
             args.data_dir,
             "pretrained_models/blur-training/imagenet{}/models/".format(
@@ -137,13 +141,20 @@ if __name__ == "__main__":
         assert os.path.exists(in16_test_path), f"{in16_test_path} does not exist."
         assert os.path.exists(models_dir), f"{models_dir} does not exist."
 
-    results_dir = f"./results/{analysis}/{num_classes}-class/"
-    # results_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
+    results_dir = (
+        f"./results/{analysis}/{num_classes}-class/"
+        if args.machine == "server"
+        else f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
+    )
+    if args.server != "gpu2":
+        results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
     os.makedirs(results_dir, exist_ok=True)
 
     if args.plot:
         plots_dir = f"./plots/{analysis}/{num_classes}-class/"
         # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
+        if args.server != "gpu2":
+            plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
         os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
