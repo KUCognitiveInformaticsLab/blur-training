@@ -12,7 +12,12 @@ from src.model.load_sin_pretrained_models import sin_names
 
 def get_model_names(arch, models="vss", num_classes=16):
     # models to compare
-    if models == "vss":
+    if models == "test":
+        model_names = [
+            f"{arch}_normal",
+            f"{arch}_mix_s04",
+        ]
+    elif models == "vss":
         model_names = [
             f"untrained_{arch}",
             f"{arch}_normal",

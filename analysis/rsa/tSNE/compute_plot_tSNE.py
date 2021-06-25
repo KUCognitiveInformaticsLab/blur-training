@@ -41,7 +41,6 @@ parser.add_argument(
     "--models",
     default="vss",
     type=str,
-    choices=["vss", "mix_no-blur", "mix_no-sharp"],
 )
 parser.add_argument(
     "--compute",
@@ -61,7 +60,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--num_classes",
-    default=1000,
+    default=16,
     type=int,
 )
 parser.add_argument(
@@ -142,13 +141,13 @@ if __name__ == "__main__":
         if args.machine == "server"
         else f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
     )
-    if args.server != "gpu2":
+    if args.machine == "server" and args.server != "gpu2":
         results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
     os.makedirs(results_dir, exist_ok=True)
 
     if args.plot:
         plots_dir = f"./plots/{analysis}/{num_classes}-class/"
-        # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
+        plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
         if args.server != "gpu2":
             plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
         os.makedirs(plots_dir, exist_ok=True)
@@ -157,15 +156,6 @@ if __name__ == "__main__":
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, models=args.models)
-
-    # model_names = [
-    #     "alexnet_normal",
-    #     # "alexnet_all_s04",
-    #     "alexnet_mix_s04",
-    #     # sin_names[arch],
-    #     # "vone_alexnet",
-    #     "untrained_alexnet",
-    # ]
 
     print("===== arguments =====")
     print("analysis:", analysis)
