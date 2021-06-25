@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
     if args.plot:
         plots_dir = f"./plots/{analysis}/{num_classes}-class/"
-        plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
+        # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
         if args.server != "gpu2":
             plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
         os.makedirs(plots_dir, exist_ok=True)
