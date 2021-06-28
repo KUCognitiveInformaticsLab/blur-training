@@ -74,7 +74,7 @@ def compute_dist_sharp(
         for i in range(16):
             results += [np.triu(rsm[i * 100:i * 100 + 100, i * 100:i * 100 + 100], k=1).sum()]
 
-        dist_within += [sum(results) / 16]
+        dist_within += [sum(results) / (16 * ((100 * 99) / 2))]
 
         # btw classes
         results = []
@@ -82,6 +82,6 @@ def compute_dist_sharp(
             for j in range(i + 1, 16):
                 results += [rsm[i * 100:i * 100 + 100, j * 100:j * 100 + 100].sum()]
 
-        dist_btw += [sum(results) / 120]
+        dist_btw += [sum(results) / (120 * 100 * 100)]
 
     return dist_within, dist_btw
