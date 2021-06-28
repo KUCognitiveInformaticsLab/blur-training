@@ -18,7 +18,7 @@ from src.analysis.rsa.rsa import (
 from src.dataset.imagenet16 import load_imagenet16, make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
-from src.analysis.rsa.bandpass.dist import compute_dist_sharp
+from src.analysis.rsa.bandpass.dist import compute_dist
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -197,12 +197,12 @@ if __name__ == "__main__":
 
             # compute dist
             print(f"{model_name} computing...")
-            dist_within, dist_btw = compute_dist_sharp(
+            dist_s_within, dist_s_btw, dist_b_within, dist_b_btw = compute_dist(
                 RSA=RSA,
                 data_loader=test_loader,
                 filters=filters,
                 metric=metric,
-                device=device,
+                device=device
             )
 
         # ===== plot =====
@@ -215,10 +215,12 @@ if __name__ == "__main__":
                 1,
                 # xlabel="layers",
                 ylabel=f"Distance",
-                # ylim=(0, 1),  # (-1, 1)
+                ylim=(0, 1),  # (-1, 1)
             )
-            ax.plot(RSA.layers, dist_within, label="within classes")
-            ax.plot(RSA.layers, dist_btw, label="between classes")
+            ax.plot(RSA.layers, dist_s_within, label="S, within classes")
+            ax.plot(RSA.layers, dist_s_btw, label="S, between classes")
+            ax.plot(RSA.layers, dist_b_within, label="B, within classes")
+            ax.plot(RSA.layers, dist_b_btw, label="B, between classes")
 
             ax.set_xticklabels(RSA.layers, rotation=45, ha="right")
             ax.legend()

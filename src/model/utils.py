@@ -121,7 +121,6 @@ def load_model(
     return model
 
 
-
 def save_model(state, param_path, epoch=None):
     if not epoch:
         filename = os.path.join(param_path, "checkpoint.pth.tar")
