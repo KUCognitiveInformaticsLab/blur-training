@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     stimuli = args.stimuli
 
-    models = args.model
+    models = args.models
     server = args.server
 
     pretrained_vone = False  # True if you want to use pretrained vone_alexnet.
