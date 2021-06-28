@@ -62,7 +62,7 @@ def compute_dist_sharp(
     dist_within = []
     dist_btw = []
 
-    for layer in RSA.layers:
+    for layer in tqdm(RSA.layers, desc="layers", leave=False):
         layer_activations = np.array(all_activations[layer])  # (N, 1+F, D)
         layer_activations_s = layer_activations[:, 0, :]  # (N, D): sharp (original) images
         rsm = 1 - squareform(
