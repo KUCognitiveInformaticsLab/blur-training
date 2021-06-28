@@ -215,6 +215,7 @@ if __name__ == "__main__":
                 1,
                 # xlabel="layers",
                 ylabel=f"Distance",
+                # ylim=(0, 1),  # (-1, 1)
             )
             ax.plot(RSA.layers, dist_within, label="within classes")
             ax.plot(RSA.layers, dist_btw, label="between classes")
