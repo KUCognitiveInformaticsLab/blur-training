@@ -512,7 +512,7 @@ def plot_tSNE_s_b(
     target_labels = list(np.array([int(l[-1]) for l in labels])[idx])
 
     if num_dim == 2:
-        fig = plt.figure(dpi=150)
+        fig = plt.figure(dpi=150)x
 
         plt.scatter(
             x=target[:, 0],

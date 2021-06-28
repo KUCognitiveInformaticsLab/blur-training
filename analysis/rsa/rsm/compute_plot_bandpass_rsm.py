@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # ===== args =====
     arch = str(sys.argv[1])  # e.g.: ("alexnet", "vone_alexnet")
     num_classes = int(sys.argv[2])
-    compare = str(
+    models = str(
         sys.argv[3]
     )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     from src.model.model_names import get_model_names
 
-    model_names = get_model_names(arch=arch, models=compare)
+    model_names = get_model_names(arch=arch, models=models)
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -145,7 +145,7 @@ if __name__ == "__main__":
             ).to(device)
             RSA = AlexNetRSA(model)
 
-        # compute mean RSMs
+        # compute dist
         mean_rsms = compute_bandpass_RSMs(
             RSA=RSA,
             data_loader=test_loader,
