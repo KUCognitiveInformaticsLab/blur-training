@@ -83,6 +83,15 @@ def compute_dist(
         dist_b_within += [dist_within]
         dist_b_btw += [dist_btw]
 
+    all_results = [dist_within] + [dist_btw]
+    index = ["sharp_within", "sharp_between"]
+
+    dist = pd.DataFrame(
+        all_results,
+        index=index,
+        columns=alexnet_layers,
+    )
+
     return dist_s_within, dist_s_btw, dist_b_within, dist_b_btw
 
 
