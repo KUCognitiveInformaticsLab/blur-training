@@ -4,6 +4,7 @@ import pathlib
 import sys
 
 import numpy as np
+import pandas as pd
 import torch
 from tqdm import tqdm
 
@@ -18,7 +19,7 @@ from src.analysis.rsa.rsa import (
 from src.dataset.imagenet16 import load_imagenet16, make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
-from src.analysis.rsa.bandpass.dist import compute_dist
+from src.analysis.rsa.bandpass.dist import compute_dist, plot_dist
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -65,25 +66,16 @@ if __name__ == "__main__":
     # ===== args =====
     args = parser.parse_args()
 
-    arch = args.arch
-    num_classes = args.num_classes
-    epoch = args.epoch
-
-    stimuli = args.stimuli
-
-    models = args.models
-    server = args.server
-
     pretrained_vone = False  # True if you want to use pretrained vone_alexnet.
 
     imagenet_path = "/mnt/data1/ImageNet/ILSVRC2012/"
 
     num_filters = 6
-    if stimuli == "s-b":
+    if args.stimuli == "s-b":
         num_filters = 1
     add_noise = False
-    metric = "correlation"  # "1-covariance", "negative-covariance"
-    analysis = f"dist_{metric}_{stimuli}"
+    metric = "correlation"
+    analysis = f"dist_{metric}_{args.stimuli}"
 
     # I/O settings
     if args.compute:
@@ -94,7 +86,7 @@ if __name__ == "__main__":
         models_dir = os.path.join(
             args.data_dir,
             "pretrained_models/blur-training/imagenet{}/models/".format(
-                16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
+                16 if args.num_classes == 16 else 1000  # else is (args.num_classes == 1000)
             ),
         )
         # assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
@@ -102,18 +94,18 @@ if __name__ == "__main__":
         assert os.path.exists(models_dir), f"{models_dir} does not exist."
 
     results_dir = (
-        f"./results/{analysis}/{num_classes}-class/"
+        f"./results/{analysis}/{args.num_classes}-class/"
         if args.machine == "server"
-        else f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
+        else f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{args.num_classes}-class/"
     )
     if args.machine == "server" and args.server != "gpu2":
-        results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{num_classes}-class/"
+        results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{args.num_classes}-class/"
 
     if args.plot:
-        plots_dir = f"./plots/{analysis}/{num_classes}-class/"
-        # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
+        plots_dir = f"./plots/{analysis}/{args.num_classes}-class/"
+        # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{args.num_classes}-class/"
         if args.server != "gpu2":
-            plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{num_classes}-class/"
+            plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{args.num_classes}-class/"
         os.makedirs(plots_dir, exist_ok=True)
 
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
@@ -122,10 +114,10 @@ if __name__ == "__main__":
 
     # models to compare
     from src.model.model_names import get_model_names
-    model_names = get_model_names(arch=arch, models=models)
+    model_names = get_model_names(arch=args.arch, models=args.models)
 
     print("===== arguments =====")
-    print("num_classes:", num_classes)
+    print("num_classes:", args.num_classes)
     print("num_filters:", num_filters)
     print("add_noise:", add_noise)
     print("metric:", metric)
@@ -172,7 +164,7 @@ if __name__ == "__main__":
 
         # make filters
         filters = make_bandpass_filters(num_filters=num_filters)
-        if stimuli == "s-b":
+        if args.stimuli == "s-b":
             filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
 
     for model_name in tqdm(model_names, desc="models"):
@@ -183,10 +175,10 @@ if __name__ == "__main__":
                 model_path = ""  # load untrained model
             else:
                 model_path = os.path.join(
-                    models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
+                    models_dir, model_name, f"epoch_{args.epoch:02d}.pth.tar"
                 )
             model = load_model(
-                arch=arch, num_classes=num_classes, model_path=model_path
+                arch=args.arch, num_classes=args.num_classes, model_path=model_path
             ).to(device)
 
             # make RSA instance
@@ -197,7 +189,7 @@ if __name__ == "__main__":
 
             # compute dist
             print(f"{model_name} computing...")
-            dist_s_within, dist_s_btw, dist_b_within, dist_b_btw = compute_dist(
+            df_dist = compute_dist(
                 RSA=RSA,
                 data_loader=test_loader,
                 filters=filters,
@@ -205,29 +197,25 @@ if __name__ == "__main__":
                 device=device
             )
 
+        result_file = f"{analysis}_{model_name}.npy"
+        result_path = os.path.join(results_dir, result_file)
+
+        if args.compute:
+            # save dist
+            df_dist.to_csv(result_path)
+
         # ===== plot =====
-        import matplotlib.pyplot as plt
         if args.plot:
-            fig = plt.figure(dpi=150)
-            ax = fig.add_subplot(
-                1,
-                1,
-                1,
-                # xlabel="layers",
-                ylabel=f"Distance",
-                ylim=(0, 1),  # (-1, 1)
-            )
-            ax.plot(RSA.layers, dist_s_within, label="S, within classes")
-            ax.plot(RSA.layers, dist_s_btw, label="S, between classes")
-            ax.plot(RSA.layers, dist_b_within, label="B, within classes")
-            ax.plot(RSA.layers, dist_b_btw, label="B, between classes")
+            # load dist
+            df_dist = pd.read_csv(result_path, index_col=0)
 
-            ax.set_xticklabels(RSA.layers, rotation=45, ha="right")
-            ax.legend()
-
-            plot_file = f"{analysis}_{num_classes}-class_{model_name}.png"
+            plot_file = f"{analysis}_{model_name}.png"
             plot_path = os.path.join(plots_dir, plot_file)
-            plt.savefig(plot_path)
-            plt.close()
+
+            plot_dist(
+                dist=df_dist,
+                layers=RSA.layers,
+                plot_path=plot_path,
+            )
 
     print("All done!!")
