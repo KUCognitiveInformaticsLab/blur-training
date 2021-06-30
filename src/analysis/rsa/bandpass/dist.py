@@ -105,25 +105,30 @@ def compute_dist_same_diff(activations, metric="correlation"):
     """
     @param metric:
     @param activations: (N, D)
+
+        test dataset: 16-class-ImageNet
+            num_classes: 16
+            num_images_each_class: 100
+
     @return: dist_same, dist_diff
     """
-    rsm_s = 1 - squareform(pdist(activations, metric=metric))  # 1 - (1 - corr.) = corr.
+    rsm = 1 - squareform(pdist(activations, metric=metric))  # 1 - (1 - corr.) = corr.
 
     # same classes
-    results = []
+    dists = []
     for i in range(16):
-        results += [
-            np.triu(rsm_s[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100], k=1).sum()
-        ]
-    dist_same = sum(results) / (16 * ((100 * 99) / 2))
+        dists += [
+            np.triu(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100], k=1).sum()
+        ]  # Diagonal values (identical images) are not included.
+    dist_same = sum(dists) / (16 * ((100 * 99) / 2))
 
     # diff classes
-    results = []
+    dists = []
     for i in range(16):
         for j in range(i + 1, 16):
-            results += [rsm_s[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()]
+            dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
 
-    dist_diff = sum(results) / (120 * 100 * 100)
+    dist_diff = sum(dists) / (120 * 100 * 100)
 
     return dist_same, dist_diff
 

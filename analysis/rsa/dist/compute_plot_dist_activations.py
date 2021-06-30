@@ -197,7 +197,7 @@ if __name__ == "__main__":
                 device=device
             )
 
-        result_file = f"{analysis}_{model_name}.npy"
+        result_file = f"{analysis}_{model_name}.csv"
         result_path = os.path.join(results_dir, result_file)
 
         if args.compute:
