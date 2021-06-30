@@ -65,28 +65,39 @@ def compute_dist(
     dist_s_diff = []
     dist_b_same = []
     dist_b_diff = []
+    dist_sb_idt = []
+    dist_sb_same = []
+    dist_sb_diff = []
 
     for layer in tqdm(RSA.layers, desc="layers", leave=False):
-        layer_activations = np.array(all_activations[layer])  # (N, 1+F, D)
+        layer_activations = np.array(all_activations[layer])  # (N, 1+F, D)  1+F = 2(Shape and Blur)
+        layer_activations = layer_activations.reshape(layer_activations.shape[0] * num_filters, -1)  # (N * 2, D)
 
-        layer_activations_s = layer_activations[
-            :, 0, :
-        ]  # (N, D): sharp (original) images
-        dist_same, dist_diff = compute_dist_same_diff(
-            activations=layer_activations_s, metric=metric
-        )
+        rsm = 1 - squareform(pdist(layer_activations, metric=metric))  # 1 - (1 - corr.) = corr.
+
+        rsm_s = rsm[0:1600, 0:1600]  # S vs. S
+        rsm_b = rsm[1600:1600 * 2, 1600:1600 * 2]  # B vs. B
+        rsm_sb = rsm[0:1600, 1600:1600 * 2]  # S vs. B
+
+        dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
         dist_s_same += [dist_same]
         dist_s_diff += [dist_diff]
 
-        layer_activations_b = layer_activations[:, 1, :]  # (N, D): blurred images
-        dist_same, dist_diff = compute_dist_same_diff(
-            activations=layer_activations_b, metric=metric
-        )
+        dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_b)
         dist_b_same += [dist_same]
         dist_b_diff += [dist_diff]
 
-    all_results = [dist_s_same] + [dist_s_diff] + [dist_b_same] + [dist_b_diff]
-    index = ["sharp_same", "sharp_different", "blur_same", "blur_different"]
+        dist_idt, dist_same, dist_diff = compute_dist_idt_same_diff(rsm=rsm_sb)
+        dist_sb_idt += [dist_idt]
+        dist_sb_same += [dist_same]
+        dist_sb_diff += [dist_diff]
+
+    all_results = [[dist_s_same], [dist_s_diff],
+                   [dist_b_same], [dist_b_diff],
+                   [dist_sb_idt], [dist_sb_same], [dist_sb_diff]]
+    index = ["sharp_same", "sharp_different",
+             "blur_same", "blur_different",
+             "sharp-blur_identical", "sharp-blur_same", "sharp-blur_different"]
 
     df_dist = pd.DataFrame(
         all_results,
@@ -101,7 +112,7 @@ def compute_dist(
     return df_dist
 
 
-def compute_dist_same_diff(activations, metric="correlation"):
+def compute_dist_same_diff(rsm):
     """
     @param metric:
     @param activations: (N, D)
@@ -112,8 +123,6 @@ def compute_dist_same_diff(activations, metric="correlation"):
 
     @return: dist_same, dist_diff
     """
-    rsm = 1 - squareform(pdist(activations, metric=metric))  # 1 - (1 - corr.) = corr.
-
     # same classes
     dists = []
     for i in range(16):
@@ -128,9 +137,36 @@ def compute_dist_same_diff(activations, metric="correlation"):
         for j in range(i + 1, 16):
             dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
 
-    dist_diff = sum(dists) / (120 * 100 * 100)
+    dist_diff = sum(dists) / (120 * 100 ** 2)
 
     return dist_same, dist_diff
+
+
+def compute_dist_idt_same_diff(rsm):
+    """
+    @param rsm: (1600, 1600) (e.g. Sharp vs. Blur)
+    @return: dist_idt, dist_same, dist_diff
+    """
+    # identical
+    dist_idt = np.diag(rsm).mean()
+
+    # same classes
+    dists = []
+    for i in range(16):
+        dists += [
+            rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100].sum()
+        ]
+    dist_same = (sum(dists) - np.diag(rsm).sum()) / (16 * 100 ** 2 - 1600)
+
+    # diff classes
+    dists = []
+    for i in range(16):
+        for j in range(16):
+            if i != j:
+                dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
+    dist_diff = sum(dists) / (240 * 100 ** 2)
+
+    return dist_idt, dist_same, dist_diff
 
 
 def plot_dist(
@@ -138,6 +174,8 @@ def plot_dist(
     layers,
     plot_path,
 ):
+    blur_sigma = 4
+
     fig = plt.figure(dpi=150)
     ax = fig.add_subplot(
         1,
@@ -150,8 +188,11 @@ def plot_dist(
 
     ax.plot(layers, dist.loc["sharp_same"].values, label="S, same classes")
     ax.plot(layers, dist.loc["sharp_different"].values, label="S, different classes")
-    ax.plot(layers, dist.loc["blur_same"].values, label="B, same classes")
-    ax.plot(layers, dist.loc["blur_different"].values, label="B, different classes")
+    ax.plot(layers, dist.loc["blur_same"].values, label=f"B (σ={blur_sigma}), same classes")
+    ax.plot(layers, dist.loc["blur_different"].values, label=f"B (σ={blur_sigma}), different classes")
+    ax.plot(layers, dist.loc["sharp-blur_identical"].values, label=f"S-B (σ={blur_sigma}), identical images")
+    ax.plot(layers, dist.loc["sharp-blur_same"].values, label=f"S-B (σ={blur_sigma}), same classes")
+    ax.plot(layers, dist.loc["sharp-blur_different"].values, label=f"S-B (σ={blur_sigma}), different classes")
 
     ax.set_xticklabels(layers, rotation=45, ha="right")
     ax.legend()
