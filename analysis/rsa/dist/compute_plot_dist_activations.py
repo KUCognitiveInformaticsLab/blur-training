@@ -21,7 +21,7 @@ from src.analysis.rsa.rsa import (
 from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
-from src.analysis.rsa.bandpass.dist import compute_dist, plot_dist
+from src.analysis.rsa.bandpass.dist import compute_rsm2dist, compute_corr2dist, plot_dist
 from src.model.model_names import rename_model_name
 
 parser = argparse.ArgumentParser()
@@ -185,13 +185,8 @@ if __name__ == "__main__":
 
             # compute dist
             print(f"{model_name} computing...")
-            df_dist = compute_dist(
-                RSA=RSA,
-                data_loader=test_loader,
-                filters=filters,
-                metric=metric,
-                device=device
-            )
+            # df_dist = compute_rsm2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device)
+            df_dist = compute_corr2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device)
 
         result_file = f"{analysis}_{args.num_classes}-class_{model_name}.csv"
         result_path = os.path.join(results_dir, result_file)
@@ -221,12 +216,12 @@ if __name__ == "__main__":
                 plot_path=plot_path,
             )
 
-            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_sb.png"
+            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_s-b.png"
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(
                 dist=df_dist,
-                stimuli="sb",
+                stimuli="s-b",
                 layers=layers,
                 title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
