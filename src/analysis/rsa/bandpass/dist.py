@@ -92,9 +92,12 @@ def compute_dist(
         dist_sb_same += [dist_same]
         dist_sb_diff += [dist_diff]
 
-    all_results = [dist_s_same] + [dist_s_diff] + \
-                  [dist_b_same] + [dist_b_diff] + \
-                  [dist_sb_idt] + [dist_sb_same] + [dist_sb_diff]
+    # all_results = [dist_s_same] + [dist_s_diff] + \
+    #               [dist_b_same] + [dist_b_diff] + \
+    #               [dist_sb_idt] + [dist_sb_same] + [dist_sb_diff]
+    all_results = [dist_s_same, dist_s_diff,
+                   dist_b_same, dist_b_diff,
+                   dist_sb_idt, dist_sb_same, dist_sb_diff]
     index = ["sharp_same", "sharp_different",
              "blur_same", "blur_different",
              "sharp-blur_identical", "sharp-blur_same", "sharp-blur_different"]
