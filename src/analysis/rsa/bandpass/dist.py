@@ -71,7 +71,7 @@ def compute_dist(
 
     for layer in tqdm(RSA.layers, desc="layers", leave=False):
         layer_activations = np.array(all_activations[layer])  # (N, 1+F, D)  1+F = 2(Shape and Blur)
-        layer_activations = layer_activations.reshape(layer_activations.shape[0] * num_filters, -1)  # (N * 2, D)
+        layer_activations = layer_activations.reshape(layer_activations.shape[0] * 2, -1)  # (N * 2, D)
 
         rsm = 1 - squareform(pdist(layer_activations, metric=metric))  # 1 - (1 - corr.) = corr.
 
@@ -92,9 +92,9 @@ def compute_dist(
         dist_sb_same += [dist_same]
         dist_sb_diff += [dist_diff]
 
-    all_results = [[dist_s_same], [dist_s_diff],
-                   [dist_b_same], [dist_b_diff],
-                   [dist_sb_idt], [dist_sb_same], [dist_sb_diff]]
+    all_results = [dist_s_same] + [dist_s_diff] + \
+                  [dist_b_same] + [dist_b_diff] + \
+                  [dist_sb_idt] + [dist_sb_same] + [dist_sb_diff]
     index = ["sharp_same", "sharp_different",
              "blur_same", "blur_different",
              "sharp-blur_identical", "sharp-blur_same", "sharp-blur_different"]

@@ -15,8 +15,10 @@ sys.path.append(str(current_dir) + "/../../../")
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
     VOneNetAlexNetRSA,
+    alexnet_layers,
+    vone_alexnet_layers,
 )
-from src.dataset.imagenet16 import load_imagenet16, make_local_in16_test_loader
+from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
 from src.analysis.rsa.bandpass.dist import compute_dist, plot_dist
@@ -62,6 +64,7 @@ parser.add_argument("--data_dir", default="/mnt/data1", type=str)
 parser.add_argument("--server", default="gpu2", type=str)
 parser.add_argument("--machine", default="server", type=str)
 
+
 if __name__ == "__main__":
     # ===== args =====
     args = parser.parse_args()
@@ -96,21 +99,19 @@ if __name__ == "__main__":
     results_dir = (
         f"./results/{analysis}/{args.num_classes}-class/"
         if args.machine == "server"
-        else f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{args.num_classes}-class/"
+        else f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/dist/results/{analysis}/{args.num_classes}-class/"
     )
     if args.machine == "server" and args.server != "gpu2":
-        results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/results/{analysis}/{args.num_classes}-class/"
+        results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/dist/results/{analysis}/{args.num_classes}-class/"
+
+    os.makedirs(results_dir, exist_ok=True)
 
     if args.plot:
         plots_dir = f"./plots/{analysis}/{args.num_classes}-class/"
-        # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{args.num_classes}-class/"
+        # plots_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/rsa/dist/plots/{analysis}/{args.num_classes}-class/"
         if args.server != "gpu2":
-            plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/tSNE/plots/{analysis}/{args.num_classes}-class/"
+            plots_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/rsa/dist/plots/{analysis}/{args.num_classes}-class/"
         os.makedirs(plots_dir, exist_ok=True)
-
-    assert os.path.exists(models_dir), f"{models_dir} does not exist."
-    os.makedirs(results_dir, exist_ok=True)
-    os.makedirs(plots_dir, exist_ok=True)
 
     # models to compare
     from src.model.model_names import get_model_names
@@ -147,10 +148,6 @@ if __name__ == "__main__":
         torch.cuda.manual_seed(seed)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    # make Dataloader
-    # ** batch_size must be 1 **
-    _, test_loader = load_imagenet16(imagenet_path=imagenet_path, batch_size=1)
 
     if args.compute:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -206,15 +203,20 @@ if __name__ == "__main__":
 
         # ===== plot =====
         if args.plot:
+            if "vone" in model_name:
+                layers = vone_alexnet_layers
+            else:
+                layers = alexnet_layers
+
             # load dist
             df_dist = pd.read_csv(result_path, index_col=0)
 
-            plot_file = f"{analysis}_{model_name}.png"
+            plot_file = f"{analysis}_{args.num_classes}_{model_name}.png"
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(
                 dist=df_dist,
-                layers=RSA.layers,
+                layers=layers,
                 plot_path=plot_path,
             )
 
