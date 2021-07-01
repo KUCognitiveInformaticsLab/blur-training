@@ -22,6 +22,7 @@ from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
 from src.analysis.rsa.bandpass.dist import compute_dist, plot_dist
+from src.model.model_names import rename_model_name
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -147,8 +148,6 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
     if args.compute:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -194,7 +193,7 @@ if __name__ == "__main__":
                 device=device
             )
 
-        result_file = f"{analysis}_{args.num_classes}_{model_name}.csv"
+        result_file = f"{analysis}_{args.num_classes}-class_{model_name}.csv"
         result_path = os.path.join(results_dir, result_file)
 
         if args.compute:
@@ -211,13 +210,27 @@ if __name__ == "__main__":
             # load dist
             df_dist = pd.read_csv(result_path, index_col=0)
 
-            plot_file = f"{analysis}_{args.num_classes}_{model_name}.png"
+            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}.png"
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(
                 dist=df_dist,
+                stimuli="separate",
                 layers=layers,
+                title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
             )
+
+            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_sb.png"
+            plot_path = os.path.join(plots_dir, plot_file)
+
+            plot_dist(
+                dist=df_dist,
+                stimuli="sb",
+                layers=layers,
+                title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
+                plot_path=plot_path,
+            )
+
 
     print("All done!!")

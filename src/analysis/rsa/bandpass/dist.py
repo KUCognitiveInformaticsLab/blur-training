@@ -73,7 +73,8 @@ def compute_dist(
         layer_activations = np.array(all_activations[layer])  # (N, 1+F, D)  1+F = 2(Shape and Blur)
         layer_activations = layer_activations.reshape(layer_activations.shape[0] * 2, -1)  # (N * 2, D)
 
-        rsm = 1 - squareform(pdist(layer_activations, metric=metric))  # 1 - (1 - corr.) = corr.
+        # 1 - (1 - corr.) = corr.
+        rsm = 1 - squareform(pdist(layer_activations, metric=metric))  # (3200, 3200)
 
         rsm_s = rsm[0:1600, 0:1600]  # S vs. S
         rsm_b = rsm[1600:1600 * 2, 1600:1600 * 2]  # B vs. B
@@ -174,7 +175,9 @@ def compute_dist_idt_same_diff(rsm):
 
 def plot_dist(
     dist: pd.DataFrame,
+    stimuli,
     layers,
+    title,
     plot_path,
 ):
     blur_sigma = 4
@@ -186,21 +189,28 @@ def plot_dist(
         1,
         # xlabel="layers",
         ylabel=f"Correlation",
-        ylim=(-1, 1),
+        ylim=(-0.5, 1),
     )
 
-    ax.plot(layers, dist.loc["sharp_same"].values, label="S, same classes")
-    ax.plot(layers, dist.loc["sharp_different"].values, label="S, different classes")
-    ax.plot(layers, dist.loc["blur_same"].values, label=f"B (σ={blur_sigma}), same classes")
-    ax.plot(layers, dist.loc["blur_different"].values, label=f"B (σ={blur_sigma}), different classes")
-    ax.plot(layers, dist.loc["sharp-blur_identical"].values, label=f"S-B (σ={blur_sigma}), identical images")
-    ax.plot(layers, dist.loc["sharp-blur_same"].values, label=f"S-B (σ={blur_sigma}), same classes")
-    ax.plot(layers, dist.loc["sharp-blur_different"].values, label=f"S-B (σ={blur_sigma}), different classes")
+    if stimuli == "sb":
+        ax.plot(layers, dist.loc["sharp-blur_identical"].values, label=f"S-B (σ={blur_sigma}), identical images", ls="-")
+        ax.plot(layers, dist.loc["sharp-blur_same"].values, label=f"S-B (σ={blur_sigma}), same classes", ls="--")
+        ax.plot(layers, dist.loc["sharp-blur_different"].values, label=f"S-B (σ={blur_sigma}), different classes", ls=":")
+    elif stimuli == "separate":  # S, B separately plotted
+        ax.plot(layers, dist.loc["sharp_same"].values, label="S, same classes", ls="-")
+        ax.plot(layers, dist.loc["sharp_different"].values, label="S, different classes", ls="-")
+        ax.plot(layers, dist.loc["blur_same"].values, label=f"B (σ={blur_sigma}), same classes", ls="--")
+        ax.plot(layers, dist.loc["blur_different"].values, label=f"B (σ={blur_sigma}), different classes", ls="--")
 
     ax.set_xticklabels(layers, rotation=45, ha="right")
     ax.legend()
+    # ax.yaxis.set_major_locator(ticker.MultipleLocator(0.1))
+    ax.grid(ls=":")
 
-    plt.savefig(plot_path)
+    if title:
+        ax.set_title(title)
+
+    plt.savefig(plot_path, bbox_inches="tight")
     plt.close()
 
 
