@@ -21,7 +21,7 @@ def compute_corr2dist(
     RSA,
     data_loader: iter,
     filters: dict,
-    metric: str = "correlation",  # ("correlation")
+    excluded_labels=[],
     device: torch.device = torch.device("cuda:0"),
 ) -> Tuple[list, list, list, list]:
     """Computes embedded activations of all band-pass images by t-SNE.
@@ -61,13 +61,27 @@ def compute_corr2dist(
                 activations[layer].reshape(num_filters + 1, -1)
             ]  # (F+1, activations)
 
-    dist_s_same = []
-    dist_s_diff = []
-    dist_b_same = []
-    dist_b_diff = []
-    dist_sb_idt = []
-    dist_sb_same = []
-    dist_sb_diff = []
+    dist_s_same_seen = []
+    dist_s_diff_seen = []
+    dist_b_same_seen = []
+    dist_b_diff_seen = []
+    dist_sb_idt_seen = []
+    dist_sb_same_seen = []
+    dist_sb_diff_seen = []
+
+    # if excluded_labels
+    dist_s_same_unseen = []
+    dist_s_diff_seen_unseen = []
+    dist_s_diff_unseen_unseen = []
+    
+    dist_b_same_unseen = []
+    dist_b_diff_seen_unseen = []
+    dist_b_diff_unseen_unseen = []
+
+    dist_sb_idt_unseen = []
+    dist_sb_same_unseen = []
+    dist_sb_diff_seen_unseen = []
+    dist_sb_diff_unseen_unseen = []
 
     for layer in tqdm(RSA.layers, desc="layers", leave=False):
         layer_activations = np.array(
@@ -81,43 +95,91 @@ def compute_corr2dist(
         )  # (3200, 3200)
 
         rsm_s = rsm[0:1600, 0:1600]  # S vs. S
-        rsm_b = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # B vs. B
-        rsm_sb = rsm[0:1600, 1600 : 1600 * 2]  # S vs. B
+        rsm_b = rsm[1600: 1600 * 2, 1600: 1600 * 2]  # B vs. B
+        rsm_sb = rsm[0:1600, 1600: 1600 * 2]  # S vs. B
 
-        dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
-        dist_s_same += [dist_same]
-        dist_s_diff += [dist_diff]
+        if excluded_labels:
+            dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen = compute_dist_same_diff_ex_labels(rsm=rsm_s, excluded_labels=excluded_labels)
+            dist_s_same_seen += [dist_same_seen]
+            dist_s_same_unseen += [dist_same_unseen]
+            dist_s_diff_seen += [dist_diff_seen]
+            dist_s_diff_seen_unseen += [dist_diff_seen_unseen]
+            dist_s_diff_unseen_unseen += [dist_diff_unseen_unseen]
+        else:
+            dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
+            dist_s_same_seen += [dist_same]
+            dist_s_diff_seen += [dist_diff]
 
-        dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_b)
-        dist_b_same += [dist_same]
-        dist_b_diff += [dist_diff]
+        if excluded_labels:
+            dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen = compute_dist_same_diff_ex_labels(rsm=rsm_b, excluded_labels=excluded_labels)
+            dist_b_same_seen += [dist_same_seen]
+            dist_b_same_unseen += [dist_same_unseen]
+            dist_b_diff_seen += [dist_diff_seen]
+            dist_b_diff_seen_unseen += [dist_diff_seen_unseen]
+            dist_b_diff_unseen_unseen += [dist_diff_unseen_unseen]
+        else:
+            dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
+            dist_b_same_seen += [dist_same]
+            dist_b_diff_seen += [dist_diff]
 
-        dist_idt, dist_same, dist_diff = compute_dist_idt_same_diff(rsm=rsm_sb)
-        dist_sb_idt += [dist_idt]
-        dist_sb_same += [dist_same]
-        dist_sb_diff += [dist_diff]
+        if excluded_labels:
+            dist_idt_seen, dist_idt_unseen, dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen = compute_dist_idt_same_diff_ex_labels(rsm=rsm_sb, excluded_labels=excluded_labels)
+            dist_sb_idt_seen += [dist_idt_seen]
+            dist_sb_idt_unseen += [dist_idt_unseen]
+            dist_sb_same_seen += [dist_same_seen]
+            dist_sb_same_unseen += [dist_same_unseen]
+            dist_sb_diff_seen += [dist_diff_seen]
+            dist_sb_diff_seen_unseen += [dist_diff_seen_unseen]
+            dist_sb_diff_unseen_unseen += [dist_diff_unseen_unseen]
+        else:
+            dist_idt, dist_same, dist_diff = compute_dist_idt_same_diff(rsm=rsm_sb)
+            dist_sb_idt_seen += [dist_idt]
+            dist_sb_same_seen += [dist_same]
+            dist_sb_diff_seen += [dist_diff]
 
-    # all_results = [dist_s_same] + [dist_s_diff] + \
-    #               [dist_b_same] + [dist_b_diff] + \
-    #               [dist_sb_idt] + [dist_sb_same] + [dist_sb_diff]
     all_results = [
-        dist_s_same,
-        dist_s_diff,
-        dist_b_same,
-        dist_b_diff,
-        dist_sb_idt,
-        dist_sb_same,
-        dist_sb_diff,
+        dist_s_same_seen,
+        dist_s_diff_seen,
+        dist_b_same_seen,
+        dist_b_diff_seen,
+        dist_sb_idt_seen,
+        dist_sb_same_seen,
+        dist_sb_diff_seen,
     ]
     index = [
-        "sharp_same",
-        "sharp_different",
-        "blur_same",
-        "blur_different",
-        "sharp-blur_identical",
-        "sharp-blur_same",
-        "sharp-blur_different",
+        "sharp_same_seen",
+        "sharp_different_seen",
+        "blur_same_seen",
+        "blur_different_seen",
+        "sharp-blur_identical_seen",
+        "sharp-blur_same_seen",
+        "sharp-blur_different_seen",
     ]
+    if excluded_labels:
+        all_results += [
+            dist_s_same_unseen,
+            dist_s_diff_seen_unseen,
+            dist_s_diff_unseen_unseen,
+            dist_b_same_unseen,
+            dist_b_diff_seen_unseen,
+            dist_b_diff_unseen_unseen,
+            dist_sb_idt_unseen,
+            dist_sb_same_unseen,
+            dist_sb_diff_seen_unseen,
+            dist_sb_diff_unseen_unseen,
+        ]
+        index += [
+            "sharp_same_unseen",
+            "sharp_different_seen-unseen",
+            "sharp_different_unseen-unseen",
+            "blur_same_unseen",
+            "blur_different_seen-unseen",
+            "blur_different_unseen-unseen",
+            "sharp-blur_identical_unseen",
+            "sharp-blur_same_unseen",
+            "sharp-blur_different_seen-unseen",
+            "sharp-blur_different_unseen-unseen",
+        ]
 
     df_dist = pd.DataFrame(
         all_results,
@@ -194,8 +256,8 @@ def compute_rsm2dist(
         rsm = 1 - squareform(pdist(layer_activations, metric=metric))  # (3200, 3200)
 
         rsm_s = rsm[0:1600, 0:1600]  # S vs. S
-        rsm_b = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # B vs. B
-        rsm_sb = rsm[0:1600, 1600 : 1600 * 2]  # S vs. B
+        rsm_b = rsm[1600: 1600 * 2, 1600: 1600 * 2]  # B vs. B
+        rsm_sb = rsm[0:1600, 1600: 1600 * 2]  # S vs. B
 
         dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
         dist_s_same += [dist_same]
@@ -223,13 +285,13 @@ def compute_rsm2dist(
         dist_sb_diff,
     ]
     index = [
-        "sharp_same",
-        "sharp_different",
-        "blur_same",
-        "blur_different",
-        "sharp-blur_identical",
-        "sharp-blur_same",
-        "sharp-blur_different",
+        "sharp_same_seen",
+        "sharp_different_seen",
+        "blur_same_seen",
+        "blur_different_seen",
+        "sharp-blur_identical_seen",
+        "sharp-blur_same_seen",
+        "sharp-blur_different_seen",
     ]
 
     df_dist = pd.DataFrame(
@@ -260,7 +322,7 @@ def compute_dist_same_diff(rsm):
     dists = []
     for i in range(16):
         dists += [
-            np.triu(rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100], k=1).sum()
+            np.triu(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100], k=1).sum()
         ]  # Diagonal values (identical images) are not included.
     dist_same = sum(dists) / (16 * ((100 * 99) / 2))
 
@@ -268,11 +330,82 @@ def compute_dist_same_diff(rsm):
     dists = []
     for i in range(16):
         for j in range(i + 1, 16):
-            dists += [rsm[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()]
+            dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
 
     dist_diff = sum(dists) / (120 * 100 ** 2)
 
     return dist_same, dist_diff
+
+
+def compute_dist_same_diff_ex_labels(rsm, excluded_labels=[],):
+    """
+    @param metric:
+    @param activations: (N, D)
+
+        test dataset: 16-class-ImageNet
+            num_classes: 16
+            num_images_each_class: 100
+
+    @return: dist_same, dist_diff
+    """
+    # same classes
+    dists_seen = []
+    dists_unseen = []
+    count_seen = 0
+    count_unseen = 0
+    for i in range(16):
+        # Diagonal values (identical images) are not included.
+        d = np.triu(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100], k=1).sum()
+
+        if i in excluded_labels:
+            dists_unseen += [d]
+            count_unseen += 1
+        else:
+            dists_seen += [d]
+            count_seen += 1
+
+    dist_same_seen = sum(dists_seen) / (count_seen * ((100 * 99) / 2))
+    try:
+        dist_same_unseen = sum(dists_unseen) / (count_unseen * ((100 * 99) / 2))
+    except ZeroDivisionError:
+        dist_same_unseen = 0
+
+    # diff classes
+    dists_seen = []
+    dists_seen_unseen = []
+    dists_unseen_unseen = []
+    dists_unseen = []
+    count_seen = 0
+    count_seen_unseen = 0
+    count_unseen_unseen = 0
+    for i in range(16):
+        for j in range(i + 1, 16):
+            d = rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()
+
+            if j in excluded_labels:
+                if i in excluded_labels:
+                    dists_unseen_unseen += [d]
+                    count_unseen_unseen += 1
+                else:
+                    dists_seen_unseen += [d]
+                    count_seen_unseen += 1
+            else:
+                dists_seen += [d]
+                count_seen += 1
+
+    dist_diff_seen = sum(dists_seen) / (count_seen * 100 ** 2)
+    try:
+        dist_diff_seen_unseen = sum(dists_seen_unseen) / (count_seen_unseen * 100 ** 2)
+    except ZeroDivisionError:
+        dist_diff_seen_unseen = 0
+    try:
+        dist_diff_unseen_unseen = sum(dists_unseen_unseen) / (count_unseen_unseen * 100 ** 2)
+    except ZeroDivisionError:
+        dist_diff_unseen_unseen = 0
+
+    # dist_diff_unseen = sum(dists) / ((120 - (16-len(excluded_labels)) * (15-len(excluded_labels)) / 2) * 100 ** 2)
+
+    return dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen
 
 
 def compute_dist_idt_same_diff(rsm):
@@ -286,7 +419,7 @@ def compute_dist_idt_same_diff(rsm):
     # same classes
     dists = []
     for i in range(16):
-        dists += [rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100].sum()]
+        dists += [rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100].sum()]
     dist_same = (sum(dists) - np.diag(rsm).sum()) / (16 * 100 ** 2 - 1600)
 
     # diff classes
@@ -294,10 +427,89 @@ def compute_dist_idt_same_diff(rsm):
     for i in range(16):
         for j in range(16):
             if i != j:
-                dists += [rsm[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()]
+                dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
     dist_diff = sum(dists) / (240 * 100 ** 2)
 
     return dist_idt, dist_same, dist_diff
+
+
+def compute_dist_idt_same_diff_ex_labels(rsm, excluded_labels=[],):
+    """
+    @param rsm: (1600, 1600) (e.g. Sharp vs. Blur)
+    @return: dist_idt, dist_same, dist_diff
+    """
+    # identical
+    dists_idt_seen = []
+    dists_idt_unseen = []
+    num_idt_seen = 0
+    num_idt_unseen = 0
+    for i in range(16):
+        d = np.diag(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100]).sum()
+
+        if i in excluded_labels:
+            dists_idt_unseen += [d]
+            num_idt_unseen += 100
+        else:
+            dists_idt_seen += [d]
+            num_idt_seen += 100
+
+    dist_idt_seen = sum(dists_idt_seen) / num_idt_seen
+    dist_idt_unseen = sum(dists_idt_unseen) / num_idt_unseen
+
+    # same classes
+    dists_same_seen = []
+    dists_same_unseen = []
+    num_same_seen = 0
+    num_same_unseen = 0
+    for i in range(16):
+        d = rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100].sum() \
+            - np.diag(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100]).sum()
+
+        if i in excluded_labels:
+            dists_same_unseen += [d]
+            num_same_unseen += 100 ** 2 - 100
+        else:
+            dists_same_seen += [d]
+            num_same_seen += 100 ** 2 - 100
+
+    dist_same_seen = sum(dists_same_seen) / num_same_seen
+    dist_same_unseen = sum(dists_same_unseen) / num_same_unseen
+
+    # diff classes
+    dists_seen = []
+    dists_seen_unseen = []
+    dists_unseen_unseen = []
+    dists_unseen = []
+    num_diff_seen = 0
+    num_diff_seen_unseen = 0
+    num_diff_unseen_unseen = 0
+    for i in range(16):
+        for j in range(i, 16):
+            if i != j:
+                d = rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()
+    
+                if j in excluded_labels:
+                    if i in excluded_labels:
+                        dists_unseen_unseen += [d]
+                        num_diff_unseen_unseen += 100 ** 2
+                    else:
+                        dists_seen_unseen += [d]
+                        num_diff_seen_unseen += 100 ** 2
+                else:
+                    dists_seen += [d]
+                    num_diff_seen += 100 ** 2
+
+    dist_diff_seen = sum(dists_seen) / num_diff_seen
+    try:
+        dist_diff_seen_unseen = sum(dists_seen_unseen) / num_diff_seen_unseen
+    except ZeroDivisionError:
+        dist_diff_seen_unseen = 0
+    try:
+        dist_diff_unseen_unseen = sum(dists_unseen_unseen) / num_diff_unseen_unseen
+    except ZeroDivisionError:
+        dist_diff_unseen_unseen = 0
+
+    return dist_idt_seen, dist_idt_unseen, dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen
 
 
 def plot_dist(
@@ -306,6 +518,7 @@ def plot_dist(
     layers,
     title,
     plot_path,
+    excluded_labels=[],
 ):
     blur_sigma = 4
 
@@ -320,44 +533,140 @@ def plot_dist(
     )
 
     if stimuli == "s-b":
-        ax.plot(
-            layers,
-            dist.loc["sharp-blur_identical"].values,
-            label=f"S-B (σ={blur_sigma}), identical images",
-            ls="-",
-        )
-        ax.plot(
-            layers,
-            dist.loc["sharp-blur_same"].values,
-            label=f"S-B (σ={blur_sigma}), same classes",
-            ls="--",
-        )
-        ax.plot(
-            layers,
-            dist.loc["sharp-blur_different"].values,
-            label=f"S-B (σ={blur_sigma}), different classes",
-            ls=":",
-        )
+        if excluded_labels:
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_identical_seen"].values,
+                label=f"S-B (σ={blur_sigma}), identical seen images",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_identical_unseen"].values,
+                label=f"S-B (σ={blur_sigma}), identical unseen images",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_same_seen"].values,
+                label=f"S-B (σ={blur_sigma}), same seen classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_same_unseen"].values,
+                label=f"S-B (σ={blur_sigma}), same unseen classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_different_seen"].values,
+                label=f"S-B (σ={blur_sigma}), different seen classes",
+                ls=":",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_different_seen-unseen"].values,
+                label=f"S-B (σ={blur_sigma}), different seen-unseen classes",
+                ls=":",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_different_unseen-unseen"].values,
+                label=f"S-B (σ={blur_sigma}), different unseen-unseen classes",
+                ls=":",
+            )
+        else:
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_identical_seen"].values,
+                label=f"S-B (σ={blur_sigma}), identical images",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_same_seen"].values,
+                label=f"S-B (σ={blur_sigma}), same classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-blur_different_seen"].values,
+                label=f"S-B (σ={blur_sigma}), different classes",
+                ls=":",
+            )
     elif stimuli == "separate":  # S, B separately plotted
-        ax.plot(layers, dist.loc["sharp_same"].values, label="S, same classes", ls="-")
-        ax.plot(
-            layers,
-            dist.loc["sharp_different"].values,
-            label="S, different classes",
-            ls="-",
-        )
-        ax.plot(
-            layers,
-            dist.loc["blur_same"].values,
-            label=f"B (σ={blur_sigma}), same classes",
-            ls="--",
-        )
-        ax.plot(
-            layers,
-            dist.loc["blur_different"].values,
-            label=f"B (σ={blur_sigma}), different classes",
-            ls="--",
-        )
+        if excluded_labels:
+            ax.plot(layers, dist.loc["sharp_same_seen"].values, label="S, same seen classes", ls="-")
+            ax.plot(layers, dist.loc["sharp_same_unseen"].values, label="S, same unseen classes", ls="-")
+            ax.plot(
+                layers,
+                dist.loc["sharp_different_seen"].values,
+                label="S, different seen classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp_different_seen-unseen"].values,
+                label="S, different seen-unseen classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp_different_unseen-unseen"].values,
+                label="S, different unseen-unseen classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_same_seen"].values,
+                label=f"B (σ={blur_sigma}), same seen classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_same_unseen"].values,
+                label=f"B (σ={blur_sigma}), same unseen classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_different_seen"].values,
+                label=f"B (σ={blur_sigma}), different seen classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_different_seen-unseen"].values,
+                label=f"B (σ={blur_sigma}), different seen-unseen classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_different_unseen-unseen"].values,
+                label=f"B (σ={blur_sigma}), different unseen-unseen classes",
+                ls="--",
+            )
+        else:
+            ax.plot(layers, dist.loc["sharp_same_seen"].values, label="S, same classes", ls="-")
+            ax.plot(
+                layers,
+                dist.loc["sharp_different_seen"].values,
+                label="S, different classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_same_seen"].values,
+                label=f"B (σ={blur_sigma}), same classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["blur_different_seen"].values,
+                label=f"B (σ={blur_sigma}), different classes",
+                ls="--",
+            )
 
     ax.set_xticklabels(layers, rotation=45, ha="right")
     ax.legend()
