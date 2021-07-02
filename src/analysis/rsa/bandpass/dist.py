@@ -73,7 +73,7 @@ def compute_corr2dist(
     dist_s_same_unseen = []
     dist_s_diff_seen_unseen = []
     dist_s_diff_unseen_unseen = []
-    
+
     dist_b_same_unseen = []
     dist_b_diff_seen_unseen = []
     dist_b_diff_unseen_unseen = []
@@ -95,11 +95,19 @@ def compute_corr2dist(
         )  # (3200, 3200)
 
         rsm_s = rsm[0:1600, 0:1600]  # S vs. S
-        rsm_b = rsm[1600: 1600 * 2, 1600: 1600 * 2]  # B vs. B
-        rsm_sb = rsm[0:1600, 1600: 1600 * 2]  # S vs. B
+        rsm_b = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # B vs. B
+        rsm_sb = rsm[0:1600, 1600 : 1600 * 2]  # S vs. B
 
         if excluded_labels:
-            dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen = compute_dist_same_diff_ex_labels(rsm=rsm_s, excluded_labels=excluded_labels)
+            (
+                dist_same_seen,
+                dist_same_unseen,
+                dist_diff_seen,
+                dist_diff_seen_unseen,
+                dist_diff_unseen_unseen,
+            ) = compute_dist_same_diff_ex_labels(
+                rsm=rsm_s, excluded_labels=excluded_labels
+            )
             dist_s_same_seen += [dist_same_seen]
             dist_s_same_unseen += [dist_same_unseen]
             dist_s_diff_seen += [dist_diff_seen]
@@ -111,7 +119,15 @@ def compute_corr2dist(
             dist_s_diff_seen += [dist_diff]
 
         if excluded_labels:
-            dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen = compute_dist_same_diff_ex_labels(rsm=rsm_b, excluded_labels=excluded_labels)
+            (
+                dist_same_seen,
+                dist_same_unseen,
+                dist_diff_seen,
+                dist_diff_seen_unseen,
+                dist_diff_unseen_unseen,
+            ) = compute_dist_same_diff_ex_labels(
+                rsm=rsm_b, excluded_labels=excluded_labels
+            )
             dist_b_same_seen += [dist_same_seen]
             dist_b_same_unseen += [dist_same_unseen]
             dist_b_diff_seen += [dist_diff_seen]
@@ -123,7 +139,17 @@ def compute_corr2dist(
             dist_b_diff_seen += [dist_diff]
 
         if excluded_labels:
-            dist_idt_seen, dist_idt_unseen, dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen = compute_dist_idt_same_diff_ex_labels(rsm=rsm_sb, excluded_labels=excluded_labels)
+            (
+                dist_idt_seen,
+                dist_idt_unseen,
+                dist_same_seen,
+                dist_same_unseen,
+                dist_diff_seen,
+                dist_diff_seen_unseen,
+                dist_diff_unseen_unseen,
+            ) = compute_dist_idt_same_diff_ex_labels(
+                rsm=rsm_sb, excluded_labels=excluded_labels
+            )
             dist_sb_idt_seen += [dist_idt_seen]
             dist_sb_idt_unseen += [dist_idt_unseen]
             dist_sb_same_seen += [dist_same_seen]
@@ -256,8 +282,8 @@ def compute_rsm2dist(
         rsm = 1 - squareform(pdist(layer_activations, metric=metric))  # (3200, 3200)
 
         rsm_s = rsm[0:1600, 0:1600]  # S vs. S
-        rsm_b = rsm[1600: 1600 * 2, 1600: 1600 * 2]  # B vs. B
-        rsm_sb = rsm[0:1600, 1600: 1600 * 2]  # S vs. B
+        rsm_b = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # B vs. B
+        rsm_sb = rsm[0:1600, 1600 : 1600 * 2]  # S vs. B
 
         dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
         dist_s_same += [dist_same]
@@ -322,7 +348,7 @@ def compute_dist_same_diff(rsm):
     dists = []
     for i in range(16):
         dists += [
-            np.triu(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100], k=1).sum()
+            np.triu(rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100], k=1).sum()
         ]  # Diagonal values (identical images) are not included.
     dist_same = sum(dists) / (16 * ((100 * 99) / 2))
 
@@ -330,14 +356,17 @@ def compute_dist_same_diff(rsm):
     dists = []
     for i in range(16):
         for j in range(i + 1, 16):
-            dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
+            dists += [rsm[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()]
 
     dist_diff = sum(dists) / (120 * 100 ** 2)
 
     return dist_same, dist_diff
 
 
-def compute_dist_same_diff_ex_labels(rsm, excluded_labels=[],):
+def compute_dist_same_diff_ex_labels(
+    rsm,
+    excluded_labels=[],
+):
     """
     @param metric:
     @param activations: (N, D)
@@ -355,7 +384,7 @@ def compute_dist_same_diff_ex_labels(rsm, excluded_labels=[],):
     count_unseen = 0
     for i in range(16):
         # Diagonal values (identical images) are not included.
-        d = np.triu(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100], k=1).sum()
+        d = np.triu(rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100], k=1).sum()
 
         if i in excluded_labels:
             dists_unseen += [d]
@@ -380,7 +409,7 @@ def compute_dist_same_diff_ex_labels(rsm, excluded_labels=[],):
     count_unseen_unseen = 0
     for i in range(16):
         for j in range(i + 1, 16):
-            d = rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()
+            d = rsm[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()
 
             if j in excluded_labels:
                 if i in excluded_labels:
@@ -399,13 +428,21 @@ def compute_dist_same_diff_ex_labels(rsm, excluded_labels=[],):
     except ZeroDivisionError:
         dist_diff_seen_unseen = 0
     try:
-        dist_diff_unseen_unseen = sum(dists_unseen_unseen) / (count_unseen_unseen * 100 ** 2)
+        dist_diff_unseen_unseen = sum(dists_unseen_unseen) / (
+            count_unseen_unseen * 100 ** 2
+        )
     except ZeroDivisionError:
         dist_diff_unseen_unseen = 0
 
     # dist_diff_unseen = sum(dists) / ((120 - (16-len(excluded_labels)) * (15-len(excluded_labels)) / 2) * 100 ** 2)
 
-    return dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen
+    return (
+        dist_same_seen,
+        dist_same_unseen,
+        dist_diff_seen,
+        dist_diff_seen_unseen,
+        dist_diff_unseen_unseen,
+    )
 
 
 def compute_dist_idt_same_diff(rsm):
@@ -419,7 +456,7 @@ def compute_dist_idt_same_diff(rsm):
     # same classes
     dists = []
     for i in range(16):
-        dists += [rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100].sum()]
+        dists += [rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100].sum()]
     dist_same = (sum(dists) - np.diag(rsm).sum()) / (16 * 100 ** 2 - 1600)
 
     # diff classes
@@ -427,13 +464,16 @@ def compute_dist_idt_same_diff(rsm):
     for i in range(16):
         for j in range(16):
             if i != j:
-                dists += [rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()]
+                dists += [rsm[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()]
     dist_diff = sum(dists) / (240 * 100 ** 2)
 
     return dist_idt, dist_same, dist_diff
 
 
-def compute_dist_idt_same_diff_ex_labels(rsm, excluded_labels=[],):
+def compute_dist_idt_same_diff_ex_labels(
+    rsm,
+    excluded_labels=[],
+):
     """
     @param rsm: (1600, 1600) (e.g. Sharp vs. Blur)
     @return: dist_idt, dist_same, dist_diff
@@ -444,7 +484,7 @@ def compute_dist_idt_same_diff_ex_labels(rsm, excluded_labels=[],):
     num_idt_seen = 0
     num_idt_unseen = 0
     for i in range(16):
-        d = np.diag(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100]).sum()
+        d = np.diag(rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100]).sum()
 
         if i in excluded_labels:
             dists_idt_unseen += [d]
@@ -462,8 +502,10 @@ def compute_dist_idt_same_diff_ex_labels(rsm, excluded_labels=[],):
     num_same_seen = 0
     num_same_unseen = 0
     for i in range(16):
-        d = rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100].sum() \
-            - np.diag(rsm[i * 100: i * 100 + 100, i * 100: i * 100 + 100]).sum()
+        d = (
+            rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100].sum()
+            - np.diag(rsm[i * 100 : i * 100 + 100, i * 100 : i * 100 + 100]).sum()
+        )
 
         if i in excluded_labels:
             dists_same_unseen += [d]
@@ -486,8 +528,8 @@ def compute_dist_idt_same_diff_ex_labels(rsm, excluded_labels=[],):
     for i in range(16):
         for j in range(i, 16):
             if i != j:
-                d = rsm[i * 100: i * 100 + 100, j * 100: j * 100 + 100].sum()
-    
+                d = rsm[i * 100 : i * 100 + 100, j * 100 : j * 100 + 100].sum()
+
                 if j in excluded_labels:
                     if i in excluded_labels:
                         dists_unseen_unseen += [d]
@@ -509,7 +551,15 @@ def compute_dist_idt_same_diff_ex_labels(rsm, excluded_labels=[],):
     except ZeroDivisionError:
         dist_diff_unseen_unseen = 0
 
-    return dist_idt_seen, dist_idt_unseen, dist_same_seen, dist_same_unseen, dist_diff_seen, dist_diff_seen_unseen, dist_diff_unseen_unseen
+    return (
+        dist_idt_seen,
+        dist_idt_unseen,
+        dist_same_seen,
+        dist_same_unseen,
+        dist_diff_seen,
+        dist_diff_seen_unseen,
+        dist_diff_unseen_unseen,
+    )
 
 
 def plot_dist(
@@ -597,8 +647,18 @@ def plot_dist(
             )
     elif stimuli == "separate":  # S, B separately plotted
         if excluded_labels:
-            ax.plot(layers, dist.loc["sharp_same_seen"].values, label="S, same seen classes", ls="-")
-            ax.plot(layers, dist.loc["sharp_same_unseen"].values, label="S, same unseen classes", ls="-")
+            ax.plot(
+                layers,
+                dist.loc["sharp_same_seen"].values,
+                label="S, same seen classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp_same_unseen"].values,
+                label="S, same unseen classes",
+                ls="-",
+            )
             ax.plot(
                 layers,
                 dist.loc["sharp_different_seen"].values,
@@ -648,7 +708,12 @@ def plot_dist(
                 ls="--",
             )
         else:
-            ax.plot(layers, dist.loc["sharp_same_seen"].values, label="S, same classes", ls="-")
+            ax.plot(
+                layers,
+                dist.loc["sharp_same_seen"].values,
+                label="S, same classes",
+                ls="-",
+            )
             ax.plot(
                 layers,
                 dist.loc["sharp_different_seen"].values,

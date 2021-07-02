@@ -21,7 +21,10 @@ from src.analysis.rsa.rsa import (
 from src.dataset.imagenet16 import make_local_in16_test_loader
 from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_filters
 from src.model.utils import load_model
-from src.analysis.rsa.bandpass.dist import compute_rsm2dist, compute_corr2dist, plot_dist
+from src.analysis.rsa.bandpass.dist import (
+    compute_corr2dist,
+    plot_dist,
+)
 from src.model.model_names import rename_model_name
 
 parser = argparse.ArgumentParser()
@@ -90,7 +93,9 @@ if __name__ == "__main__":
         models_dir = os.path.join(
             args.data_dir,
             "pretrained_models/blur-training/imagenet{}/models/".format(
-                16 if args.num_classes == 16 else 1000  # else is (args.num_classes == 1000)
+                16
+                if args.num_classes == 16
+                else 1000  # else is (args.num_classes == 1000)
             ),
         )
         # assert os.path.exists(imagenet_path), f"{imagenet_path} does not exist."
@@ -116,6 +121,7 @@ if __name__ == "__main__":
 
     # models to compare
     from src.model.model_names import get_model_names
+
     model_names = get_model_names(arch=args.arch, models=args.models)
 
     print("===== arguments =====")
@@ -193,7 +199,14 @@ if __name__ == "__main__":
             # compute dist
             print(f"{model_name} computing...")
             # df_dist = compute_rsm2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device)
-            df_dist = compute_corr2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device, excluded_labels=excluded_labels)
+            df_dist = compute_corr2dist(
+                RSA=RSA,
+                data_loader=test_loader,
+                filters=filters,
+                metric=metric,
+                device=device,
+                excluded_labels=excluded_labels,
+            )
 
         result_file = f"{analysis}_{args.num_classes}-class_{model_name}.csv"
         result_path = os.path.join(results_dir, result_file)
@@ -235,6 +248,5 @@ if __name__ == "__main__":
                 title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
             )
-
 
     print("All done!!")
