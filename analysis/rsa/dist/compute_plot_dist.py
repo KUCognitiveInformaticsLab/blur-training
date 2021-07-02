@@ -203,7 +203,6 @@ if __name__ == "__main__":
                 RSA=RSA,
                 data_loader=test_loader,
                 filters=filters,
-                metric=metric,
                 device=device,
                 excluded_labels=excluded_labels,
             )

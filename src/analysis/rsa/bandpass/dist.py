@@ -23,6 +23,8 @@ def compute_corr2dist(
     filters: dict,
     excluded_labels=[],
     device: torch.device = torch.device("cuda:0"),
+    # metric="correlation
+        # "
 ) -> Tuple[list, list, list, list]:
     """Computes embedded activations of all band-pass images by t-SNE.
     Args:
