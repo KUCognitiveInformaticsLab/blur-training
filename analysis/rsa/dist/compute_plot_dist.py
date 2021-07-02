@@ -164,6 +164,13 @@ if __name__ == "__main__":
             filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
 
     for model_name in tqdm(model_names, desc="models"):
+        if "1label" in model_name:
+            excluded_labels = [15]
+        elif "8label" in model_name:
+            excluded_labels = [i for i in range(8, 16)]
+        else:
+            excluded_labels = []
+
         # ===== compute =====
         if args.compute:
             # load model
@@ -186,7 +193,7 @@ if __name__ == "__main__":
             # compute dist
             print(f"{model_name} computing...")
             # df_dist = compute_rsm2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device)
-            df_dist = compute_corr2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device)
+            df_dist = compute_corr2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device, excluded_labels=excluded_labels)
 
         result_file = f"{analysis}_{args.num_classes}-class_{model_name}.csv"
         result_path = os.path.join(results_dir, result_file)
@@ -212,6 +219,7 @@ if __name__ == "__main__":
                 dist=df_dist,
                 stimuli="separate",
                 layers=layers,
+                excluded_labels=excluded_labels,
                 title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
             )
@@ -223,6 +231,7 @@ if __name__ == "__main__":
                 dist=df_dist,
                 stimuli="s-b",
                 layers=layers,
+                excluded_labels=excluded_labels,
                 title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
             )
