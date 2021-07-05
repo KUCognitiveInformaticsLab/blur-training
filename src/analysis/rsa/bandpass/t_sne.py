@@ -659,7 +659,8 @@ def plot_tSNE_h_l(
         idx = [
             i + j for i in range(0, 3200, 200) for j in range(20)
         ]  # 10 images (S-B pair) for each class
-        # idx = [i for i in range(0, 3200, 200)]  # for showing a legend
+        # idx = [i for i in range(0, 3200, 200)]  # for showing a legend (high)
+        # idx = [i for i in range(1, 3200, 200)]  # for showing a legend (low)
 
         target = embedded_activations[layer_id][idx]
         target_labels = np.array(labels)[idx]
@@ -714,7 +715,7 @@ def plot_tSNE_h_l(
             fontweight="bold",
         )
 
-    # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
     # fig.tight_layout()
     plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.png"
     plot_path = os.path.join(plots_dir, plot_file)
