@@ -858,19 +858,19 @@ def plot_dist(
             ax.plot(
                 layers,
                 dist.loc["high-low_identical_seen"].values,
-                label=f"H(1-2)-B(4), identical images",
+                label=f"High(1-2)-Low(4), identical images",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["high-low_same_seen"].values,
-                label=f"H(1-2)-B(4), same classes",
+                label=f"High(1-2)-Low(4), same classes",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["high-low_different_seen"].values,
-                label=f"H(1-2)-B(4), different classes",
+                label=f"High(1-2)-Low(4), different classes",
                 ls=":",
             )
 
