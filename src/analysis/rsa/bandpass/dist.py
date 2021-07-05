@@ -24,7 +24,7 @@ def compute_corr2dist(
     excluded_labels=[],
     device: torch.device = torch.device("cuda:0"),
     # metric="correlation
-        # "
+    # "
 ) -> Tuple[list, list, list, list]:
     """Computes embedded activations of all band-pass images by t-SNE.
     Args:
@@ -571,6 +571,7 @@ def plot_dist(
     title,
     plot_path,
     excluded_labels=[],
+    full=False,
 ):
     blur_sigma = 4
 
@@ -589,45 +590,48 @@ def plot_dist(
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_identical_seen"].values,
-                label=f"S-B (σ={blur_sigma}), identical seen images",
+                label=f"S-B (σ={blur_sigma}), identical images, seen class",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_identical_unseen"].values,
-                label=f"S-B (σ={blur_sigma}), identical unseen images",
+                label=f"S-B (σ={blur_sigma}), identical images, unseen class",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_same_seen"].values,
-                label=f"S-B (σ={blur_sigma}), same seen classes",
+                label=f"S-B (σ={blur_sigma}), same classes, seen class",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_same_unseen"].values,
-                label=f"S-B (σ={blur_sigma}), same unseen classes",
+                label=f"S-B (σ={blur_sigma}), same classes, unseen class",
                 ls="--",
             )
-            ax.plot(
-                layers,
-                dist.loc["sharp-blur_different_seen"].values,
-                label=f"S-B (σ={blur_sigma}), different seen classes",
-                ls=":",
-            )
-            ax.plot(
-                layers,
-                dist.loc["sharp-blur_different_seen-unseen"].values,
-                label=f"S-B (σ={blur_sigma}), different seen-unseen classes",
-                ls=":",
-            )
-            ax.plot(
-                layers,
-                dist.loc["sharp-blur_different_unseen-unseen"].values,
-                label=f"S-B (σ={blur_sigma}), different unseen-unseen classes",
-                ls=":",
-            )
+
+            if full:
+                ax.plot(
+                    layers,
+                    dist.loc["sharp-blur_different_seen"].values,
+                    label=f"S-B (σ={blur_sigma}), different classes, seen vs seen class",
+                    ls=":",
+                )
+                ax.plot(
+                    layers,
+                    dist.loc["sharp-blur_different_seen-unseen"].values,
+                    label=f"S-B (σ={blur_sigma}), different classes, seen vs unseen class",
+                    ls=":",
+                )
+                if dist.loc["sharp-blur_different_unseen-unseen"].values.sum() != 0:
+                    ax.plot(
+                        layers,
+                        dist.loc["sharp-blur_different_unseen-unseen"].values,
+                        label=f"S-B (σ={blur_sigma}), different classes, unseen vs unseen class",
+                        ls=":",
+                    )
         else:
             ax.plot(
                 layers,
@@ -647,68 +651,76 @@ def plot_dist(
                 label=f"S-B (σ={blur_sigma}), different classes",
                 ls=":",
             )
+
     elif stimuli == "separate":  # S, B separately plotted
         if excluded_labels:
             ax.plot(
                 layers,
                 dist.loc["sharp_same_seen"].values,
-                label="S, same seen classes",
+                label="S, same classes, seen class",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp_same_unseen"].values,
-                label="S, same unseen classes",
+                label="S, same classes, unseen class",
                 ls="-",
             )
-            ax.plot(
-                layers,
-                dist.loc["sharp_different_seen"].values,
-                label="S, different seen classes",
-                ls="-",
-            )
-            ax.plot(
-                layers,
-                dist.loc["sharp_different_seen-unseen"].values,
-                label="S, different seen-unseen classes",
-                ls="-",
-            )
-            ax.plot(
-                layers,
-                dist.loc["sharp_different_unseen-unseen"].values,
-                label="S, different unseen-unseen classes",
-                ls="-",
-            )
+
+            if full:
+                ax.plot(
+                    layers,
+                    dist.loc["sharp_different_seen"].values,
+                    label="S, different classes, seen vs seen class",
+                    ls="-",
+                )
+                ax.plot(
+                    layers,
+                    dist.loc["sharp_different_seen-unseen"].values,
+                    label="S, different classes, seen vs unseen class",
+                    ls="-",
+                )
+                if dist.loc["blur_different_unseen-unseen"].values.sum() != 0:
+                    ax.plot(
+                        layers,
+                        dist.loc["sharp_different_unseen-unseen"].values,
+                        label="S, different classes, unseen vs unseen class",
+                        ls="-",
+                    )
+
             ax.plot(
                 layers,
                 dist.loc["blur_same_seen"].values,
-                label=f"B (σ={blur_sigma}), same seen classes",
+                label=f"B (σ={blur_sigma}), same classes, seen class",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["blur_same_unseen"].values,
-                label=f"B (σ={blur_sigma}), same unseen classes",
+                label=f"B (σ={blur_sigma}), same classes, unseen class",
                 ls="--",
             )
-            ax.plot(
-                layers,
-                dist.loc["blur_different_seen"].values,
-                label=f"B (σ={blur_sigma}), different seen classes",
-                ls="--",
-            )
-            ax.plot(
-                layers,
-                dist.loc["blur_different_seen-unseen"].values,
-                label=f"B (σ={blur_sigma}), different seen-unseen classes",
-                ls="--",
-            )
-            ax.plot(
-                layers,
-                dist.loc["blur_different_unseen-unseen"].values,
-                label=f"B (σ={blur_sigma}), different unseen-unseen classes",
-                ls="--",
-            )
+
+            if full:
+                ax.plot(
+                    layers,
+                    dist.loc["blur_different_seen"].values,
+                    label=f"B (σ={blur_sigma}), different classes, seen vs seen class",
+                    ls="--",
+                )
+                ax.plot(
+                    layers,
+                    dist.loc["blur_different_seen-unseen"].values,
+                    label=f"B (σ={blur_sigma}), different classes, seen vs unseen class",
+                    ls="--",
+                )
+                if dist.loc["blur_different_unseen-unseen"].values.sum() != 0:
+                    ax.plot(
+                        layers,
+                        dist.loc["blur_different_unseen-unseen"].values,
+                        label=f"B (σ={blur_sigma}), different classes, unseen vs unseen class",
+                        ls="--",
+                    )
         else:
             ax.plot(
                 layers,
@@ -736,7 +748,13 @@ def plot_dist(
             )
 
     ax.set_xticklabels(layers, rotation=45, ha="right")
-    ax.legend()
+    if excluded_labels:
+        # ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=10)  # upper right
+        ax.legend(
+            bbox_to_anchor=(0, -0.25), loc="upper left", borderaxespad=0, fontsize=10
+        )  # down left
+    else:
+        ax.legend()
     # ax.yaxis.set_major_locator(ticker.MultipleLocator(0.1))
     ax.grid(ls=":")
 

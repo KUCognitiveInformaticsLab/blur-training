@@ -49,6 +49,11 @@ parser.add_argument(
     default=False,
 )
 parser.add_argument(
+    "--full",
+    action="store_true",
+    default=False,
+)
+parser.add_argument(
     "-a",
     "--arch",
     metavar="ARCH",
@@ -225,6 +230,8 @@ if __name__ == "__main__":
             df_dist = pd.read_csv(result_path, index_col=0)
 
             plot_file = f"{analysis}_{args.num_classes}-class_{model_name}.png"
+            if args.full:
+                plot_file = plot_file.replace(".png", "_full.png")
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(
@@ -232,11 +239,14 @@ if __name__ == "__main__":
                 stimuli="separate",
                 layers=layers,
                 excluded_labels=excluded_labels,
+                full=args.full,
                 title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
             )
 
             plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_s-b.png"
+            if args.full:
+                plot_file = plot_file.replace(".png", "_full.png")
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(
@@ -244,6 +254,7 @@ if __name__ == "__main__":
                 stimuli="s-b",
                 layers=layers,
                 excluded_labels=excluded_labels,
+                full=args.full,
                 title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
                 plot_path=plot_path,
             )
