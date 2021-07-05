@@ -170,6 +170,84 @@ def compute_tSNE_all_bandpass(
     return embedded_activations, labels
 
 
+def compute_tSNE_h_l(
+    RSA,
+    num_images: int,
+    data_loader: iter,
+    filters: dict,
+    num_dim: int,
+    random_state: int = 0,
+    perplexity: int = 30,
+    n_iter: int = 1000,
+    device: torch.device = torch.device("cuda:0"),
+) -> Tuple[np.ndarray, list]:
+    """Computes embedded activations of all band-pass images by t-SNE.
+    Args:
+        num_images: number of images
+        num_dim: dim of embedding
+
+    Returns:
+        embedded_activations (np.ndarray): (L, N * F, D)
+        labels (list): (N * F)
+    """
+    num_layers = len(RSA.layers)
+    num_filters = len(filters)
+
+    all_activations = {}  # {L: (N, F+1, activations)}
+    for layer in RSA.layers:
+        all_activations[layer] = []  # (N, F+1, activations)
+
+    labels = []
+
+    # compute RSM for each image (with some filters applied)
+    for image_id, (image, label) in tqdm(
+        enumerate(data_loader), desc="Feed test images", leave=False
+    ):
+        """Note that data_loader SHOULD return a single image for each loop.
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+        """
+        labels += [f"l{label.item():02d}_f{i}" for i in range(num_filters)]
+
+        activations = compute_activations_with_bandpass(
+            RSA=RSA,
+            image=image,
+            filters=filters,
+            device=device,
+            add_noise=False,
+        )  # Dict: {L: (F+1, C, H, W)}
+
+        for layer in RSA.layers:
+            all_activations[layer] += [
+                activations[layer].reshape(num_filters + 1, -1)
+            ]  # (F+1, activations)
+
+    tsne = TSNE(
+        n_components=num_dim,
+        random_state=random_state,
+        perplexity=perplexity,
+        n_iter=n_iter,
+    )
+
+    embedded_activations = np.zeros(
+        (num_layers, num_images * num_filters, num_dim)
+    )  # (L, N * F, D)
+
+    for layer_id, layer in tqdm(
+        enumerate(RSA.layers), desc="Computing t-SNE (layers)", leave=False
+    ):
+        # all_activations: dict = {L: (N, F+1, activations)}
+        # remove activations of original images
+        # leave only those of high-pass and low-pass
+        X = np.array(all_activations[layer])[1:].reshape(
+            num_images * num_filters, -1
+        )  # (N * F, activations)
+
+        embedded_activations[layer_id] = tsne.fit_transform(X)  # (N * F, D)
+
+    return embedded_activations, labels
+
+
 def save_embedded_activations(embedded_activations: dict, labels: list, file_path: str):
     object = {"embedded_activations": embedded_activations, "labels": labels}
     with open(file_path, "wb") as f:
@@ -497,7 +575,7 @@ def plot_tSNE_s_b(
                         ],  # Change the marker according to "sharpe" or "blur"
                         edgecolors=colors[l],
                         # c=colors[l],  # Change the color according to the colour
-                        facecolors='none',
+                        facecolors="none",
                         alpha=0.5,
                         label=f"{l:02d} " + ("S" if f == 0 else "B"),
                     )
@@ -546,6 +624,95 @@ def plot_tSNE_s_b(
                 fontsize=8,
             )
     """
+
+    # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+    # fig.tight_layout()
+    plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.png"
+    plot_path = os.path.join(plots_dir, plot_file)
+    plt.savefig(plot_path)
+    plt.close()
+
+
+def plot_tSNE_h_l(
+    embedded_activations: np.ndarray,
+    labels: list,
+    layers,
+    num_dim,
+    plots_dir,
+    analysis,
+    perplexity,
+    n_iter,
+    num_classes,
+    model_name,
+    title=True,
+):
+    """
+    embedded_activations (np.ndarray): (L, N * (1+F), D)
+    labels (list): (N * (1+F))
+    """
+    fig = plt.figure(dpi=300, figsize=(24, 12))
+
+    for layer_id, layer in tqdm(
+        enumerate(layers), "plotting (each layer)", leave=False
+    ):
+        # idx = np.random.permutation(len(labels))[:100]  # random-100
+        idx = [
+            i + j for i in range(0, 3200, 200) for j in range(20)
+        ]  # 10 images (S-B pair) for each class
+        # idx = [i for i in range(0, 3200, 200)]  # for showing a legend
+
+        target = embedded_activations[layer_id][idx]
+        target_labels = np.array(labels)[idx]
+
+        ax = fig.add_subplot(2, 4, layer_id + 1)  # plot one of 8 layers
+        ax.set_title(layer, fontsize=12)
+
+        for i in range(len(target)):
+            if num_dim == 2:
+                # get (x, y)
+                x, y = target[i]
+
+                # get label and filter_id
+                # l (int): label (0 - 15)
+                # f (int): filter id (0: sharp, 1: blur)
+                l, f = map(
+                    int, target_labels[i].replace("l", "").replace("f", "").split("_")
+                )
+
+                if f == 0:  # high
+                    ax.scatter(
+                        x=x,
+                        y=y,
+                        marker=markers[
+                            f
+                        ],  # Change the marker according to "sharpe" or "blur"
+                        edgecolors=colors[l],
+                        # c=colors[l],  # Change the color according to the colour
+                        facecolors="none",
+                        alpha=0.5,
+                        label=f"{l:02d} " + ("High" if f == 0 else "Low"),
+                    )
+                elif f == 1:  # low
+                    ax.scatter(
+                        x=x,
+                        y=y,
+                        marker=markers[
+                            f
+                        ],  # Change the marker according to "sharpe" or "blur"
+                        # edgecolors=colors[l],
+                        c=colors[l],  # Change the color according to the colour
+                        # facecolors='none',
+                        alpha=0.5,
+                        label=f"{l:02d} " + ("High" if f == 0 else "Low"),
+                    )
+                # plt.annotate(l, xy=(x, y))
+
+    if title:
+        plt.suptitle(
+            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}",
+            fontsize=24,
+            fontweight="bold",
+        )
 
     # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
     # fig.tight_layout()

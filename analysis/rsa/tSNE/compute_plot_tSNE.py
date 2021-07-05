@@ -14,11 +14,13 @@ sys.path.append(str(current_dir) + "/../../../")
 from src.analysis.rsa.bandpass.t_sne import (
     compute_tSNE_each_bandpass,
     compute_tSNE_all_bandpass,
+    compute_tSNE_h_l,
     save_embedded_activations,
     load_embedded_activations,
     plot_tSNE_each_bandpass,
     plot_tSNE_all_bandpass,
     plot_tSNE_s_b,
+    plot_tSNE_h_l,
 )
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
@@ -205,6 +207,10 @@ if __name__ == "__main__":
         filters = make_bandpass_filters(num_filters=num_filters)
         if stimuli == "s-b":
             filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
+        elif args.stimuli == "h-l":
+            filters = {}
+            filters[0] = [1, 2]  # high-pass
+            filters[1] = [4, None]  # low-pass
 
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
@@ -250,6 +256,17 @@ if __name__ == "__main__":
                     n_iter=n_iter,
                     device=device,
                 )  # (L, N * (F+1), D), (N)
+            elif stimuli == "h-l":
+                embed, labels = compute_tSNE_h_l(
+                    RSA=RSA,
+                    num_images=test_loader.num_images,
+                    data_loader=test_loader,
+                    filters=filters,
+                    num_dim=num_dim,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    device=device,
+                )  # (L, N * F, D), (N)
 
         result_file = f"{analysis}_embedded_activations_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.npy"
         result_path = os.path.join(results_dir, result_file)
@@ -328,3 +345,17 @@ if __name__ == "__main__":
                 #     model_name=model_name,
                 #     title=True,
                 # )
+            elif stimuli == "h-l":
+                plot_tSNE_h_l(
+                    embedded_activations=embed,
+                    labels=labels,
+                    layers=layers,
+                    num_dim=num_dim,
+                    plots_dir=plots_dir,
+                    analysis=analysis,
+                    perplexity=perplexity,
+                    n_iter=n_iter,
+                    num_classes=num_classes,
+                    model_name=model_name,
+                    title=True,
+                )
