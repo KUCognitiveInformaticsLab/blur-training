@@ -239,7 +239,7 @@ def compute_tSNE_h_l(
         # all_activations: dict = {L: (N, F+1, activations)}
         # remove activations of original images
         # leave only those of high-pass and low-pass
-        X = np.array(all_activations[layer])[1:].reshape(
+        X = np.array(all_activations[layer])[:, 1:].reshape(
             num_images * num_filters, -1
         )  # (N * F, activations)
 
