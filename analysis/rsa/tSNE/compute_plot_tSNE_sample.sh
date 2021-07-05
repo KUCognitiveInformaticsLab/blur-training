@@ -1,6 +1,8 @@
 # alexnet
 #python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 16 --models vss
 #python compute_plot_tSNE.py --compute --plot --stimuli s-b -a alexnet --num_classes 1000 --models vss
+python compute_plot_tSNE.py --compute --plot --stimuli h-l -a alexnet --num_classes 16 --models vss
+python compute_plot_tSNE.py --compute --plot --stimuli h-l -a alexnet --num_classes 16 --models test
 # vone_alexnet
 #python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 16 --models vss
 #python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num_classes 1000 --models vss

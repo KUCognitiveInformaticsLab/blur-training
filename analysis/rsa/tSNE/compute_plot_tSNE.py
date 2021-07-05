@@ -37,7 +37,7 @@ parser.add_argument(
     "--stimuli",
     default="each_bandpass",
     type=str,
-    choices=["each_bandpass", "all_bandpass", "s-b"],
+    choices=["each_bandpass", "all_bandpass", "s-b", "h-l"],
 )
 parser.add_argument(
     "--models",
