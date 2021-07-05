@@ -322,8 +322,8 @@ def plot_tSNE_all_bandpass(
 
 
 markers = {
-    0: "s",
-    1: "P",
+    0: "o",  # sharp
+    1: "x",  # blur
 }
 # colors = {
 #     0: "blue",
@@ -488,16 +488,32 @@ def plot_tSNE_s_b(
                     int, target_labels[i].replace("l", "").replace("f", "").split("_")
                 )
 
-                ax.scatter(
-                    x=x,
-                    y=y,
-                    marker=markers[
-                        f
-                    ],  # Change the marker according to "sharpe" or "blur"
-                    c=colors[l],  # Change the color according to the colour
-                    alpha=0.5,
-                    label=f"{l:02d} " + ("S" if f == 0 else "B"),
-                )
+                if f == 0:  # sharp
+                    ax.scatter(
+                        x=x,
+                        y=y,
+                        marker=markers[
+                            f
+                        ],  # Change the marker according to "sharpe" or "blur"
+                        edgecolors=colors[l],
+                        # c=colors[l],  # Change the color according to the colour
+                        facecolors='none',
+                        alpha=0.5,
+                        label=f"{l:02d} " + ("S" if f == 0 else "B"),
+                    )
+                elif f == 1:  # blur
+                    ax.scatter(
+                        x=x,
+                        y=y,
+                        marker=markers[
+                            f
+                        ],  # Change the marker according to "sharpe" or "blur"
+                        # edgecolors=colors[l],
+                        c=colors[l],  # Change the color according to the colour
+                        # facecolors='none',
+                        alpha=0.5,
+                        label=f"{l:02d} " + ("S" if f == 0 else "B"),
+                    )
                 # plt.annotate(l, xy=(x, y))
 
     if title:
