@@ -23,8 +23,7 @@ def compute_corr2dist(
     filters: dict,
     excluded_labels=[],
     device: torch.device = torch.device("cuda:0"),
-    # metric="correlation
-    # "
+    # metric="correlation"
 ) -> Tuple[list, list, list, list]:
     """Computes embedded activations of all band-pass images by t-SNE.
     Args:
@@ -219,6 +218,209 @@ def compute_corr2dist(
     # df_dist.to_csv(result_path)
 
     # return dist_s_same, dist_s_diff, dist_b_same, dist_b_diff
+    return df_dist
+
+
+def compute_corr2dist_h_l(
+    RSA,
+    data_loader: iter,
+    filters: dict,
+    excluded_labels=[],
+    device: torch.device = torch.device("cuda:0"),
+    # metric="correlation"
+) -> Tuple[list, list, list, list]:
+    """Computes embedded activations of all band-pass images by t-SNE.
+    Args:
+
+    Returns:
+        dist_same, dist_diff
+    """
+    num_filters = len(filters)
+
+    all_activations = {}  # {L: (N, F+1, activations)}
+    for layer in RSA.layers:
+        all_activations[layer] = []  # (N, F+1, activations)
+
+    labels = []
+
+    # compute RSM for each image (with some filters applied)
+    for image_id, (image, label) in tqdm(
+        enumerate(data_loader), desc="Feed test images", leave=False
+    ):
+        """Note that data_loader SHOULD return a single image for each loop.
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+        """
+        labels += [f"l{label.item():02d}_f{i}" for i in range(num_filters + 1)]
+
+        activations = compute_activations_with_bandpass(
+            RSA=RSA,
+            image=image,
+            filters=filters,
+            device=device,
+            add_noise=False,
+        )  # Dict: {L: (F+1, C, H, W)}
+
+        for layer in RSA.layers:
+            all_activations[layer] += [
+                activations[layer].reshape(num_filters + 1, -1)
+            ]  # (F+1, activations)
+
+    dist_h_same_seen = []
+    dist_h_diff_seen = []
+    dist_l_same_seen = []
+    dist_l_diff_seen = []
+    dist_lb_idt_seen = []
+    dist_lb_same_seen = []
+    dist_lb_diff_seen = []
+
+    # if excluded_labels
+    dist_h_same_unseen = []
+    dist_h_diff_seen_unseen = []
+    dist_h_diff_unseen_unseen = []
+
+    dist_l_same_unseen = []
+    dist_l_diff_seen_unseen = []
+    dist_l_diff_unseen_unseen = []
+
+    dist_lb_idt_unseen = []
+    dist_lb_same_unseen = []
+    dist_lb_diff_seen_unseen = []
+    dist_lb_diff_unseen_unseen = []
+
+    for layer in tqdm(RSA.layers, desc="layers", leave=False):
+        layer_activations = np.array(
+            all_activations[layer]
+        )  # (N, 1+F, D)  1+F = 3(Sharp, high, low)
+
+        # corr.
+        rsm = np.corrcoef(
+            layer_activations[:, 1, :], layer_activations[:, 2, :]
+        )  # (3200, 3200)
+
+        rsm_h = rsm[0:1600, 0:1600]  # H vs. H
+        rsm_b = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # L vs. L
+        rsm_hb = rsm[0:1600, 1600: 1600 * 2]  # H vs. L
+
+        if excluded_labels:
+            (
+                dist_same_seen,
+                dist_same_unseen,
+                dist_diff_seen,
+                dist_diff_seen_unseen,
+                dist_diff_unseen_unseen,
+            ) = compute_dist_same_diff_ex_labels(
+                rsm=rsm_h, excluded_labels=excluded_labels
+            )
+            dist_h_same_seen += [dist_same_seen]
+            dist_h_same_unseen += [dist_same_unseen]
+            dist_h_diff_seen += [dist_diff_seen]
+            dist_h_diff_seen_unseen += [dist_diff_seen_unseen]
+            dist_h_diff_unseen_unseen += [dist_diff_unseen_unseen]
+        else:
+            dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_h)
+            dist_h_same_seen += [dist_same]
+            dist_h_diff_seen += [dist_diff]
+
+        if excluded_labels:
+            (
+                dist_same_seen,
+                dist_same_unseen,
+                dist_diff_seen,
+                dist_diff_seen_unseen,
+                dist_diff_unseen_unseen,
+            ) = compute_dist_same_diff_ex_labels(
+                rsm=rsm_b, excluded_labels=excluded_labels
+            )
+            dist_l_same_seen += [dist_same_seen]
+            dist_l_same_unseen += [dist_same_unseen]
+            dist_l_diff_seen += [dist_diff_seen]
+            dist_l_diff_seen_unseen += [dist_diff_seen_unseen]
+            dist_l_diff_unseen_unseen += [dist_diff_unseen_unseen]
+        else:
+            dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_b)
+            dist_l_same_seen += [dist_same]
+            dist_l_diff_seen += [dist_diff]
+
+        if excluded_labels:
+            (
+                dist_idt_seen,
+                dist_idt_unseen,
+                dist_same_seen,
+                dist_same_unseen,
+                dist_diff_seen,
+                dist_diff_seen_unseen,
+                dist_diff_unseen_unseen,
+            ) = compute_dist_idt_same_diff_ex_labels(
+                rsm=rsm_hb, excluded_labels=excluded_labels
+            )
+            dist_lb_idt_seen += [dist_idt_seen]
+            dist_lb_idt_unseen += [dist_idt_unseen]
+            dist_lb_same_seen += [dist_same_seen]
+            dist_lb_same_unseen += [dist_same_unseen]
+            dist_lb_diff_seen += [dist_diff_seen]
+            dist_lb_diff_seen_unseen += [dist_diff_seen_unseen]
+            dist_lb_diff_unseen_unseen += [dist_diff_unseen_unseen]
+        else:
+            dist_idt, dist_same, dist_diff = compute_dist_idt_same_diff(rsm=rsm_hb)
+            dist_lb_idt_seen += [dist_idt]
+            dist_lb_same_seen += [dist_same]
+            dist_lb_diff_seen += [dist_diff]
+
+    all_results = [
+        dist_h_same_seen,
+        dist_h_diff_seen,
+        dist_l_same_seen,
+        dist_l_diff_seen,
+        dist_lb_idt_seen,
+        dist_lb_same_seen,
+        dist_lb_diff_seen,
+    ]
+    index = [
+        "high_same_seen",
+        "high_different_seen",
+        "low_same_seen",
+        "low_different_seen",
+        "high-low_identical_seen",
+        "high-low_same_seen",
+        "high-low_different_seen",
+    ]
+    if excluded_labels:
+        all_results += [
+            dist_h_same_unseen,
+            dist_h_diff_seen_unseen,
+            dist_h_diff_unseen_unseen,
+            dist_l_same_unseen,
+            dist_l_diff_seen_unseen,
+            dist_l_diff_unseen_unseen,
+            dist_lb_idt_unseen,
+            dist_lb_same_unseen,
+            dist_lb_diff_seen_unseen,
+            dist_lb_diff_unseen_unseen,
+        ]
+        index += [
+            "high_same_unseen",
+            "high_different_seen-unseen",
+            "high_different_unseen-unseen",
+            "low_same_unseen",
+            "low_different_seen-unseen",
+            "low_different_unseen-unseen",
+            "high-low_identical_unseen",
+            "high-low_same_unseen",
+            "high-low_different_seen-unseen",
+            "high-low_different_unseen-unseen",
+        ]
+
+    df_dist = pd.DataFrame(
+        all_results,
+        index=index,
+        columns=RSA.layers,
+    )
+
+    # save
+    # df_dist.to_csv(result_path)
+
+    # return dist_h_same, dist_h_diff, dist_l_same, dist_l_diff
     return df_dist
 
 
@@ -567,6 +769,7 @@ def compute_dist_idt_same_diff_ex_labels(
 def plot_dist(
     dist: pd.DataFrame,
     stimuli,
+    compare,
     layers,
     title,
     plot_path,
@@ -585,7 +788,7 @@ def plot_dist(
         ylim=(-0.5, 1),
     )
 
-    if stimuli == "s-b":
+    if compare == "cross":
         if excluded_labels:
             ax.plot(
                 layers,
@@ -632,7 +835,7 @@ def plot_dist(
                         label=f"S-B (σ={blur_sigma}), different classes, unseen vs unseen class",
                         ls=":",
                     )
-        else:
+        elif stimuli == "s-b":
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_identical_seen"].values,
@@ -651,8 +854,28 @@ def plot_dist(
                 label=f"S-B (σ={blur_sigma}), different classes",
                 ls=":",
             )
+        elif stimuli == "h-l":
+            ax.plot(
+                layers,
+                dist.loc["high-low_identical_seen"].values,
+                label=f"H(1-2)-B(4), identical images",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["high-low_same_seen"].values,
+                label=f"H(1-2)-B(4), same classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["high-low_different_seen"].values,
+                label=f"H(1-2)-B(4), different classes",
+                ls=":",
+            )
 
-    elif stimuli == "separate":  # S, B separately plotted
+
+    elif compare == "separate":  # S, B separately plotted
         if excluded_labels:
             ax.plot(
                 layers,
@@ -721,7 +944,7 @@ def plot_dist(
                         label=f"B (σ={blur_sigma}), different classes, unseen vs unseen class",
                         ls="--",
                     )
-        else:
+        elif stimuli == "s-b":
             ax.plot(
                 layers,
                 dist.loc["sharp_same_seen"].values,
@@ -744,6 +967,31 @@ def plot_dist(
                 layers,
                 dist.loc["blur_different_seen"].values,
                 label=f"B (σ={blur_sigma}), different classes",
+                ls="--",
+            )
+        elif stimuli == "h-l":
+            ax.plot(
+                layers,
+                dist.loc["high_same_seen"].values,
+                label="High(1-2), same classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["high_different_seen"].values,
+                label="High(1-2), different classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["low_same_seen"].values,
+                label=f"Low(4), same classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["low_different_seen"].values,
+                label=f"Low(4), different classes",
                 ls="--",
             )
 

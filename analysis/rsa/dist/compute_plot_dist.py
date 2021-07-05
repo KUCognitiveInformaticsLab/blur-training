@@ -23,6 +23,7 @@ from src.image_process.bandpass_filter import make_bandpass_filters, make_blur_f
 from src.model.utils import load_model
 from src.analysis.rsa.bandpass.dist import (
     compute_corr2dist,
+    compute_corr2dist_h_l,
     plot_dist,
 )
 from src.model.model_names import rename_model_name
@@ -85,6 +86,8 @@ if __name__ == "__main__":
     num_filters = 6
     if args.stimuli == "s-b":
         num_filters = 1
+    if args.stimuli == "h-l":
+        num_filters = 2
     add_noise = False
     metric = "correlation"
     analysis = f"dist_{metric}_{args.stimuli}"
@@ -173,6 +176,10 @@ if __name__ == "__main__":
         filters = make_bandpass_filters(num_filters=num_filters)
         if args.stimuli == "s-b":
             filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
+        if args.stimuli == "h-l":
+            filters = {}
+            filters[0] = [1, 2]  # high-pass
+            filters[1] = [4, None]  # low-pass
 
     for model_name in tqdm(model_names, desc="models"):
         if "1label" in model_name:
@@ -203,14 +210,22 @@ if __name__ == "__main__":
 
             # compute dist
             print(f"{model_name} computing...")
-            # df_dist = compute_rsm2dist(RSA=RSA, data_loader=test_loader, filters=filters, metric=metric, device=device)
-            df_dist = compute_corr2dist(
-                RSA=RSA,
-                data_loader=test_loader,
-                filters=filters,
-                device=device,
-                excluded_labels=excluded_labels,
-            )
+            if args.stimuli == "s-b":
+                df_dist = compute_corr2dist(
+                    RSA=RSA,
+                    data_loader=test_loader,
+                    filters=filters,
+                    device=device,
+                    excluded_labels=excluded_labels,
+                )
+            elif args.stimuli == "h-l":
+                df_dist = compute_corr2dist_h_l(
+                    RSA=RSA,
+                    data_loader=test_loader,
+                    filters=filters,
+                    device=device,
+                    excluded_labels=excluded_labels,
+                )
 
         result_file = f"{analysis}_{args.num_classes}-class_{model_name}.csv"
         result_path = os.path.join(results_dir, result_file)
@@ -229,34 +244,22 @@ if __name__ == "__main__":
             # load dist
             df_dist = pd.read_csv(result_path, index_col=0)
 
-            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}.png"
+            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_separate.png"
             if args.full:
                 plot_file = plot_file.replace(".png", "_full.png")
             plot_path = os.path.join(plots_dir, plot_file)
 
-            plot_dist(
-                dist=df_dist,
-                stimuli="separate",
-                layers=layers,
-                excluded_labels=excluded_labels,
-                full=args.full,
-                title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
-                plot_path=plot_path,
-            )
+            plot_dist(dist=df_dist, stimuli=args.stimuli, compare=f"separate", layers=layers,
+                      title=f"{args.num_classes}-class, {rename_model_name(model_name)}", plot_path=plot_path,
+                      excluded_labels=excluded_labels, full=args.full)
 
-            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_s-b.png"
+            plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_cross.png"
             if args.full:
                 plot_file = plot_file.replace(".png", "_full.png")
             plot_path = os.path.join(plots_dir, plot_file)
 
-            plot_dist(
-                dist=df_dist,
-                stimuli="s-b",
-                layers=layers,
-                excluded_labels=excluded_labels,
-                full=args.full,
-                title=f"{args.num_classes}-class, {rename_model_name(model_name)}",
-                plot_path=plot_path,
-            )
+            plot_dist(dist=df_dist, stimuli=args.stimuli, compare="cross", layers=layers,
+                      title=f"{args.num_classes}-class, {rename_model_name(model_name)}", plot_path=plot_path,
+                      excluded_labels=excluded_labels, full=args.full)
 
     print("All done!!")
