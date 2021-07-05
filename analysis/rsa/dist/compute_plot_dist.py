@@ -176,7 +176,7 @@ if __name__ == "__main__":
         filters = make_bandpass_filters(num_filters=num_filters)
         if args.stimuli == "s-b":
             filters = make_blur_filters(sigmas=[4])  # blur filters (sigma=sigmas)
-        if args.stimuli == "h-l":
+        elif args.stimuli == "h-l":
             filters = {}
             filters[0] = [1, 2]  # high-pass
             filters[1] = [4, None]  # low-pass
