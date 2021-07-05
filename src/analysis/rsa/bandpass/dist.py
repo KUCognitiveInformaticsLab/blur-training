@@ -300,7 +300,7 @@ def compute_corr2dist_h_l(
 
         rsm_h = rsm[0:1600, 0:1600]  # H vs. H
         rsm_b = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # L vs. L
-        rsm_hb = rsm[0:1600, 1600: 1600 * 2]  # H vs. L
+        rsm_hb = rsm[0:1600, 1600 : 1600 * 2]  # H vs. L
 
         if excluded_labels:
             (
@@ -873,7 +873,6 @@ def plot_dist(
                 label=f"High(1-2)-Low(4), different classes",
                 ls=":",
             )
-
 
     elif compare == "separate":  # S, B separately plotted
         if excluded_labels:
