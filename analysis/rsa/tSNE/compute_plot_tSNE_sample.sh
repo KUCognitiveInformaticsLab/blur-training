@@ -15,3 +15,4 @@ python compute_plot_tSNE.py --compute --plot --stimuli s-b -a vone_alexnet --num
 
 # plot example
 #python compute_plot_tSNE.py --plot --stimuli s-b -a vone_alexnet --num_classes 1000 --models vss --machine local
+#python compute_plot_dist.py --machine local --plot -a alexnet --models mix_no-blur --full
