@@ -136,7 +136,7 @@ def compute_corr2dist(
             dist_b_diff_seen_unseen += [dist_diff_seen_unseen]
             dist_b_diff_unseen_unseen += [dist_diff_unseen_unseen]
         else:
-            dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
+            dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_b)
             dist_b_same_seen += [dist_same]
             dist_b_diff_seen += [dist_diff]
 
