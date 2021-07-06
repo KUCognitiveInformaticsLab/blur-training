@@ -972,18 +972,21 @@ def plot_dist(
                 dist.loc["sharp-high_identical_seen"].values,
                 label=f"S-H(1-2), identical images",
                 ls="-",
+                c="cyan",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-high_same_seen"].values,
                 label=f"S-H(1-2), same classes",
                 ls="--",
+                c="gold",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-high_different_seen"].values,
                 label=f"S-H(1-2), different classes",
                 ls=":",
+                c="lime",
             )
         elif stimuli == "h-l":
             ax.plot(
