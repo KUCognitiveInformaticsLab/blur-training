@@ -15,6 +15,7 @@ sys.path.append(str(current_dir) + "/../../../")
 from src.analysis.rsa.rsa import (
     AlexNetRSA,
     VOneNetAlexNetRSA,
+    VOneNetAlexNetRSAParallel,
     alexnet_layers,
     vone_alexnet_layers,
 )
@@ -205,7 +206,10 @@ if __name__ == "__main__":
 
             # make RSA instance
             if "vone" in model_name:
-                RSA = VOneNetAlexNetRSA(model)
+                if args.num_classes == 1000:
+                    RSA = VOneNetAlexNetRSAParallel(model)
+                else:
+                    RSA = VOneNetAlexNetRSA(model)
             else:
                 RSA = AlexNetRSA(model)
 
