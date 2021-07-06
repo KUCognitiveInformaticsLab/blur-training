@@ -191,6 +191,7 @@ if __name__ == "__main__":
 
         # ===== compute =====
         if args.compute:
+            print(f"{model_name} computing...")
             # load model
             if "untrained" in model_name:
                 model_path = ""  # load untrained model
@@ -199,7 +200,7 @@ if __name__ == "__main__":
                     models_dir, model_name, f"epoch_{args.epoch:02d}.pth.tar"
                 )
             model = load_model(
-                arch=args.arch, num_classes=args.num_classes, model_path=model_path
+                arch=args.arch, num_classes=args.num_classes, model_path=model_path, model_name=model_name,
             ).to(device)
 
             # make RSA instance
@@ -209,7 +210,6 @@ if __name__ == "__main__":
                 RSA = AlexNetRSA(model)
 
             # compute dist
-            print(f"{model_name} computing...")
             if args.stimuli == "s-b":
                 df_dist = compute_corr2dist(
                     RSA=RSA,

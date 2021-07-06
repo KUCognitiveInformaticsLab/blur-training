@@ -215,6 +215,7 @@ if __name__ == "__main__":
     for model_name in tqdm(model_names, desc="models"):
         # ===== compute RSM =====
         if args.compute:
+            print(f"{model_name} computing...")
             # load model
             if "untrained" in model_name:
                 model_path = ""  # load untrained model
@@ -223,7 +224,7 @@ if __name__ == "__main__":
                     models_dir, model_name, f"epoch_{epoch:02d}.pth.tar"
                 )
             model = load_model(
-                arch=arch, num_classes=num_classes, model_path=model_path
+                arch=arch, num_classes=num_classes, model_path=model_path, model_name=model_name,
             ).to(device)
 
             # make RSA instance
@@ -233,7 +234,6 @@ if __name__ == "__main__":
                 RSA = AlexNetRSA(model)
 
             # compute bandpass tSNE
-            print(f"{model_name} computing...")
             if stimuli == "each_bandpass":
                 embed, labels = compute_tSNE_each_bandpass(
                     RSA=RSA,
