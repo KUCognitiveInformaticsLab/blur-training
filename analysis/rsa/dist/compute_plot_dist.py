@@ -25,6 +25,7 @@ from src.model.utils import load_model
 from src.analysis.rsa.bandpass.dist import (
     compute_corr2dist,
     compute_corr2dist_h_l,
+    compute_corr2dist_s_h,
     plot_dist,
 )
 from src.model.model_names import rename_model_name
@@ -181,6 +182,9 @@ if __name__ == "__main__":
             filters = {}
             filters[0] = [1, 2]  # high-pass
             filters[1] = [4, None]  # low-pass
+        elif args.stimuli == "s-h":
+            filters = {}
+            filters[0] = [1, 2]  # high-pass
 
     for model_name in tqdm(model_names, desc="models"):
         if "1label" in model_name:
@@ -228,7 +232,13 @@ if __name__ == "__main__":
                     data_loader=test_loader,
                     filters=filters,
                     device=device,
-                    excluded_labels=excluded_labels,
+                )
+            elif args.stimuli == "s-h":
+                df_dist = compute_corr2dist_s_h(
+                    RSA=RSA,
+                    data_loader=test_loader,
+                    filters=filters,
+                    device=device,
                 )
 
         result_file = f"{analysis}_{args.num_classes}-class_{model_name}.csv"

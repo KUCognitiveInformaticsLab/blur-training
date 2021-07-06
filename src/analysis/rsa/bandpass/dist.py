@@ -424,6 +424,118 @@ def compute_corr2dist_h_l(
     return df_dist
 
 
+def compute_corr2dist_s_h(
+    RSA,
+    data_loader: iter,
+    filters: dict,
+    device: torch.device = torch.device("cuda:0"),
+    # metric="correlation"
+) -> Tuple[list, list, list, list]:
+    """Computes embedded activations of all band-pass images by t-SNE.
+    Args:
+
+    Returns:
+        dist_same, dist_diff
+    """
+    num_filters = len(filters)
+
+    all_activations = {}  # {L: (N, F+1, activations)}
+    for layer in RSA.layers:
+        all_activations[layer] = []  # (N, F+1, activations)
+
+    labels = []
+
+    # compute RSM for each image (with some filters applied)
+    for image_id, (image, label) in tqdm(
+        enumerate(data_loader), desc="Feed test images", leave=False
+    ):
+        """Note that data_loader SHOULD return a single image for each loop.
+        image (torch.Tensor): torch.Size([1, C, H, W])
+        label (torch.Tensor): e.g. tensor([0])
+        """
+        labels += [f"l{label.item():02d}_f{i}" for i in range(num_filters + 1)]
+
+        activations = compute_activations_with_bandpass(
+            RSA=RSA,
+            image=image,
+            filters=filters,
+            device=device,
+            add_noise=False,
+        )  # Dict: {L: (F+1, C, H, W)}
+
+        for layer in RSA.layers:
+            all_activations[layer] += [
+                activations[layer].reshape(num_filters + 1, -1)
+            ]  # (F+1, activations)
+
+    dist_s_same_seen = []
+    dist_s_diff_seen = []
+    dist_h_same_seen = []
+    dist_h_diff_seen = []
+    dist_sh_idt_seen = []
+    dist_sh_same_seen = []
+    dist_sh_diff_seen = []
+
+    for layer in tqdm(RSA.layers, desc="layers", leave=False):
+        layer_activations = np.array(
+            all_activations[layer]
+        )  # (N, 1+F, D)  1+F = 2(Shape and High)
+        # layer_activations = layer_activations.reshape(1600 * 2, -1)  # (N * 2, D)
+
+        # corr.
+        rsm = np.corrcoef(
+            layer_activations[:, 0, :], layer_activations[:, 1, :]
+        )  # (3200, 3200)
+
+        rsm_s = rsm[0:1600, 0:1600]  # S vs. S
+        rsm_h = rsm[1600 : 1600 * 2, 1600 : 1600 * 2]  # H vs. H
+        rsm_sh = rsm[0:1600, 1600 : 1600 * 2]  # S vs. H
+
+        dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_s)
+        dist_s_same_seen += [dist_same]
+        dist_s_diff_seen += [dist_diff]
+
+        dist_same, dist_diff = compute_dist_same_diff(rsm=rsm_h)
+        dist_h_same_seen += [dist_same]
+        dist_h_diff_seen += [dist_diff]
+
+        dist_idt, dist_same, dist_diff = compute_dist_idt_same_diff(rsm=rsm_sh)
+        dist_sh_idt_seen += [dist_idt]
+        dist_sh_same_seen += [dist_same]
+        dist_sh_diff_seen += [dist_diff]
+
+    all_results = [
+        dist_s_same_seen,
+        dist_s_diff_seen,
+        dist_h_same_seen,
+        dist_h_diff_seen,
+        dist_sh_idt_seen,
+        dist_sh_same_seen,
+        dist_sh_diff_seen,
+    ]
+    index = [
+        "sharp_same_seen",
+        "sharp_different_seen",
+        "high_same_seen",
+        "high_different_seen",
+        "sharp-high_identical_seen",
+        "sharp-high_same_seen",
+        "sharp-high_different_seen",
+    ]
+
+    df_dist = pd.DataFrame(
+        all_results,
+        index=index,
+        columns=RSA.layers,
+    )
+
+    # save
+    # df_dist.to_csv(result_path)
+
+    # return dist_s_same, dist_s_diff, dist_h_same, dist_h_diff
+    return df_dist
+
+
 def compute_rsm2dist(
     RSA,
     data_loader: iter,
@@ -854,6 +966,25 @@ def plot_dist(
                 label=f"S-B (σ={blur_sigma}), different classes",
                 ls=":",
             )
+        elif stimuli == "s-h":
+            ax.plot(
+                layers,
+                dist.loc["sharp-high_identical_seen"].values,
+                label=f"S-H(1-2), identical images",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-high_same_seen"].values,
+                label=f"S-H(1-2), same classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp-high_different_seen"].values,
+                label=f"S-H(1-2), different classes",
+                ls=":",
+            )
         elif stimuli == "h-l":
             ax.plot(
                 layers,
@@ -966,6 +1097,31 @@ def plot_dist(
                 layers,
                 dist.loc["blur_different_seen"].values,
                 label=f"B (σ={blur_sigma}), different classes",
+                ls="--",
+            )
+        elif stimuli == "s-h":
+            ax.plot(
+                layers,
+                dist.loc["sharp_same_seen"].values,
+                label="S, same classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["sharp_different_seen"].values,
+                label="S, different classes",
+                ls="-",
+            )
+            ax.plot(
+                layers,
+                dist.loc["high_same_seen"].values,
+                label=f"H(1-2), same classes",
+                ls="--",
+            )
+            ax.plot(
+                layers,
+                dist.loc["high_different_seen"].values,
+                label=f"H(1-2), different classes",
                 ls="--",
             )
         elif stimuli == "h-l":
