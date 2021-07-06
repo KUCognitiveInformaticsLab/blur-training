@@ -30,6 +30,10 @@ def get_model_names(arch, models="vss", num_classes=16):
                 f"vone_{arch}",
                 sin_names[arch],
             ]
+    elif models == "sin" and num_classes == 1000:
+        model_names = [
+            sin_names[arch],
+        ]
     elif models == "simclr":
         model_names = [
             "resnet50-1x_simclr",
