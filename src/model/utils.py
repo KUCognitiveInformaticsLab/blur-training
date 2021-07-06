@@ -46,6 +46,8 @@ def load_model(
             checkpoint = torch.load(model_path, map_location=device)
         model.load_state_dict(checkpoint["state_dict"])
         # ===
+        if not parallel:
+            model.features = model.features.module
 
         return model
     elif model_name == "vone_alexnet":  # pretrained vonenet
