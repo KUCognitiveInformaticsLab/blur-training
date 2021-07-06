@@ -31,7 +31,21 @@ def load_model(
     # pretrained models
     if "SIN" in model_name:
         # Stylized-ImageNet
-        model = load_sin_model(model_name).to(device)
+        # model = load_sin_model(model_name).to(device)
+        # === For the bug that the pretrained-model's url doesn't work.
+        import torchvision
+        print("Using the AlexNet architecture.")
+        model = torchvision.models.alexnet(pretrained=False)
+        model.features = torch.nn.DataParallel(model.features)
+        model.cuda()
+        try:
+            model_path = "/mnt/data1/pretrained_models/sin/alexnet_train_60_epochs_lr0.001-b4aa5238.pth.tar"
+            checkpoint = torch.load(model_path, map_location=device)
+        except:
+            model_path = "/mnt/data/pretrained_models/sin/alexnet_train_60_epochs_lr0.001-b4aa5238.pth.tar"
+            checkpoint = torch.load(model_path, map_location=device)
+        model.load_state_dict(checkpoint["state_dict"])
+        # ===
 
         return model
     elif model_name == "vone_alexnet":  # pretrained vonenet
