@@ -168,6 +168,7 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
     model_name = model_name.replace(f"vone_alexnet_multi-steps", f"B2S-vone_alexnet")
 
     model_name = model_name.replace(f"alexnet_normal", f"S-alexnet")
+    # model_name = model_name.replace(f"alexnet_normal", f"AlexNet")
     model_name = model_name.replace(f"alexnet_all", f"B-alexnet")
     model_name = model_name.replace(f"alexnet_random-mix", f"B+S-alexnet")
     model_name = model_name.replace(f"alexnet_mix", f"B+S-alexnet")

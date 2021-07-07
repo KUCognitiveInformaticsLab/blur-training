@@ -77,7 +77,7 @@ if __name__ == "__main__":
         f"{arch}_normal",
         f"{arch}_all_s04",
         f"{arch}_mix_s04",
-        f"{arch}_random-mix_s00-04",
+        # f"{arch}_random-mix_s00-04",
         f"{arch}_multi-steps",
         # f"vone_{arch}_normal",
         # f"vone_{arch}_all_s04",
@@ -87,9 +87,8 @@ if __name__ == "__main__":
     ]
 
     # set plot file name.
-    plot_file = (
-        f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.png"
-    )
+    plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.png"
+    # plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_normal_alexnet_humans.png"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -118,7 +117,7 @@ if __name__ == "__main__":
         if model_name == "humans":
             continue
 
-        acc[model_name] = pd.read_csv(file_path, index_col=0).values[0]
+        acc[model_name] = pd.read_csv(file_path, index_col=0).values[0] / 100
 
     fig = plt.figure(dpi=150)
     ax = fig.add_subplot(
@@ -140,7 +139,7 @@ if __name__ == "__main__":
             # plot humans data
             ax.plot(
                 [0, 4, 8],
-                [89.32, 72.61, 50.67],
+                [0.8932, 0.7261, 0.5067],
                 label=rename_model_name(model_name),
                 marker="x",
                 ls=lines[model_name],
@@ -158,14 +157,25 @@ if __name__ == "__main__":
                 color=colors[model_name],
             )
 
-    ax.legend()
+    # plot chance level performance
+    plt.hlines(
+        [1 / 16],
+        xmin=0,
+        xmax=len(x) - 1,
+        colors="k",
+        linestyles="dashed",
+        label="Chance performance",
+    )
+
+    # ax.legend()
+    ax.legend(fontsize=8)
     # ax.set_xticks(np.arange(0, max_sigma+1, 5))
-    plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))
+    # plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))
     # ax.xaxis.set_major_locator(tick.MultipleLocator(1))
     ax.grid(which="major")
     ax.grid(which="minor")
     # plt.xlim()
-    plt.ylim(0, 100)
+    plt.ylim(0, 1)
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file))

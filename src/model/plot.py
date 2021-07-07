@@ -43,7 +43,7 @@ colors = {
     "resnet50-1x_simclr": "plum",
     "resnet50-2x_simclr": "mediumorchid",
     "resnet50-4x_simclr": "darkviolet",
-    "humans": "crimson",  # ("dimgray", "crimson")
+    "humans": "dimgray",  # ("dimgray", "crimson")
 }
 
 lines = {
