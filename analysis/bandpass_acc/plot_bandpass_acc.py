@@ -80,6 +80,8 @@ if __name__ == "__main__":
         )
         if "SIN" in model_name:
             file_path = file_path.replace("16-class", "1000-class")
+
+        if num_classes == 1000:
             file_path = file_path.replace("imagenet16_", "")
 
         if model_name == "humans":
