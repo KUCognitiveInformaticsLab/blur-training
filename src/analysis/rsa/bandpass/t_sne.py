@@ -546,7 +546,8 @@ def plot_tSNE_s_b(
         idx = [
             i + j for i in range(0, 3200, 200) for j in range(20)
         ]  # 10 images (S-B pair) for each class
-        # idx = [i for i in range(0, 3200, 200)]  # for showing a legend
+        # idx = [i for i in range(0, 3200, 200)]  # for showing a legend (sharp)
+        # idx = [i for i in range(1, 3200, 200)]  # for showing a legend (blur)
 
         target = embedded_activations[layer_id][idx]
         target_labels = np.array(labels)[idx]
@@ -576,7 +577,7 @@ def plot_tSNE_s_b(
                         edgecolors=colors[l],
                         # c=colors[l],  # Change the color according to the colour
                         facecolors="none",
-                        alpha=0.5,
+                        alpha=0.7,
                         label=f"{l:02d} " + ("S" if f == 0 else "B"),
                     )
                 elif f == 1:  # blur
@@ -589,7 +590,7 @@ def plot_tSNE_s_b(
                         # edgecolors=colors[l],
                         c=colors[l],  # Change the color according to the colour
                         # facecolors='none',
-                        alpha=0.5,
+                        alpha=0.7,
                         label=f"{l:02d} " + ("S" if f == 0 else "B"),
                     )
                 # plt.annotate(l, xy=(x, y))
@@ -690,7 +691,7 @@ def plot_tSNE_h_l(
                         edgecolors=colors[l],
                         # c=colors[l],  # Change the color according to the colour
                         facecolors="none",
-                        alpha=0.5,
+                        alpha=0.7,
                         label=f"{l:02d} " + ("High" if f == 0 else "Low"),
                     )
                 elif f == 1:  # low
@@ -703,7 +704,7 @@ def plot_tSNE_h_l(
                         # edgecolors=colors[l],
                         c=colors[l],  # Change the color according to the colour
                         # facecolors='none',
-                        alpha=0.5,
+                        alpha=0.7,
                         label=f"{l:02d} " + ("High" if f == 0 else "Low"),
                     )
                 # plt.annotate(l, xy=(x, y))
@@ -715,7 +716,7 @@ def plot_tSNE_h_l(
             fontweight="bold",
         )
 
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+    # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
     # fig.tight_layout()
     plot_file = f"{analysis}_{num_dim}d_p{perplexity}_i{n_iter}_{num_classes}-class_{model_name}.png"
     plot_path = os.path.join(plots_dir, plot_file)
