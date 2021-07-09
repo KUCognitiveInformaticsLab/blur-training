@@ -190,6 +190,7 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
     model_name = model_name.replace(f"vone_", f"VOne")
 
     model_name = model_name.replace("alexnet", "Net")
+    # model_name = model_name.replace("alexnet", "AlexNet")
 
     model_name = model_name.replace("_", " ")
 

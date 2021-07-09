@@ -74,8 +74,13 @@ if __name__ == "__main__":
         # "resnet50-4x_simclr",
         sin_names[arch.replace("vone_", "")],
     ]
+    # model_names = [
+    #     f"{arch}_normal",
+    #     sin_names[arch.replace("vone_", "")],
+    # ]
 
     filename = f"shape-bias_{model_names}.png"
+    # filename = f"shape-bias_alexnet_humans.png"
 
     shape_bias = {}
     cue_conf_acc = {}
@@ -116,8 +121,11 @@ if __name__ == "__main__":
             color=colors[model_name],
             hatch="///" if "vone_" in model_name else None,
             edgecolor="w",
+            # width=0.5,
         )
-    ax.bar("Humans", 0.96, color=colors["humans"])
+    ax.bar("Humans", 0.96, color=colors["humans"],
+           # width=0.5,
+           )
 
     # plot accuracy
     for model_name in model_names:
