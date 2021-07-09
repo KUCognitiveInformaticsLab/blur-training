@@ -145,6 +145,7 @@ if __name__ == "__main__":
 
     # set width of bars
     barWidth = 0.1
+    # barWidth = 0.4
 
     # Set position of bar on X axis
     r1 = np.arange(len(acc[model_names[0]]))
@@ -166,9 +167,10 @@ if __name__ == "__main__":
         r1 = [x + barWidth for x in r1]
 
     # Add xticks on the middle of the group bars
+    xticks = ["Original", "Jumbled", "Gray Occluder", "Jumbled with Gray Occluder"]
     plt.xticks(
         [r + barWidth for r in range(len(acc[model_names[0]]))],
-        stimuli,
+        xticks,
         rotation=45,
         ha="right",
     )
@@ -177,8 +179,9 @@ if __name__ == "__main__":
     plt.hlines(
         [1 / 16],
         xmin=-0.1,
-        # xmax=len(x) - 0.6,
+        # xmin=-0.3,
         xmax=len(x) - 0.2,
+        # xmax=len(x) - 0.3,
         colors="k",
         linestyles="dashed",
         label="Chance performance",
@@ -191,8 +194,8 @@ if __name__ == "__main__":
     ax.grid(which="minor", linestyle="dotted")
 
     # set plot file name.
-    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
-    plot_file = f"{analysis}_{metrics}_{num_classes}-class_vs_vonenet.png"
+    plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
+    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_vs_vonenet.png"
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file), bbox_inches="tight")
