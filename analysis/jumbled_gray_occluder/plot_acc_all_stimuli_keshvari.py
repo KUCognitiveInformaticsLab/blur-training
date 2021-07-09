@@ -72,7 +72,7 @@ if __name__ == "__main__":
     ax.grid(which="major", linestyle="dotted")
     ax.grid(which="minor", linestyle="dotted")
 
-    ax.set_title("Humans (Keshvari et al, VSS, 2021)", weight="bold")
+    ax.set_title("Humans (Keshvari et al, 2021)", weight="bold")
     # set plot file name.
     plot_file = f"keshvari2021_results_humans.png"
 
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     ax.grid(which="major", linestyle="dotted")
     ax.grid(which="minor", linestyle="dotted")
 
-    ax.set_title("Pretrained VGG (Keshvari et al, VSS, 2021)", weight="bold")
+    ax.set_title("Pretrained VGG (Keshvari et al, 2021)", weight="bold")
     # set plot file name.
     plot_file = f"keshvari2021_results_vgg.png"
 
