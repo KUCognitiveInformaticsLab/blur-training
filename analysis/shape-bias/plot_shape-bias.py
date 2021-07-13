@@ -17,7 +17,7 @@ from src.model.model_names import rename_model_name
 
 if __name__ == "__main__":
     arch = "alexnet"
-    num_classes = 16
+    num_classes = int(sys.argv[1])  # number of last output of the models
     epoch = 60
 
     in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/shape-bias/results/{num_classes}-class/"
@@ -56,24 +56,24 @@ if __name__ == "__main__":
         # "resnet50-4x_simclr",
         sin_names[arch.replace("vone_", "")],
     ]
-    model_names = [
-        f"{arch}_normal",
-        f"vone_{arch}_normal",
-        f"{arch}_all_s04",
-        f"vone_{arch}_all_s04",
-        f"{arch}_mix_s04",
-        f"vone_{arch}_mix_s04",
-        f"{arch}_random-mix_s00-04",
-        f"vone_{arch}_random-mix_s00-04",
-        f"{arch}_multi-steps",
-        f"vone_{arch}_multi-steps",
-        # f"vone_{arch}_normal",
-        # f"{arch}_vonenet",
-        # "resnet50-1x_simclr",
-        # "resnet50-2x_simclr",
-        # "resnet50-4x_simclr",
-        sin_names[arch.replace("vone_", "")],
-    ]
+    # model_names = [
+    #     f"{arch}_normal",
+    #     f"vone_{arch}_normal",
+    #     f"{arch}_all_s04",
+    #     f"vone_{arch}_all_s04",
+    #     f"{arch}_mix_s04",
+    #     f"vone_{arch}_mix_s04",
+    #     f"{arch}_random-mix_s00-04",
+    #     f"vone_{arch}_random-mix_s00-04",
+    #     f"{arch}_multi-steps",
+    #     f"vone_{arch}_multi-steps",
+    #     # f"vone_{arch}_normal",
+    #     # f"{arch}_vonenet",
+    #     # "resnet50-1x_simclr",
+    #     # "resnet50-2x_simclr",
+    #     # "resnet50-4x_simclr",
+    #     sin_names[arch.replace("vone_", "")],
+    # ]
     # model_names = [
     #     f"{arch}_normal",
     #     sin_names[arch.replace("vone_", "")],
@@ -147,6 +147,8 @@ if __name__ == "__main__":
     )
     ax.yaxis.set_major_locator(ticker.MultipleLocator(0.1))
     # ax.grid(ls=":")
+
+    # ax.set_title(f"{num_classes}-class")
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, filename), bbox_inches="tight")
