@@ -54,15 +54,15 @@ if __name__ == "__main__":
 
     model_names = [
         f"{arch}_normal",
-        f"vone_{arch}_normal",
+        # f"vone_{arch}_normal",
         f"{arch}_all_s04",
-        f"vone_{arch}_all_s04",
+        # f"vone_{arch}_all_s04",
         f"{arch}_mix_s04",
-        f"vone_{arch}_mix_s04",
-        f"{arch}_random-mix_s00-04",
-        f"vone_{arch}_random-mix_s00-04",
+        # f"vone_{arch}_mix_s04",
+        # f"{arch}_random-mix_s00-04",
+        # f"vone_{arch}_random-mix_s00-04",
         f"{arch}_multi-steps",
-        f"vone_{arch}_multi-steps",
+        # f"vone_{arch}_multi-steps",
         # f"{arch}_mix_s10",
         # f"{arch}_random-mix_s00-05",
         # f"{arch}_random-mix_s00-10",
@@ -94,6 +94,10 @@ if __name__ == "__main__":
     #     # f"{arch}_mix_p-blur_s04_no-blur-8label",
     #     # f"{arch}_multi-steps",
     # ]
+
+    # set plot file name.
+    plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
+    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_vone_alexnet.png"
 
     x = stimuli
 
@@ -145,7 +149,7 @@ if __name__ == "__main__":
 
     # set width of bars
     barWidth = 0.1
-    # barWidth = 0.4
+    # barWidth = 0.4  # for B+S-Net comparison
 
     # Set position of bar on X axis
     r1 = np.arange(len(acc[model_names[0]]))
@@ -170,6 +174,7 @@ if __name__ == "__main__":
     xticks = ["Original", "Jumbled", "Gray Occluder", "Jumbled with Gray Occluder"]
     plt.xticks(
         [r + barWidth for r in range(len(acc[model_names[0]]))],
+        # [r + 0.2 for r in range(len(acc[model_names[0]]))],  # for B+S-Net comparison
         xticks,
         rotation=45,
         ha="right",
@@ -179,9 +184,9 @@ if __name__ == "__main__":
     plt.hlines(
         [1 / 16],
         xmin=-0.1,
-        # xmin=-0.3,
+        # xmin=-0.3,  # for B+S-Net comparison
         xmax=len(x) - 0.2,
-        # xmax=len(x) - 0.3,
+        # xmax=len(x) - 0.3,  # for B+S-Net comparison
         colors="k",
         linestyles="dashed",
         label="Chance performance",
@@ -192,10 +197,6 @@ if __name__ == "__main__":
     # ax.xaxis.set_major_locator(tick.MultipleLocator(1))
     ax.grid(which="major", linestyle="dotted")
     ax.grid(which="minor", linestyle="dotted")
-
-    # set plot file name.
-    plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
-    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_vs_vonenet.png"
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file), bbox_inches="tight")

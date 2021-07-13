@@ -14,7 +14,7 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model, sin_names
 from src.analysis.filter.filter_visualization import plot_filters
-from src.model.model_names import rename_model_name_vss
+from src.model.model_names import rename_model_name
 
 if __name__ == "__main__":
     arch = "alexnet"
@@ -72,7 +72,7 @@ if __name__ == "__main__":
             ).cpu()
 
         # (optional) set title
-        plot_title = f"{num_classes}-class, {rename_model_name_vss(model_name)}"
+        plot_title = f"{num_classes}-class, {rename_model_name(model_name)}"
 
         # plot file path
         output_path = os.path.join(
