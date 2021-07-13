@@ -30,7 +30,8 @@ def plot_filters(model, layer_num, title, file_name):
 
 def plot_filters_multi_channel(t, title, file_name):
     # get the number of kernals
-    num_kernels = t.shape[0]
+    # num_kernels = t.shape[0]
+    num_kernels = 32
 
     # define number of columns for subplots
     num_cols = 8
@@ -39,10 +40,10 @@ def plot_filters_multi_channel(t, title, file_name):
     num_rows = -(-num_kernels // num_cols)  # round down
 
     # set the figure size
-    fig = plt.figure(figsize=(num_cols, num_rows))
+    fig = plt.figure(figsize=(num_cols, num_rows), dpi=300)
 
     # looping through all the kernels
-    for i in range(t.shape[0]):
+    for i in range(num_kernels):
         ax1 = fig.add_subplot(num_rows, num_cols, i + 1)
 
         # for each kernel, we convert the tensor to numpy
