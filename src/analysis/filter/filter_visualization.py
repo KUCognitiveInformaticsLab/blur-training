@@ -30,8 +30,8 @@ def plot_filters(model, layer_num, title, file_name):
 
 def plot_filters_multi_channel(t, title, file_name):
     # get the number of kernals
-    # num_kernels = t.shape[0]
-    num_kernels = 32
+    num_kernels = t.shape[0]
+    # num_kernels = 32
 
     # define number of columns for subplots
     num_cols = 8

@@ -28,7 +28,7 @@ if __name__ == "__main__":
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
         16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
     )
-    plots_dir = f"./plots_vss/{analysis}/{num_classes}-class/"
+    plots_dir = f"./plots/{analysis}/{num_classes}-class/"
     assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(plots_dir, exist_ok=True)
 
