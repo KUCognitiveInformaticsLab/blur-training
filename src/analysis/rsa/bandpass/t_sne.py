@@ -283,7 +283,7 @@ def plot_tSNE_each_bandpass(
             target = embedded_activations[filter_id, layer_id]
 
             if num_dim == 2:
-                fig = plt.figure(dpi=150)
+                fig = plt.figure(dpi=300)
 
                 plt.scatter(
                     x=target[:, 0],
@@ -302,8 +302,8 @@ def plot_tSNE_each_bandpass(
                     )
 
             elif num_dim == 3:
-                # fig = plt.figure(dpi=150).gca(projection="3d")
-                fig = plt.figure(dpi=150)
+                # fig = plt.figure(dpi=300).gca(projection="3d")
+                fig = plt.figure(dpi=300)
                 ax = Axes3D(fig)
 
                 sc = ax.scatter(
@@ -352,7 +352,7 @@ def plot_tSNE_all_bandpass(
         target = embedded_activations[layer_id]
 
         if num_dim == 2:
-            fig = plt.figure(dpi=150)
+            fig = plt.figure(dpi=300)
 
             plt.scatter(
                 x=target[:, 0],
@@ -371,8 +371,8 @@ def plot_tSNE_all_bandpass(
                 )
 
         elif num_dim == 3:
-            # fig = plt.figure(dpi=150).gca(projection="3d")
-            fig = plt.figure(dpi=150)
+            # fig = plt.figure(dpi=300).gca(projection="3d")
+            fig = plt.figure(dpi=300)
             ax = Axes3D(fig)
 
             sc = ax.scatter(
@@ -457,7 +457,7 @@ def plot_tSNE_s_b_each_layer(
         target = embedded_activations[layer_id][idx]
         target_labels = np.array(labels)[idx]
 
-        fig = plt.figure(dpi=150)
+        fig = plt.figure(dpi=300)
         for i in range(len(target)):
             if num_dim == 2:
                 # get (x, y)
@@ -493,7 +493,7 @@ def plot_tSNE_s_b_each_layer(
         target_labels = list(np.array([int(l[-1]) for l in labels])[idx])
 
         if num_dim == 2:
-            fig = plt.figure(dpi=150)
+            fig = plt.figure(dpi=300)
 
             plt.scatter(
                 x=target[:, 0],
@@ -607,7 +607,7 @@ def plot_tSNE_s_b(
     target_labels = list(np.array([int(l[-1]) for l in labels])[idx])
 
     if num_dim == 2:
-        fig = plt.figure(dpi=150)x
+        fig = plt.figure(dpi=300)x
 
         plt.scatter(
             x=target[:, 0],

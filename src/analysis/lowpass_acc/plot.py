@@ -72,7 +72,7 @@ multi_steps_acc1 = read_result(model_name, epoch).values[0]
 x = [i for i in range(max_sigma + 1)]
 
 # all
-fig, ax = plt.subplots(dpi=150)
+fig, ax = plt.subplots(dpi=300)
 plt.title("{} All".format(arch.capitalize()))
 ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
 for i in range(4):
@@ -81,7 +81,7 @@ plot_common()
 fig.savefig(os.path.join(OUTPUTS_DIR, f"{arch}_all_e{epoch}_max-s{max_sigma}.png"))
 
 # mix
-fig, ax = plt.subplots(dpi=150)
+fig, ax = plt.subplots(dpi=300)
 plt.title("{} Mix".format(arch.capitalize()))
 ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
 for i in range(4):
@@ -90,7 +90,7 @@ plot_common()
 fig.savefig(os.path.join(OUTPUTS_DIR, f"{arch}_mix_acc1_e{epoch}_max-s{max_sigma}.png"))
 
 # sigle-step
-fig, ax = plt.subplots(dpi=150)
+fig, ax = plt.subplots(dpi=300)
 plt.title("{} Single-step".format(arch.capitalize()))
 ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
 for i in range(4):
@@ -103,7 +103,7 @@ fig.savefig(
 )
 
 # reversed-single-step
-fig, ax = plt.subplots(dpi=150)
+fig, ax = plt.subplots(dpi=300)
 plt.title("{} Reversed-single-step".format(arch.capitalize()))
 ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
 for i in range(4):
@@ -121,7 +121,7 @@ fig.savefig(
 )
 
 # multi-steps
-fig, ax = plt.subplots(dpi=150)
+fig, ax = plt.subplots(dpi=300)
 plt.title("{} Multi-steps".format(arch.capitalize()))
 ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
 ax.plot(
@@ -140,7 +140,7 @@ fig.savefig(
 ##### plot each sigma gradually #####
 # all
 for s in range(5):
-    fig, ax = plt.subplots(dpi=150)
+    fig, ax = plt.subplots(dpi=300)
     plt.title("{} All".format(arch.capitalize()))
     ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
     if s != 0:
@@ -156,7 +156,7 @@ for s in range(5):
 
 # mix
 for s in range(5):
-    fig, ax = plt.subplots(dpi=150)
+    fig, ax = plt.subplots(dpi=300)
     plt.title("{} Mix".format(arch.capitalize()))
     ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
     if s != 0:
@@ -172,7 +172,7 @@ for s in range(5):
 
 # sigle-step
 for s in range(5):
-    fig, ax = plt.subplots(dpi=150)
+    fig, ax = plt.subplots(dpi=300)
     plt.title("{} Single-step".format(arch.capitalize()))
     ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
     if s != 0:
@@ -193,7 +193,7 @@ for s in range(5):
 
 # reversed-single-step
 for s in range(5):
-    fig, ax = plt.subplots(dpi=150)
+    fig, ax = plt.subplots(dpi=300)
     plt.title("{} Reversed-single-step".format(arch.capitalize()))
     ax.plot(x, normal_acc1[: max_sigma + 1], label="normal", marker="o")
     if s != 0:

@@ -890,7 +890,7 @@ def plot_dist(
 ):
     blur_sigma = 4
 
-    fig = plt.figure(dpi=150)
+    fig = plt.figure(dpi=300)
     ax = fig.add_subplot(
         1,
         1,

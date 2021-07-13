@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
         acc[model_name] = pd.read_csv(file_path, index_col=0).values[0] / 100
 
-    fig = plt.figure(dpi=150)
+    fig = plt.figure(dpi=300)
     ax = fig.add_subplot(
         1,
         1,

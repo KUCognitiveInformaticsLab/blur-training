@@ -30,7 +30,7 @@ if __name__ == "__main__":
     colors = ["#3372B7", "#C75B2E", "#E3B245", "#73378A"]
 
     # === humans ===
-    fig = plt.figure(dpi=150)
+    fig = plt.figure(dpi=300)
     ax = fig.add_subplot(
         1,
         1,
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     fig.savefig(os.path.join(out_dir, plot_file), bbox_inches="tight")
 
     # === vgg ===
-    fig = plt.figure(dpi=150)
+    fig = plt.figure(dpi=300)
     ax = fig.add_subplot(
         1,
         1,

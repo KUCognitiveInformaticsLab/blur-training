@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
         acc1[model_name] = load_result(file_path=file_path).values[0] / 100
 
-    fig = plt.figure(dpi=150)
+    fig = plt.figure(dpi=300)
     ax = fig.add_subplot(
         1,
         1,

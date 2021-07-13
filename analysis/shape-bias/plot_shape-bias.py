@@ -103,7 +103,7 @@ if __name__ == "__main__":
         cue_conf_acc[model_name] = get_cue_conf_acc(file_path=file_path)
 
     # sigma to compare
-    fig = plt.figure(dpi=150, figsize=(4, 5))
+    fig = plt.figure(dpi=300, figsize=(4, 5))
     ax = fig.add_subplot(
         1,
         1,

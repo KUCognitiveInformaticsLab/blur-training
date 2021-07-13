@@ -153,9 +153,9 @@ if __name__ == "__main__":
         # plot t-SNE
         for layer_id, layer in tqdm(enumerate(layers), "plotting (each layer)"):
             if num_dim == 2:
-                fig = plt.figure(dpi=150)
+                fig = plt.figure(dpi=300)
             elif num_dim == 3:
-                fig = plt.figure(dpi=150).gca(projection="3d")
+                fig = plt.figure(dpi=300).gca(projection="3d")
 
             for image_id in range(num_images):
                 for label_id in range(num_labels):

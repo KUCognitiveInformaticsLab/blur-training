@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
         acc[model_name] = results
 
-    fig = plt.figure(dpi=150)
+    fig = plt.figure(dpi=300)
     ax = fig.add_subplot(
         1,
         1,
