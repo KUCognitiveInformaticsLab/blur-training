@@ -18,7 +18,16 @@ from src.analysis.classification.acc import load_acc1
 if __name__ == "__main__":
     num_classes = int(sys.argv[1])  # number of last output of the models
     test_dataset = str(sys.argv[2])  # test_dataset to use
-    stimuli = ["original", "jumbled", "gray_occluder", "jumbled_with_gray_occluder"]
+    stimuli = [
+        "original",
+        "jumbled",
+        "gray_occluder",
+    ]
+    xticks = [
+        "Original",
+        "Jumbled",
+        "Gray Occluder",
+    ]
     scales = [4, 8, 16, 32]  # 1 == original
 
     metrics = "acc1"
@@ -54,15 +63,15 @@ if __name__ == "__main__":
 
     model_names = [
         f"{arch}_normal",
-        f"vone_{arch}_normal",
+        # f"vone_{arch}_normal",
         f"{arch}_all_s04",
-        f"vone_{arch}_all_s04",
+        # f"vone_{arch}_all_s04",
         f"{arch}_mix_s04",
-        f"vone_{arch}_mix_s04",
+        # f"vone_{arch}_mix_s04",
         # f"{arch}_random-mix_s00-04",
         # f"vone_{arch}_random-mix_s00-04",
         f"{arch}_multi-steps",
-        f"vone_{arch}_multi-steps",
+        # f"vone_{arch}_multi-steps",
         # f"{arch}_mix_s10",
         # f"{arch}_random-mix_s00-05",
         # f"{arch}_random-mix_s00-10",
@@ -96,8 +105,8 @@ if __name__ == "__main__":
     # ]
 
     # set plot file name.
-    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
-    plot_file = f"{analysis}_{metrics}_{num_classes}-class_vone_alexnet.png"
+    plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
+    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_vone_alexnet.png"
 
     x = stimuli
 
@@ -148,7 +157,7 @@ if __name__ == "__main__":
     )
 
     # set width of bars
-    barWidth = 0.1
+    barWidth = 0.15
     # barWidth = 0.4  # for B+S-Net comparison
 
     # Set position of bar on X axis
@@ -171,7 +180,6 @@ if __name__ == "__main__":
         r1 = [x + barWidth for x in r1]
 
     # Add xticks on the middle of the group bars
-    xticks = ["Original", "Jumbled", "Gray Occluder", "Jumbled with Gray Occluder"]
     plt.xticks(
         [r + barWidth for r in range(len(acc[model_names[0]]))],
         # [r + 0.2 for r in range(len(acc[model_names[0]]))],  # for B+S-Net comparison
@@ -185,7 +193,7 @@ if __name__ == "__main__":
         [1 / 16],
         xmin=-0.1,
         # xmin=-0.3,  # for B+S-Net comparison
-        xmax=len(x) - 0.2,
+        xmax=len(x) - 0.45,
         # xmax=len(x) - 0.3,  # for B+S-Net comparison
         colors="k",
         linestyles="dashed",

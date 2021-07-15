@@ -42,6 +42,7 @@ if __name__ == "__main__":
         # "resnet50-2x_simclr",
         # "resnet50-4x_simclr",
         sin_names[arch.replace("vone_", "")],
+        "humans",
     ]
     model_names = [
         f"{arch}_normal",
@@ -54,7 +55,8 @@ if __name__ == "__main__":
         # "resnet50-1x_simclr",
         # "resnet50-2x_simclr",
         # "resnet50-4x_simclr",
-        sin_names[arch.replace("vone_", "")],
+        # sin_names[arch.replace("vone_", "")],
+        "humans",
     ]
     # model_names = [
     #     f"{arch}_normal",
@@ -73,6 +75,7 @@ if __name__ == "__main__":
     #     # "resnet50-2x_simclr",
     #     # "resnet50-4x_simclr",
     #     sin_names[arch.replace("vone_", "")],
+    #     "humans",
     # ]
     # model_names = [
     #     f"{arch}_normal",
@@ -116,17 +119,19 @@ if __name__ == "__main__":
     )
     # plot shape bias
     for model_name in model_names:
-        ax.bar(
-            model_name,
-            shape_bias[model_name],
-            color=colors[model_name],
-            hatch="///" if "vone_" in model_name else None,
-            edgecolor="w",
-            # width=0.5,
-        )
-    ax.bar("Humans", 0.96, color=colors["humans"],
-           # width=0.5,
-           )
+        if model_name == "humans":
+            ax.bar("Humans", 0.96, color=colors["humans"],
+                   # width=0.5,
+                   )
+        else:
+            ax.bar(
+                model_name,
+                shape_bias[model_name],
+                color=colors[model_name],
+                hatch="///" if "vone_" in model_name else None,
+                edgecolor="w",
+                # width=0.5,
+            )
 
     # plot accuracy
     for model_name in model_names:

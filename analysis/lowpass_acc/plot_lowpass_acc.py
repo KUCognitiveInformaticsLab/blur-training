@@ -137,6 +137,8 @@ if __name__ == "__main__":
     for model_name in model_names:
         # ax.plot(x[0], acc[model_name][0], marker="o", color=colors[model_name])
         if model_name == "humans":
+            if test_dataset == "imagenet1000":
+                continue
             # plot humans data
             ax.plot(
                 [0, 4, 8],
@@ -159,8 +161,14 @@ if __name__ == "__main__":
             )
 
     # plot chance level performance
+    if test_dataset == "imagenet16":
+        chance_rate = [1 / 16]
+    elif test_dataset == "imagenet1000" and metrics == "acc1":
+        chance_rate = [1 / 1000]
+    elif test_dataset == "imagenet1000" and metrics == "acc5":
+        chance_rate = [5 / 1000]
     plt.hlines(
-        [1 / 16],
+        chance_rate,
         xmin=0,
         xmax=len(x) - 1,
         colors="k",
