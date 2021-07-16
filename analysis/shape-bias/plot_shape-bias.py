@@ -74,7 +74,7 @@ if __name__ == "__main__":
     #     # "resnet50-1x_simclr",
     #     # "resnet50-2x_simclr",
     #     # "resnet50-4x_simclr",
-    #     sin_names[arch.replace("vone_", "")],
+    #     # sin_names[arch.replace("vone_", "")],
     #     "humans",
     # ]
     # model_names = [
@@ -91,20 +91,23 @@ if __name__ == "__main__":
 
     # load and get results
     for model_name in model_names:
-        if (
-            "SIN" in model_name
-            or model_name == "alexnet_vonenet"
-            or "simclr" in model_name
-        ):
-            file_path = os.path.join(
-                in_dir.replace("16", "1000"), f"correct_decisions_{model_name}.csv"
-            )
+        if model_name == "humans":
+            shape_bias[model_name] = 0.96
         else:
-            file_path = os.path.join(
-                in_dir, f"correct_decisions_{model_name}_e{epoch}.csv"
-            )
-        shape_bias[model_name] = get_shape_bias(file_path=file_path)
-        cue_conf_acc[model_name] = get_cue_conf_acc(file_path=file_path)
+            if (
+                "SIN" in model_name
+                or model_name == "alexnet_vonenet"
+                or "simclr" in model_name
+            ):
+                file_path = os.path.join(
+                    in_dir.replace("16", "1000"), f"correct_decisions_{model_name}.csv"
+                )
+            else:
+                file_path = os.path.join(
+                    in_dir, f"correct_decisions_{model_name}_e{epoch}.csv"
+                )
+            shape_bias[model_name] = get_shape_bias(file_path=file_path)
+            cue_conf_acc[model_name] = get_cue_conf_acc(file_path=file_path)
 
     # sigma to compare
     fig = plt.figure(dpi=300, figsize=(4, 5))
@@ -119,22 +122,20 @@ if __name__ == "__main__":
     )
     # plot shape bias
     for model_name in model_names:
-        if model_name == "humans":
-            ax.bar("Humans", 0.96, color=colors["humans"],
-                   # width=0.5,
-                   )
-        else:
-            ax.bar(
-                model_name,
-                shape_bias[model_name],
-                color=colors[model_name],
-                hatch="///" if "vone_" in model_name else None,
-                edgecolor="w",
-                # width=0.5,
-            )
+        ax.bar(
+            model_name,
+            shape_bias[model_name],
+            color=colors[model_name],
+            hatch="///" if "vone_" in model_name else None,
+            edgecolor="w",
+            # width=0.5,
+        )
 
     # plot accuracy
     for model_name in model_names:
+        if model_name == "humans":
+            continue
+
         ax.plot(
             model_name,
             cue_conf_acc[model_name],
