@@ -9,8 +9,6 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 if __name__ == "__main__":
-    scales = [4, 8, 16, 32]  # 1 == original
-
     arch = "alexnet"
     epoch = 60
     batch_size = 64
@@ -69,12 +67,15 @@ if __name__ == "__main__":
     ax.legend()
     # plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))
     # ax.xaxis.set_major_locator(tick.MultipleLocator(1))
-    ax.grid(which="major", linestyle="dotted")
-    ax.grid(which="minor", linestyle="dotted")
+    # ax.grid(which="major", linestyle="dotted")
+    # ax.grid(which="minor", linestyle="dotted")
+    ax.yaxis.grid(ls="dotted")
 
-    ax.set_title("Humans (Keshvari et al, 2021)", weight="bold")
+    ax.set_title("Humans (Keshvari et al., 2021)",
+                 # weight="bold"
+                 )
     # set plot file name.
-    plot_file = f"keshvari2021_results_humans.png"
+    plot_file = f"jumbled_gray_occluder_keshvari2021_humans.png"
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file), bbox_inches="tight")
@@ -119,12 +120,15 @@ if __name__ == "__main__":
     ax.legend()
     # plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))
     # ax.xaxis.set_major_locator(tick.MultipleLocator(1))
-    ax.grid(which="major", linestyle="dotted")
-    ax.grid(which="minor", linestyle="dotted")
+    # ax.grid(which="major", linestyle="dotted")
+    # ax.grid(which="minor", linestyle="dotted")
+    ax.yaxis.grid(ls="dotted")
 
-    ax.set_title("Pretrained VGG (Keshvari et al, 2021)", weight="bold")
+    ax.set_title("Pretrained VGG (Keshvari et al., 2021)",
+                 # weight="bold"
+                 )
     # set plot file name.
-    plot_file = f"keshvari2021_results_vgg.png"
+    plot_file = f"jumbled_gray_occluder_keshvari2021_vgg.png"
 
     # fig.show()
     fig.savefig(os.path.join(out_dir, plot_file), bbox_inches="tight")

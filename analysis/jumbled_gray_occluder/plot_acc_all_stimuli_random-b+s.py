@@ -55,13 +55,13 @@ if __name__ == "__main__":
     model_names = [
         f"{arch}_normal",
         # f"vone_{arch}_normal",
-        f"{arch}_all_s04",
+        # f"{arch}_all_s04",
         # f"vone_{arch}_all_s04",
         f"{arch}_mix_s04",
         # f"vone_{arch}_mix_s04",
-        # f"{arch}_random-mix_s00-04",
+        f"{arch}_random-mix_s00-04",
         # f"vone_{arch}_random-mix_s00-04",
-        f"{arch}_multi-steps",
+        # f"{arch}_multi-steps",
         # f"vone_{arch}_multi-steps",
         # f"{arch}_mix_s10",
         # f"{arch}_random-mix_s00-05",
@@ -96,11 +96,8 @@ if __name__ == "__main__":
     # ]
 
     # set plot file name.
-    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_{model_names}.png"
-    # plot_file = f"{analysis}_{metrics}_{num_classes}-class_vone_alexnet.png"
-    plot_file = f"jumbled_gray_occluder_{num_classes}-class_{model_names}.png"
-    # plot_file = f"jumbled_gray_occluder_{num_classes}-class_alexnet.png"
-    # plot_file = f"jumbled_gray_occluder_{num_classes}-class_vone_alexnet.png"
+    # plot_file = f"jumbled_gray_occluder_{num_classes}-class_{model_names}.png"
+    plot_file = f"jumbled_gray_occluder_{num_classes}-class_alexnet_random-b+s.png"
 
     x = stimuli
 
@@ -151,7 +148,7 @@ if __name__ == "__main__":
     )
 
     # set width of bars
-    barWidth = 0.2
+    barWidth = 0.25
     # barWidth = 0.4  # for B+S-Net comparison
 
     # Set position of bar on X axis
@@ -176,7 +173,7 @@ if __name__ == "__main__":
     # Add xticks on the middle of the group bars
     xticks = ["Original", "Jumbled", "Gray Occluder", "Jumbled with Gray Occluder"]
     plt.xticks(
-        [r + barWidth + 0.1 for r in range(len(acc[model_names[0]]))],
+        [r + barWidth for r in range(len(acc[model_names[0]]))],
         # [r + 0.2 for r in range(len(acc[model_names[0]]))],  # for B+S-Net comparison
         xticks,
         rotation=45,
@@ -186,10 +183,8 @@ if __name__ == "__main__":
     # plot chance level performance
     plt.hlines(
         [1 / 16],
-        xmin=-0.2,
-        # xmin=-0.3,  # for B+S-Net comparison
-        xmax=len(x) - 0.2,
-        # xmax=len(x) - 0.3,  # for B+S-Net comparison
+        xmin=-0.2,  # for B+S-Net comparison
+        xmax=len(x) - 0.3,  # for B+S-Net comparison
         colors="k",
         linestyles="dashed",
         label="Chance performance",
