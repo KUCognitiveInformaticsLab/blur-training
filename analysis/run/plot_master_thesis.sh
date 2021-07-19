@@ -20,5 +20,8 @@ python plot_acc_all_stimuli.py resnet50 16 imagenet16
 
 cd ../rsa/dist
 python compute_plot_dist.py --machine local --plot -a alexnet --models vss
+python compute_plot_dist.py --machine local --plot -a alexnet --models vss --stimuli "s-h"
 python compute_plot_dist.py --machine local --plot -a vone_alexnet --models vss
-python compute_plot_dist.py --machine local --plot -a alexnet --models vss --num_classes
+python compute_plot_dist.py --machine local --plot -a vone_alexnet --models vss --stimuli "s-h"
+python compute_plot_dist.py --machine local --plot -a alexnet --models vss --num_classes 1000
+python compute_plot_dist.py --machine local --plot -a alexnet --models vss --num_classes 1000 --stimuli "s-h"
