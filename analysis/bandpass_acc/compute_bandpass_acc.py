@@ -28,6 +28,7 @@ if __name__ == "__main__":
     compare = str(
         sys.argv[4]
     )  # models to compare e.g.: ("vss", "all_blur-training", "mix_no-blur", "mix_no-sharp")
+    server = str(sys.argv[5])  # e.g. "gpu1", "gpu2"
 
     analysis = f"bandpass_acc_{test_dataset}"
 
@@ -46,7 +47,6 @@ if __name__ == "__main__":
     )
     results_dir = f"./results/{num_classes}-class/"
 
-    server = str(sys.argv[5])
     if server == "gpu1":
         models_dir = models_dir.replace("data1", "data")
         results_dir = f"/mnt/home/sou/work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"

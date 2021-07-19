@@ -20,8 +20,9 @@ python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py vgg16 16 image
 python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py vgg16 16 imagenet16 jumbled_with_gray_occluder 32 vss
 
 cd ../bandpass_acc
-python compute_bandpass_acc.py vgg16 16 imagenet16 vss
-python compute_bandpass_confusion_matrix.py vgg16 16 imagenet16 vss
+python compute_bandpass_acc.py vgg16 16 imagenet16 vss gpu2
+python compute_bandpass_confusion_matrix.py vgg16 16 imagenet16 vss gpu2
 
-cd ../rsa/bandpass/rsm
-python compute_plot_bandpass_rsm.py vgg16 16 vss
+# not implemented yet
+#cd ../rsa/rsm
+#python compute_plot_bandpass_rsm.py vgg16 16 vss

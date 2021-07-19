@@ -20,8 +20,8 @@ python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py alexnet 16 ima
 python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py alexnet 16 imagenet16 jumbled_with_gray_occluder 32 all-blur-training
 
 cd ../bandpass_acc
-python compute_bandpass_acc.py alexnet 16 imagenet16 all-blur-training
-python compute_bandpass_confusion_matrix.py alexnet 16 imagenet16 all-blur-training
+python compute_bandpass_acc.py alexnet 16 imagenet16 all-blur-training gpu2
+python compute_bandpass_confusion_matrix.py alexnet 16 imagenet16 all-blur-training gpu2
 
 cd ../rsa/bandpass/rsm
 python compute_plot_bandpass_rsm.py alexnet 16 all-blur-training
