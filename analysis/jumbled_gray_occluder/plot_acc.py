@@ -143,7 +143,7 @@ if __name__ == "__main__":
         ax.plot(
             list(reversed(x[1:])),
             list(reversed(acc[model_name][1:])),
-            label=rename_model_name(model_name),
+            label=rename_model_name(arch=arch, model_name=model_name),
             marker="o",
             ls=lines[model_name],
             # ls=":" if model_name == f"{arch}_normal" else "-",

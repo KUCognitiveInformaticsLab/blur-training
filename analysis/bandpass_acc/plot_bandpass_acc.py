@@ -3,7 +3,6 @@ import pathlib
 import sys
 
 import matplotlib.pyplot as plt
-import matplotlib.ticker as tick
 
 # add the path to load src module
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
@@ -11,13 +10,13 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.analysis.bandpass_acc.utils import load_result
 from src.model.model_names import rename_model_name
-from src.model.plot import colors, lines
+from src.model.plot import colors, lines, get_marker
 
 
 if __name__ == "__main__":
-    arch = "alexnet"
+    arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
+    num_classes = int(sys.argv[2])  # number of last output of the models
     epoch = 60
-    num_classes = int(sys.argv[1])  # number of last output of the models
     test_dataset = "imagenet16"
     analysis = f"bandpass_acc_{test_dataset}"
 
@@ -53,7 +52,7 @@ if __name__ == "__main__":
         # f"vone_{arch}_random-mix_s00-04",
         # f"vone_{arch}_mix_s04",
         # f"vone_{arch}_multi-steps",
-        f"{arch}_trained_on_SIN",
+        # f"{arch}_trained_on_SIN",
         "humans",
     ]
 
@@ -111,7 +110,7 @@ if __name__ == "__main__":
             ax.plot(
                 ["1-2", "4-8", "16-"],
                 [0.7885, 0.6391, 0.2336],
-                label=rename_model_name(model_name),
+                label=rename_model_name(arch=arch, model_name=model_name),
                 marker="x",
                 ls=lines[model_name],
                 # ls=":" if model_name == f"{arch}_normal" else "-",
@@ -122,8 +121,8 @@ if __name__ == "__main__":
             ax.plot(
                 x[1:],
                 acc1[model_name][1:],
-                label=rename_model_name(model_name),
-                marker="o",
+                label=rename_model_name(arch=arch, model_name=model_name),
+                marker=get_marker(model_name=model_name),
                 ls=lines[model_name],
                 color=colors[model_name],
             )

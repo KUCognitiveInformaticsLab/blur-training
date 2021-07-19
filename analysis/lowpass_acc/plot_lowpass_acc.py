@@ -3,7 +3,6 @@ import pathlib
 import sys
 
 import matplotlib.pyplot as plt
-import matplotlib.ticker as tick
 import pandas as pd
 
 # add the path to load src module
@@ -11,15 +10,15 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.model.model_names import rename_model_name
-from src.model.plot import colors, lines
+from src.model.plot import colors, lines, get_marker
 
 
 if __name__ == "__main__":
-    arch = "alexnet"
+    arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
+    num_classes = int(sys.argv[2])  # number of last output of the models
     epoch = 60
-    num_classes = int(sys.argv[1])  # number of last output of the models
-    test_dataset = str(sys.argv[2])
-    metrics = str(sys.argv[3])  # ("acc1", "acc5")
+    test_dataset = str(sys.argv[3])
+    metrics = str(sys.argv[4])  # ("acc1", "acc5")
     max_sigma = 10
     analysis = f"lowpass_acc_{test_dataset}"
 
@@ -143,7 +142,7 @@ if __name__ == "__main__":
             ax.plot(
                 [0, 4, 8],
                 [0.8932, 0.7261, 0.5067],
-                label=rename_model_name(model_name),
+                label=rename_model_name(arch=arch, model_name=model_name),
                 marker="x",
                 ls=lines[model_name],
                 # ls=":" if model_name == f"{arch}_normal" else "-",
@@ -153,8 +152,8 @@ if __name__ == "__main__":
             ax.plot(
                 x,
                 acc[model_name][: max_sigma + 1],
-                label=rename_model_name(model_name),
-                marker="o",
+                label=rename_model_name(arch=arch, model_name=model_name),
+                marker=get_marker(model_name=model_name, num_classes=num_classes),
                 ls=lines[model_name],
                 # ls=":" if model_name == f"{arch}_normal" else "-",
                 color=colors[model_name],

@@ -103,7 +103,7 @@ if __name__ == "__main__":
         num_filters = mean_rsms["num_filters"]
 
         # (optional) set title
-        plot_title = f"{num_classes}-class, {rename_model_name(model_name)}"
+        plot_title = f"{num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}"
 
         # set plot filename
         plot_file = f"{analysis}_flatt_{num_classes}-class_{model_name}.png"

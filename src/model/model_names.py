@@ -156,23 +156,26 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
     )
     model_name = model_name.replace(f"untrained_alexnet", f"Untrained-alexnet")
 
-    # model_name = model_name.replace(f"{arch}_normal", f"S-{arch}")
-    # model_name = model_name.replace(f"{arch}_all", f"B-{arch}")
-    # model_name = model_name.replace(f"{arch}_mix", f"B+S-{arch}")
-    # model_name = model_name.replace(f"{arch}_multi-steps", f"B2S-{arch}")
+    model_name = model_name.replace(f"{arch}_normal", f"S-{arch}")
+    model_name = model_name.replace(f"{arch}_all", f"B-{arch}")
+    model_name = model_name.replace(f"{arch}_mix", f"B+S-{arch}")
+    model_name = model_name.replace(f"{arch}_multi-steps", f"B2S-{arch}")
+    model_name = model_name.replace(f"{arch}_random-mix", f"B+S-{arch}")
 
-    model_name = model_name.replace(f"vone_alexnet_normal", f"S-vone_alexnet")
-    model_name = model_name.replace(f"vone_alexnet_all", f"B-vone_alexnet")
-    model_name = model_name.replace(f"vone_alexnet_random-mix", f"B+S-vone_alexnet")
-    model_name = model_name.replace(f"vone_alexnet_mix", f"B+S-vone_alexnet")
-    model_name = model_name.replace(f"vone_alexnet_multi-steps", f"B2S-vone_alexnet")
-
-    model_name = model_name.replace(f"alexnet_normal", f"S-alexnet")
-    # model_name = model_name.replace(f"alexnet_normal", f"AlexNet")
-    model_name = model_name.replace(f"alexnet_all", f"B-alexnet")
-    model_name = model_name.replace(f"alexnet_random-mix", f"B+S-alexnet")
-    model_name = model_name.replace(f"alexnet_mix", f"B+S-alexnet")
-    model_name = model_name.replace(f"alexnet_multi-steps", f"B2S-alexnet")
+    # ===
+    # model_name = model_name.replace(f"vone_alexnet_normal", f"S-vone_alexnet")
+    # model_name = model_name.replace(f"vone_alexnet_all", f"B-vone_alexnet")
+    # model_name = model_name.replace(f"vone_alexnet_random-mix", f"B+S-vone_alexnet")
+    # model_name = model_name.replace(f"vone_alexnet_mix", f"B+S-vone_alexnet")
+    # model_name = model_name.replace(f"vone_alexnet_multi-steps", f"B2S-vone_alexnet")
+    #
+    # model_name = model_name.replace(f"alexnet_normal", f"S-alexnet")
+    # # model_name = model_name.replace(f"alexnet_normal", f"AlexNet")
+    # model_name = model_name.replace(f"alexnet_all", f"B-alexnet")
+    # model_name = model_name.replace(f"alexnet_random-mix", f"B+S-alexnet")
+    # model_name = model_name.replace(f"alexnet_mix", f"B+S-alexnet")
+    # model_name = model_name.replace(f"alexnet_multi-steps", f"B2S-alexnet")
+    # ===
 
     # model_name = model_name.replace(f"mix", f"B+S-{arch}_s01")
 
@@ -180,6 +183,7 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
 
     model_name = re.sub("s([0-9]+)", r"(σ=\1)", model_name)  # sigma value
     model_name = re.sub("0", "", model_name)
+    model_name = re.sub("resnet5", "resnet50", model_name)
 
     model_name = model_name.replace(f"~4", f"0~4")  # random-mix
 
@@ -191,6 +195,8 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
 
     model_name = model_name.replace("alexnet", "Net")
     # model_name = model_name.replace("alexnet", "AlexNet")
+    model_name = model_name.replace("vgg16", "VGG16")
+    model_name = model_name.replace("resnet50", "ResNet50")
 
     model_name = model_name.replace("_", " ")
 

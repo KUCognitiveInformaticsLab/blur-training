@@ -196,7 +196,7 @@ if __name__ == "__main__":
                     )
 
             plt.title(
-                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}, {rename_model_name(model_name)}, {layer}",
+                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}, {rename_model_name(arch=arch, model_name=model_name)}, {layer}",
                 fontsize=8,
             )
             # fig.tight_layout()

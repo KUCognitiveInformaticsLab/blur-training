@@ -72,7 +72,7 @@ if __name__ == "__main__":
             ).cpu()
 
         # (optional) set title
-        plot_title = f"{num_classes}-class, {rename_model_name(model_name)}"
+        plot_title = f"{num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}"
 
         # plot file path
         output_path = os.path.join(

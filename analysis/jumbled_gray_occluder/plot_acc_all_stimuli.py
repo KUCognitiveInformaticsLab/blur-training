@@ -11,19 +11,19 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.model.model_names import rename_model_name
-from src.model.plot import colors
+from src.model.plot import colors, get_hatch
 from src.analysis.classification.acc import load_acc1
 
 
 if __name__ == "__main__":
-    num_classes = int(sys.argv[1])  # number of last output of the models
-    test_dataset = str(sys.argv[2])  # test_dataset to use
+    arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
+    num_classes = int(sys.argv[2])  # number of last output of the models
+    test_dataset = str(sys.argv[3])  # test_dataset to use
     stimuli = ["original", "jumbled", "gray_occluder", "jumbled_with_gray_occluder"]
     scales = [4, 8, 16, 32]  # 1 == original
 
     metrics = "acc1"
 
-    arch = "alexnet"
     epoch = 60
     batch_size = 64
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
             color=colors[model_name],
             width=barWidth,
             edgecolor="w",
-            hatch="////" if "vone_" in model_name else None,
+            hatch=get_hatch(model_name=model_name),
             label=rename_model_name(model_name=model_name, arch=arch),
         )
         r1 = [x + barWidth for x in r1]

@@ -297,7 +297,7 @@ def plot_tSNE_each_bandpass(
 
                 if title:
                     plt.title(
-                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                        f"{analysis}, f={filter_id}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}, {layer}",
                         fontsize=8,
                     )
 
@@ -366,7 +366,7 @@ def plot_tSNE_all_bandpass(
 
             if title:
                 plt.title(
-                    f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                    f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}, {layer}",
                     fontsize=8,
                 )
 
@@ -484,7 +484,7 @@ def plot_tSNE_s_b_each_layer(
 
         if title:
             plt.title(
-                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}, {layer}",
                 fontsize=8,
             )
 
@@ -507,7 +507,7 @@ def plot_tSNE_s_b_each_layer(
         
             if title:
                 plt.title(
-                    f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                    f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}, {layer}",
                     fontsize=8,
                 )
         """
@@ -597,7 +597,7 @@ def plot_tSNE_s_b(
 
     if title:
         plt.suptitle(
-            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}",
+            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}",
             fontsize=24,
             fontweight="bold",
         )
@@ -621,7 +621,7 @@ def plot_tSNE_s_b(
 
         if title:
             plt.title(
-                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}, {layer}",
+                f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}, {layer}",
                 fontsize=8,
             )
     """
@@ -711,7 +711,7 @@ def plot_tSNE_h_l(
 
     if title:
         plt.suptitle(
-            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(model_name)}",
+            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}",
             fontsize=24,
             fontweight="bold",
         )

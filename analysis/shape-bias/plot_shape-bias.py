@@ -11,13 +11,13 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.analysis.shape_bias.shape_bias import get_shape_bias, get_cue_conf_acc
 from src.model.load_sin_pretrained_models import sin_names
-from src.model.plot import colors
+from src.model.plot import colors, get_hatch
 from src.model.model_names import rename_model_name
 
 
 if __name__ == "__main__":
-    arch = "alexnet"
-    num_classes = int(sys.argv[1])  # number of last output of the models
+    arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
+    num_classes = int(sys.argv[2])  # number of last output of the models
     epoch = 60
 
     in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/shape-bias/results/{num_classes}-class/"
@@ -126,7 +126,7 @@ if __name__ == "__main__":
             model_name,
             shape_bias[model_name],
             color=colors[model_name],
-            hatch="///" if "vone_" in model_name else None,
+            hatch=get_hatch(model_name=model_name, num_classes=num_classes),
             edgecolor="w",
             # width=0.5,
         )
