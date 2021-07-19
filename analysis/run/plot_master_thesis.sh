@@ -18,3 +18,7 @@ python plot_acc_all_stimuli.py alexnet 16 imagenet16
 python plot_acc_all_stimuli.py vgg16 16 imagenet16
 python plot_acc_all_stimuli.py resnet50 16 imagenet16
 
+cd ../rsa/dist
+python compute_plot_dist.py --machine local --plot -a alexnet --models vss
+python compute_plot_dist.py --machine local --plot -a vone_alexnet --models vss
+python compute_plot_dist.py --machine local --plot -a alexnet --models vss --num_classes

@@ -264,7 +264,7 @@ if __name__ == "__main__":
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(dist=df_dist, stimuli=args.stimuli, compare=f"separate", layers=layers,
-                      title=f"{args.num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}", plot_path=plot_path,
+                      title=f"{args.num_classes}-class, {rename_model_name(arch=args.arch, model_name=model_name)}", plot_path=plot_path,
                       excluded_labels=excluded_labels, full=args.full)
 
             plot_file = f"{analysis}_{args.num_classes}-class_{model_name}_cross.png"
@@ -273,7 +273,7 @@ if __name__ == "__main__":
             plot_path = os.path.join(plots_dir, plot_file)
 
             plot_dist(dist=df_dist, stimuli=args.stimuli, compare="cross", layers=layers,
-                      title=f"{args.num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}", plot_path=plot_path,
+                      title=f"{args.num_classes}-class, {rename_model_name(arch=args.arch, model_name=model_name)}", plot_path=plot_path,
                       excluded_labels=excluded_labels, full=args.full)
 
     print("All done!!")
