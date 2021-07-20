@@ -30,7 +30,7 @@ if __name__ == "__main__":
     batch_size = 64
     stimuli = "lowpass"
     analysis = f"{stimuli}_confusion_matrix_{test_dataset}"
-    max_sigma = 20
+    max_sigma = 10  # 20
 
     machine = "local"  # ("server", "local")
 

@@ -162,10 +162,10 @@ def rename_model_name(model_name: str, arch: str = "alexnet"):
     model_name = model_name.replace(f"{arch}_multi-steps", f"B2S-{arch}")
     model_name = model_name.replace(f"{arch}_random-mix", f"B+S-{arch}")
 
-    model_name = model_name.replace("no-blur-8label", "w/o 8 blurred labels")
-    model_name = model_name.replace("no-blur-1label", "w/o 1 blurred label")
-    model_name = model_name.replace("no-sharp-8label", "w/o 8 sharp labels")
-    model_name = model_name.replace("no-sharp-1label", "w/o 1 sharp label")
+    model_name = model_name.replace("no-blur-8label", "w/o blur-label 8~15")
+    model_name = model_name.replace("no-blur-1label", "w/o blur-label 15")
+    model_name = model_name.replace("no-sharp-8label", "w/o sharp-label 8~15")
+    model_name = model_name.replace("no-sharp-1label", "w/o sharp-label 15")
 
     # ===
     # model_name = model_name.replace(f"vone_alexnet_normal", f"S-vone_alexnet")
