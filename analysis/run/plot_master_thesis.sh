@@ -2,6 +2,7 @@ cd ../lowpass_acc
 python plot_lowpass_acc.py alexnet 16 imagenet16 acc1
 python plot_lowpass_acc.py vgg16 16 imagenet16 acc1
 python plot_lowpass_acc.py resnet50 16 imagenet16 acc1
+python plot_lowpass_confusion_matrix.py 16 imagenet16 mix_no-blur
 
 cd ../bandpass_acc
 python plot_bandpass_acc.py alexnet 16

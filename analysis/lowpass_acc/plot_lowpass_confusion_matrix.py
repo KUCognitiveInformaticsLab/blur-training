@@ -17,34 +17,24 @@ current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.analysis.lowpass_acc.lowpass_acc import plot_confusion_matrix
+from src.model.model_names import rename_model_name
 
 if __name__ == "__main__":
     # ===== args =====
     arch = "alexnet"
     num_classes = int(sys.argv[1])  # number of last output of the models
-    epoch = 60
     test_dataset = str(sys.argv[2])  # test_dataset to use
+    compare = str(sys.argv[3])  # models to compare. e.g. "vss", "mix_no-blur"
+
+    epoch = 60
     batch_size = 64
     stimuli = "lowpass"
     analysis = f"{stimuli}_confusion_matrix_{test_dataset}"
     max_sigma = 20
 
-    compare = str(sys.argv[3])  # models to compare
-
     machine = "local"  # ("server", "local")
 
     # I/O
-    models_dir = (
-        "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-            16 if num_classes == 16 else 1000  # else is (num_classes == 1000)
-        )
-        if machine == "server"
-        else (
-            "/Users/sou/lab2-mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-                16 if num_classes == 16 else 1000  # else means (num_classes == 1000)
-            )
-        )
-    )
     results_dir = (
         f"./results/{analysis}/{num_classes}-class/"
         if machine == "server"
@@ -54,7 +44,7 @@ if __name__ == "__main__":
     plots_dir = f"./plots/{analysis}/{num_classes}-class/"
     plots_server_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
 
-    assert os.path.exists(models_dir), f"{models_dir} does not exist."
+    # assert os.path.exists(models_dir), f"{models_dir} does not exist."
     os.makedirs(results_dir, exist_ok=True)
     os.makedirs(plots_dir, exist_ok=True)
 
@@ -62,19 +52,6 @@ if __name__ == "__main__":
     from src.model.model_names import get_model_names
 
     model_names = get_model_names(arch=arch, models=compare)
-
-    # model_names = [
-    #     f"{arch}_mix_p-blur_s01_no-blur-1label",
-    #     f"{arch}_mix_p-blur_s01_no-blur-8label",
-    #     f"{arch}_mix_p-blur_s04_no-blur-1label",
-    #     f"{arch}_mix_p-blur_s04_no-blur-8label",
-    #     f"{arch}_mix_p-blur_s01",
-    #     f"{arch}_mix_p-blur_s04",
-    # ]
-    #
-    # model_names = [f"{arch}_mix_s{s:02d}_no-blur-1label" for s in range(1, 5)] + [
-    #     f"{arch}_mix_s{s:02d}_no-blur-8label" for s in range(1, 5)
-    # ]
 
     print("===== arguments =====")
     print("num_classes:", num_classes)
@@ -84,8 +61,8 @@ if __name__ == "__main__":
     print()
 
     print("===== I/O =====")
-    print("IN, models_dir:", models_dir)
-    print("OUT, results_dir:", results_dir)
+    print("IN, results_dir:", results_dir)
+    print("OUT, plots_dir:", plots_dir)
     print()
 
     print("===== models to analyze =====")
@@ -121,7 +98,8 @@ if __name__ == "__main__":
             norm_conf_matrix = conf_matrix / (conf_matrix.sum() / num_classes)
 
             # plot confusion matrix
-            title = f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}"
+            # title = f"{test_dataset}, {stimuli} s{s:02d}, {num_classes}-class, {model_name}, acc={acc:.2f}"
+            title = f"{num_classes}-class, {rename_model_name(model_name)}, {stimuli} s{s:02d}"
             plot_name = f"{num_classes}-class_{model_name}_{analysis}_s{s:02d}.png"
             plot_path = os.path.join(plots_dir, plot_name)
             plot_confusion_matrix(
