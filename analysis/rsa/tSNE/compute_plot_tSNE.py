@@ -11,6 +11,7 @@ from tqdm import tqdm
 current_dir = pathlib.Path(os.path.abspath(__file__)).parent
 sys.path.append(str(current_dir) + "/../../../")
 
+from src.model.model_names import rename_model_name
 from src.analysis.rsa.bandpass.t_sne import (
     compute_tSNE_each_bandpass,
     compute_tSNE_all_bandpass,
@@ -287,6 +288,9 @@ if __name__ == "__main__":
                 file_path=result_path
             )  # (F+1, L, N, D), (N) or (L, N * (F+1), D), (N * (F+1))
 
+            # title = f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}"
+            title = f"{num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}"
+
             if "vone" in model_name:
                 layers = vone_alexnet_layers
             else:
@@ -333,7 +337,7 @@ if __name__ == "__main__":
                     n_iter=n_iter,
                     num_classes=num_classes,
                     model_name=model_name,
-                    title=True,
+                    title=title,
                 )
                 # plot each layer
                 # plot_tSNE_s_b_each_layer(
@@ -361,5 +365,5 @@ if __name__ == "__main__":
                     n_iter=n_iter,
                     num_classes=num_classes,
                     model_name=model_name,
-                    title=True,
+                    title=title,
                 )

@@ -272,7 +272,7 @@ def plot_tSNE_each_bandpass(
     n_iter,
     num_classes,
     model_name,
-    title=True,
+    title="",
 ):
     for filter_id in tqdm(
         range(num_filters + 1), desc="platting (each filters)", leave=False
@@ -341,7 +341,7 @@ def plot_tSNE_all_bandpass(
     n_iter,
     num_classes,
     model_name,
-    title=True,
+    title="",
 ):
     """
     embedded_activations (np.ndarray): (L, N * (F+1), D)
@@ -597,7 +597,7 @@ def plot_tSNE_s_b(
 
     if title:
         plt.suptitle(
-            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}",
+            title,
             fontsize=24,
             fontweight="bold",
         )
@@ -692,7 +692,7 @@ def plot_tSNE_h_l(
                         # c=colors[l],  # Change the color according to the colour
                         facecolors="none",
                         alpha=0.7,
-                        label=f"{l:02d} " + ("High" if f == 0 else "Low"),
+                        label=f"{l:02d} " + ("H" if f == 0 else "L"),
                     )
                 elif f == 1:  # low
                     ax.scatter(
@@ -705,13 +705,13 @@ def plot_tSNE_h_l(
                         c=colors[l],  # Change the color according to the colour
                         # facecolors='none',
                         alpha=0.7,
-                        label=f"{l:02d} " + ("High" if f == 0 else "Low"),
+                        label=f"{l:02d} " + ("H" if f == 0 else "L"),
                     )
                 # plt.annotate(l, xy=(x, y))
 
     if title:
         plt.suptitle(
-            f"{analysis}, p={perplexity}, i={n_iter}, {num_classes}-class, {rename_model_name(arch=arch, model_name=model_name)}",
+            title,
             fontsize=24,
             fontweight="bold",
         )

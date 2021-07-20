@@ -32,3 +32,7 @@ python compute_plot_dist.py --machine local --plot -a alexnet --models vss --num
 python compute_plot_dist.py --machine local --plot -a alexnet --models vss --num_classes 1000 --stimuli "h-l"
 
 cd ../tSNE
+python compute_plot_tSNE.py --plot -a alexnet --num_classes 16 --models vss --machine local --stimuli s-b
+python compute_plot_tSNE.py --plot -a alexnet --num_classes 16 --models vss --machine local --stimuli h-l
+python compute_plot_tSNE.py --plot -a vone_alexnet --num_classes 16 --models vss --machine local --stimuli s-b
+#python compute_plot_tSNE.py --plot -a vone_alexnet --num_classes 16 --models vss --machine local --stimuli h-l
