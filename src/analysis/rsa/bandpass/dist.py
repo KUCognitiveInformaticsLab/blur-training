@@ -905,25 +905,25 @@ def plot_dist(
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_identical_seen"].values,
-                label=f"S-B (σ={blur_sigma}), identical images, seen class",
+                label=f"S-B({blur_sigma}), identical images, seen class",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_identical_unseen"].values,
-                label=f"S-B (σ={blur_sigma}), identical images, unseen class",
+                label=f"S-B({blur_sigma}), identical images, unseen class",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_same_seen"].values,
-                label=f"S-B (σ={blur_sigma}), same classes, seen class",
+                label=f"S-B({blur_sigma}), same classes, seen class",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_same_unseen"].values,
-                label=f"S-B (σ={blur_sigma}), same classes, unseen class",
+                label=f"S-B({blur_sigma}), same classes, unseen class",
                 ls="--",
             )
 
@@ -931,39 +931,39 @@ def plot_dist(
                 ax.plot(
                     layers,
                     dist.loc["sharp-blur_different_seen"].values,
-                    label=f"S-B (σ={blur_sigma}), different classes, seen vs seen class",
+                    label=f"S-B({blur_sigma}), different classes, seen vs seen class",
                     ls=":",
                 )
                 ax.plot(
                     layers,
                     dist.loc["sharp-blur_different_seen-unseen"].values,
-                    label=f"S-B (σ={blur_sigma}), different classes, seen vs unseen class",
+                    label=f"S-B({blur_sigma}), different classes, seen vs unseen class",
                     ls=":",
                 )
                 if dist.loc["sharp-blur_different_unseen-unseen"].values.sum() != 0:
                     ax.plot(
                         layers,
                         dist.loc["sharp-blur_different_unseen-unseen"].values,
-                        label=f"S-B (σ={blur_sigma}), different classes, unseen vs unseen class",
+                        label=f"S-B({blur_sigma}), different classes, unseen vs unseen class",
                         ls=":",
                     )
         elif stimuli == "s-b":
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_identical_seen"].values,
-                label=f"S-B (σ={blur_sigma}), identical images",
+                label=f"S-B({blur_sigma}), identical images",
                 ls="-",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_same_seen"].values,
-                label=f"S-B (σ={blur_sigma}), same classes",
+                label=f"S-B({blur_sigma}), same classes",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["sharp-blur_different_seen"].values,
-                label=f"S-B (σ={blur_sigma}), different classes",
+                label=f"S-B({blur_sigma}), different classes",
                 ls=":",
             )
         elif stimuli == "s-h":
@@ -992,20 +992,23 @@ def plot_dist(
             ax.plot(
                 layers,
                 dist.loc["high-low_identical_seen"].values,
-                label=f"High(1-2)-Low(4), identical images",
+                label=f"H(1-2)-L(4), identical images",
                 ls="-",
+                c="deepskyblue",
             )
             ax.plot(
                 layers,
                 dist.loc["high-low_same_seen"].values,
-                label=f"High(1-2)-Low(4), same classes",
+                label=f"H(1-2)-L(4), same classes",
                 ls="--",
+                c="goldenrod",
             )
             ax.plot(
                 layers,
                 dist.loc["high-low_different_seen"].values,
-                label=f"High(1-2)-Low(4), different classes",
+                label=f"H(1-2)-L(4), different classes",
                 ls=":",
+                c="yellowgreen",
             )
 
     elif compare == "separate":  # S, B separately plotted
@@ -1047,13 +1050,13 @@ def plot_dist(
             ax.plot(
                 layers,
                 dist.loc["blur_same_seen"].values,
-                label=f"B (σ={blur_sigma}), same classes, seen class",
+                label=f"B ({blur_sigma}), same classes, seen class",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["blur_same_unseen"].values,
-                label=f"B (σ={blur_sigma}), same classes, unseen class",
+                label=f"B ({blur_sigma}), same classes, unseen class",
                 ls="--",
             )
 
@@ -1061,20 +1064,20 @@ def plot_dist(
                 ax.plot(
                     layers,
                     dist.loc["blur_different_seen"].values,
-                    label=f"B (σ={blur_sigma}), different classes, seen vs seen class",
+                    label=f"B ({blur_sigma}), different classes, seen vs seen class",
                     ls="--",
                 )
                 ax.plot(
                     layers,
                     dist.loc["blur_different_seen-unseen"].values,
-                    label=f"B (σ={blur_sigma}), different classes, seen vs unseen class",
+                    label=f"B ({blur_sigma}), different classes, seen vs unseen class",
                     ls="--",
                 )
                 if dist.loc["blur_different_unseen-unseen"].values.sum() != 0:
                     ax.plot(
                         layers,
                         dist.loc["blur_different_unseen-unseen"].values,
-                        label=f"B (σ={blur_sigma}), different classes, unseen vs unseen class",
+                        label=f"B ({blur_sigma}), different classes, unseen vs unseen class",
                         ls="--",
                     )
         elif stimuli == "s-b":
@@ -1093,13 +1096,13 @@ def plot_dist(
             ax.plot(
                 layers,
                 dist.loc["blur_same_seen"].values,
-                label=f"B (σ={blur_sigma}), same classes",
+                label=f"B ({blur_sigma}), same classes",
                 ls="--",
             )
             ax.plot(
                 layers,
                 dist.loc["blur_different_seen"].values,
-                label=f"B (σ={blur_sigma}), different classes",
+                label=f"B ({blur_sigma}), different classes",
                 ls="--",
             )
         elif stimuli == "s-h":
