@@ -134,11 +134,15 @@ def compute_confusion_matrix(
 def plot_confusion_matrix(
     confusion_matrix, vmin=0, vmax=1, title="", out_path="", show=False
 ):
-    sns.heatmap(confusion_matrix, vmin=vmin, vmax=vmax)
+    sns.heatmap(confusion_matrix, vmin=vmin, vmax=vmax, cmap="Reds")
+
+    plt.xlabel("Predicted labels")
+    plt.ylabel("True labels")
+
     if title:
         plt.title(title)
     if out_path:
-        plt.savefig(out_path)
+        plt.savefig(out_path, dpi=300)
     if show:
         plt.show()
     plt.close()
