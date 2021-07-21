@@ -17,7 +17,9 @@ if __name__ == "__main__":
     arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
     num_classes = int(sys.argv[2])  # number of last output of the models
     epoch = 60
-    test_dataset = "imagenet16"
+    test_dataset = str(sys.argv[3])  # "imagenet16", "imagenet1000"
+    metrics = str(sys.argv[4])  # "acc1"
+
     analysis = f"bandpass_acc_{test_dataset}"
 
     # directories and model settings
@@ -65,7 +67,6 @@ if __name__ == "__main__":
     x.insert(0, "0(original)")
 
     # read band-pass accuracy results
-    metrics = "acc1"
     acc1 = {}
     for model_name in model_names:
         # if "SIN" in model_name or "vone" in model_name:
