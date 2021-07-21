@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     # I/O
     models_dir = "/mnt/data1/pretrained_models/blur-training/imagenet{}/models/".format(
-        16 if num_classes == 16 else ""  # else is (num_classes == 1000)
+        16 if num_classes == 16 else "1000"  # else is (num_classes == 1000)
     )
     results_dir = f"./results/{num_classes}-class/"
 
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         _, test_loader = load_imagenet16(
             imagenet_path=imagenet_path, batch_size=batch_size
         )
-    elif test_dataset == "imagenet":
+    elif test_dataset == "imagenet1000":
         _, _, test_loader = load_imagenet(
             imagenet_path=imagenet_path,
             batch_size=batch_size,
