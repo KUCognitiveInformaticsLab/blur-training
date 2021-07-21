@@ -37,6 +37,5 @@ python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py alexnet 1000 i
 python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py alexnet 1000 imagenet1000 jumbled_with_gray_occluder 1000 vss
 python compute_plot_confusion_matrix_and_acc_on_jumbled_images.py alexnet 1000 imagenet1000 jumbled_with_gray_occluder 32 vss
 
-# not implemented yet
 #cd ../rsa/rsm
 #python compute_plot_bandpass_rsm.py alexnet 1000 vss
