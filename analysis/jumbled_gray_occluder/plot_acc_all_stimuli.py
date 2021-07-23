@@ -116,7 +116,6 @@ if __name__ == "__main__":
                     f"lowpass_acc_{test_dataset}_{num_classes}-class_{model_name}_{metrics}.csv",
                 )
                 results += [pd.read_csv(file_path, index_col=0).values[0][0] / 100]
-                print(results)
             else:
                 acc_all = 0
                 for div_v in scales:
