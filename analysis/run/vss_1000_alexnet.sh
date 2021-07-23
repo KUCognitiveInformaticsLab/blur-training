@@ -1,6 +1,6 @@
 #cd ../lowpass_acc
 #python compute_lowpass_acc.py alexnet 1000 imagenet1000 vss
-#python compute_lowpass_acc.py alexnet 1000 imagenet16 vss
+python compute_lowpass_acc.py alexnet 1000 imagenet16 vss
 #python compute_plot_lowpass_confusion_matrix.py alexnet 1000 imagenet1000 vss
 
 #cd ../shape-bias
@@ -8,7 +8,6 @@
 
 cd ../bandpass_acc
 python compute_bandpass_acc.py alexnet 1000 imagenet1000 vss gpu2
-python compute_bandpass_confusion_matrix.py alexnet 1000 imagenet1000 vss gpu2
 
 #cd ../jumbled_gray_occluder
 ## imagenet16

@@ -23,9 +23,10 @@ from src.model.utils import load_model
 from src.model.load_sin_pretrained_models import load_sin_model
 from src.analysis.jumbled_gray_occluder.jumbled_gray_occluder import (
     compute_confusion_matrix,
+    compute_acc,
 )
 from src.analysis.classification.confusion_matrix import plot_confusion_matrix
-from src.analysis.classification.acc import save_acc1
+from src.analysis.classification.acc import save_acc1, save_acc
 
 
 if __name__ == "__main__":
@@ -156,43 +157,66 @@ if __name__ == "__main__":
             ).to(device)
             model.num_classes = num_classes
 
-        conf_matrix, acc1 = compute_confusion_matrix(
-            model=model,
-            test_loader=test_loader,
-            stimuli=stimuli,
-            div_v=div_v,
-            div_h=div_h,
-            device=device,
-        )
+        if model.num_classes == 1000:
+            acc1, acc5 = compute_acc(
+                model=model,
+                test_loader=test_loader,
+                stimuli=stimuli,
+                div_v=div_v,
+                div_h=div_h,
+                device=device,
+            )
+            # save acc
+            acc1_name = (
+                f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_acc1.csv"
+            )
+            acc1_path = os.path.join(results_dir, acc1_name)
+            save_acc(acc=acc1, metric="acc1", file_path=acc1_path)
 
-        # save acc
-        acc1_name = (
-            f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_{metrics}.csv"
-        )
-        acc1_path = os.path.join(results_dir, acc1_name)
-        save_acc1(acc1=acc1, file_path=acc1_path)
+            acc5_name = (
+                f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_acc5.csv"
+            )
+            acc5_path = os.path.join(results_dir, acc5_name)
+            save_acc(acc=acc5, metric="acc5", file_path=acc5_path)
 
-        # save confusion matrix
-        conf_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.npy"
-        conf_path = os.path.join(results_dir, conf_name)
-        np.save(conf_path, conf_matrix)
-
-        # load confusion matrix
-        # conf_matrix = np.load(conf_path)
-
-        # normalize confusion matrix. (divided by # of each class)
-        norm_conf_matrix = conf_matrix / (conf_matrix.sum() / num_classes)
-
-        # plot confusion matrix
-        title = f"{test_dataset}, {stimuli} {div_v}x{div_h}, {num_classes}-class, {model_name}"
-        plot_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.png"
-        plot_path = os.path.join(plots_dir, plot_name)
-        plot_confusion_matrix(
-            confusion_matrix=norm_conf_matrix,
-            vmin=0,
-            vmax=1,
-            title=title,
-            out_path=plot_path,
-        )
-
+        elif model.num_classes == 16:
+            conf_matrix, acc1 = compute_confusion_matrix(
+                model=model,
+                test_loader=test_loader,
+                stimuli=stimuli,
+                div_v=div_v,
+                div_h=div_h,
+                device=device,
+            )
+    
+            # save acc
+            acc1_name = (
+                f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_{metrics}.csv"
+            )
+            acc1_path = os.path.join(results_dir, acc1_name)
+            save_acc1(acc1=acc1, file_path=acc1_path)
+    
+            # save confusion matrix
+            conf_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.npy"
+            conf_path = os.path.join(results_dir, conf_name)
+            np.save(conf_path, conf_matrix)
+    
+            # load confusion matrix
+            # conf_matrix = np.load(conf_path)
+    
+            # normalize confusion matrix. (divided by # of each class)
+            norm_conf_matrix = conf_matrix / (conf_matrix.sum() / num_classes)
+    
+            # plot confusion matrix
+            title = f"{test_dataset}, {stimuli} {div_v}x{div_h}, {num_classes}-class, {model_name}"
+            plot_name = f"{num_classes}-class_{model_name}_{analysis}_{div_v}x{div_h}_confusion_matrix.png"
+            plot_path = os.path.join(plots_dir, plot_name)
+            plot_confusion_matrix(
+                confusion_matrix=norm_conf_matrix,
+                vmin=0,
+                vmax=1,
+                title=title,
+                out_path=plot_path,
+            )
+    
     print(f"{analysis}: All done!!")
