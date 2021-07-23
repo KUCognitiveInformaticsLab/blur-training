@@ -97,7 +97,7 @@ if __name__ == "__main__":
         1,
         title=(
             f"Top-{metrics[-1]} acc. on ImageNet with band-pass filters "
-            if test_dataset == "imagenet"
+            if test_dataset == "imagenet1000"
             else f"Top-{metrics[-1]} acc. on 16-class-ImageNet with band-pass filters"
         ),
         xlabel="Band-pass filters",
@@ -118,19 +118,30 @@ if __name__ == "__main__":
                 color=colors[model_name],
             )
         else:
-            ax.plot(x[0], acc1[model_name][0], marker="o", color=colors[model_name])
+            ax.plot(
+                x[0], acc1[model_name][0],
+                marker=get_marker(model_name=model_name, num_classes=num_classes),
+                color=colors[model_name]
+            )
             ax.plot(
                 x[1:],
                 acc1[model_name][1:],
                 label=rename_model_name(arch=arch, model_name=model_name),
-                marker=get_marker(model_name=model_name),
+                marker=get_marker(model_name=model_name, num_classes=num_classes),
                 ls=lines[model_name],
                 color=colors[model_name],
             )
 
     # plot chance level performance
+    if test_dataset == "imagenet16":
+        chance = [1 / 16]
+    elif test_dataset == "imagenet1000":
+        if metrics == "acc1":
+            chance = [1 / 1000]
+        elif metrics == "acc5":
+            chance = [5 / 1000]
     plt.hlines(
-        [1 / 16],
+        chance,
         xmin=0,
         xmax=len(x) - 1,
         colors="k",
