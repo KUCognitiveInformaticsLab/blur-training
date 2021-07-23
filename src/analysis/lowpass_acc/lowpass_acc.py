@@ -44,8 +44,8 @@ def test_performance(
             sigma=i,
             device=device,
         )
-        acc1_list.append(acc1.item())
-        acc5_list.append(acc5.item())
+        acc1_list.append(acc1)
+        acc5_list.append(acc5)
 
     # range of sigma
     s = [i for i in range(max_sigma + 1)]
@@ -97,8 +97,8 @@ def calc_lowpass_acc(model, test_loader, sigma, device=torch.device("cuda:0")):
             else:
                 acc1, acc5 = accuracy(outputs, labels, topk=(1, 5))
 
-                top1.update(acc1[0], inputs.size(0))
-                top5.update(acc5[0], inputs.size(0))
+                top1.update(acc1[0].item(), inputs.size(0))
+                top5.update(acc5[0].item(), inputs.size(0))
 
     return top1.avg, top5.avg
 
