@@ -38,17 +38,20 @@ def test_performance(model, test_loader, bandpass_filters, device, out_file):
 
     # acc. of bandpass test images
     for s1, s2 in tqdm(bandpass_filters.values(), desc="bandpass filters", leave=False):
-        acc1 = compute_bandpass_acc(
+        acc1, acc5 = compute_bandpass_acc(
             model=model, test_loader=test_loader, sigma1=s1, sigma2=s2, device=device
         )
         acc1_list.append(acc1)
+        acc5_list.append(acc5)
 
     # range of sigma
     bandpass_sigmas = ["0"] + [f"{s1}-{s2}" for s1, s2 in bandpass_filters.values()]
 
     # make dataframe and save
+    # save acc1
     df = pd.DataFrame(np.array(acc1_list).reshape(1, -1), columns=bandpass_sigmas)
     df.to_csv(out_file)
+    # save acc5
     df = pd.DataFrame(np.array(acc5_list).reshape(1, -1), columns=bandpass_sigmas)
     out_file = out_file.replace("acc1", "acc5")
     df.to_csv(out_file)
@@ -115,6 +118,7 @@ def compute_bandpass_acc(
 
     return top1.avg, top5.avg
 
+
 def test_performance_bak(model, test_loader, bandpass_filters, device, out_file):
     """
     compute performance of the model
@@ -141,10 +145,6 @@ def test_performance_bak(model, test_loader, bandpass_filters, device, out_file)
     # make dataframe and save
     df = pd.DataFrame(np.array(acc1_list).reshape(1, -1), columns=bandpass_sigmas)
     df.to_csv(out_file)
-
-
-# create mapping
-mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
 
 
 def compute_bandpass_acc_bak(
