@@ -21,7 +21,7 @@ python plot_shape-bias.py resnet50 16
 cd ../jumbled_gray_occluder
 python plot_acc_all_stimuli.py alexnet 16 imagenet16
 python plot_acc_all_stimuli.py alexnet 1000 imagenet16
-python plot_acc_all_stimuli.py alexnet 1000 imagenet1000
+#python plot_acc_all_stimuli.py alexnet 1000 imagenet1000
 python plot_acc_all_stimuli.py vgg16 16 imagenet16
 python plot_acc_all_stimuli.py resnet50 16 imagenet16
 
