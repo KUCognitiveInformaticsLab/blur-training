@@ -19,10 +19,12 @@ if __name__ == "__main__":
     arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
     num_classes = int(sys.argv[2])  # number of last output of the models
     test_dataset = str(sys.argv[3])  # test_dataset to use
+    metrics = "acc1"
+    if test_dataset == "imagenet1000":
+        metrics = "acc5"
     stimuli = ["original", "jumbled", "gray_occluder", "jumbled_with_gray_occluder"]
     scales = [4, 8, 16, 32]  # 1 == original
 
-    metrics = "acc1"
 
     epoch = 60
     batch_size = 64
