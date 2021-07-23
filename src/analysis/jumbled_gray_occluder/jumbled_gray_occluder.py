@@ -104,7 +104,7 @@ def compute_acc(
 
     with torch.no_grad():
         for data in tqdm(test_loader, desc="test images", leave=False):
-            inputs, labels = data[0], data[1]
+            inputs, labels = data[0], data[1].to(device)
 
             if stimuli == "jumbled":
                 inputs = jumble_images(imgs=inputs, div_v=div_v, div_h=div_h).to(device)

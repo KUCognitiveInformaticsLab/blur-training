@@ -157,7 +157,7 @@ if __name__ == "__main__":
             ).to(device)
             model.num_classes = num_classes
 
-        if model.num_classes == 1000:
+        if model.num_classes == 1000 and test_loader.num_classes == 1000:
             acc1, acc5 = compute_acc(
                 model=model,
                 test_loader=test_loader,
@@ -179,7 +179,7 @@ if __name__ == "__main__":
             acc5_path = os.path.join(results_dir, acc5_name)
             save_acc(acc=acc5, metric="acc5", file_path=acc5_path)
 
-        elif model.num_classes == 16:
+        else:
             conf_matrix, acc1 = compute_confusion_matrix(
                 model=model,
                 test_loader=test_loader,
