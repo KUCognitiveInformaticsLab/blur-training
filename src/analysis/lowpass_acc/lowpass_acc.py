@@ -24,6 +24,10 @@ from src.utils.dictionary import get_key_from_value
 from src.dataset.imagenet16 import label_map
 
 
+# create mapping
+mapping = probabilities_to_decision.ImageNetProbabilitiesTo16ClassesMapping()
+
+
 def test_performance(
     model, test_loader, out_path, max_sigma=10, device=torch.device("cuda:0")
 ):
@@ -57,6 +61,49 @@ def test_performance(
 
 
 def calc_lowpass_acc(model, test_loader, sigma, device=torch.device("cuda:0")):
+    top1 = AverageMeter("Acc@1", ":6.2f")
+    top5 = AverageMeter("Acc@5", ":6.2f")
+
+    model.eval()
+    with torch.no_grad():
+        for data in tqdm(test_loader, desc="test images", leave=False):
+            inputs, labels = data[0], data[1].to(device)
+            if sigma != 0:
+                inputs = GaussianBlurAll(imgs=inputs, sigma=sigma)
+
+            inputs = inputs.to(device)
+
+            outputs = model(inputs)
+            if model.num_classes == 1000 and test_loader.num_classes == 16:
+                outputs = torch.nn.Softmax(dim=1)(outputs)  # softmax
+
+                correct = 0
+                for i in range(outputs.shape[0]):
+                    # get model_decision (str) by mapping outputs from 1,000 to 16
+                    model_decision = mapping.probabilities_to_decision(
+                        outputs[i]
+                            .detach()
+                            .cpu()
+                            .numpy()  # It needs to be a single output.
+                    )  # Returns: label name (str)
+
+                    # label name (str) -> label id (int)
+                    model_decision_id = get_key_from_value(label_map, model_decision)
+                    correct += float(model_decision_id == labels[i])
+
+                acc1 = (correct / outputs.shape[0]) * 100
+                top1.update(acc1, outputs.shape[0])
+
+            else:
+                acc1, acc5 = accuracy(outputs, labels, topk=(1, 5))
+
+                top1.update(acc1[0], inputs.size(0))
+                top5.update(acc5[0], inputs.size(0))
+
+    return top1.avg, top5.avg
+
+
+def calc_lowpass_acc_bak(model, test_loader, sigma, device=torch.device("cuda:0")):
     top1 = AverageMeter("Acc@1", ":6.2f")
     top5 = AverageMeter("Acc@5", ":6.2f")
 
