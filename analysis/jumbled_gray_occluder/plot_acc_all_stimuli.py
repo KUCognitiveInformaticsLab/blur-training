@@ -169,7 +169,7 @@ if __name__ == "__main__":
             color=colors[model_name],
             width=barWidth,
             edgecolor="w",
-            hatch=get_hatch(model_name=model_name),
+            hatch=get_hatch(model_name=model_name, num_classes=num_classes),
             label=rename_model_name(model_name=model_name, arch=arch),
         )
         r1 = [x + barWidth for x in r1]
