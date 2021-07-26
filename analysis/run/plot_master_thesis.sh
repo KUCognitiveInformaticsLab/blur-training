@@ -29,6 +29,7 @@ cd ../rsa/dist
 python compute_plot_dist.py --machine local --plot -a alexnet --models vss
 python compute_plot_dist.py --machine local --plot -a alexnet --models vss --stimuli "s-h"
 python compute_plot_dist.py --machine local --plot -a alexnet --models vss --stimuli "h-l"
+python compute_plot_dist.py --machine local --plot -a alexnet --models mix_no-blur
 python compute_plot_dist.py --machine local --plot -a vone_alexnet --models vss
 python compute_plot_dist.py --machine local --plot -a vone_alexnet --models vss --stimuli "s-h"
 python compute_plot_dist.py --machine local --plot -a vone_alexnet --models vss --stimuli "h-l"
