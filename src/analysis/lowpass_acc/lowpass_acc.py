@@ -179,9 +179,16 @@ def compute_confusion_matrix(
 
 
 def plot_confusion_matrix(
-    confusion_matrix, vmin=0, vmax=1, title="", out_path="", show=False
+    confusion_matrix, vmin=0, vmax=1, title="", out_path="", annot=True, show=False
 ):
-    sns.heatmap(confusion_matrix, vmin=vmin, vmax=vmax, cmap="Reds")
+    sns.heatmap(
+        confusion_matrix,
+        vmin=vmin,
+        vmax=vmax,
+        cmap="Reds",
+        annot=annot,
+        annot_kws={"fontsize": 6},
+    )
 
     plt.xlabel("Predicted labels")
     plt.ylabel("True labels")

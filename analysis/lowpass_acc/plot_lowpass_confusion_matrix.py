@@ -107,6 +107,7 @@ if __name__ == "__main__":
                 vmin=0,
                 vmax=1,
                 title=title,
+                annot=True,
                 out_path=plot_path,
             )
             if machine == "local":
@@ -117,6 +118,7 @@ if __name__ == "__main__":
                     vmin=0,
                     vmax=1,
                     title=title,
+                    annot=True,
                     out_path=plot_path,
                 )
 
