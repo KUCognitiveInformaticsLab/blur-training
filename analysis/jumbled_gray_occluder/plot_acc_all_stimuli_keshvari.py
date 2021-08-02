@@ -44,7 +44,8 @@ if __name__ == "__main__":
         acc_humans,
         color=colors,
         width=0.5,
-        # edgecolor="w",
+        edgecolor="w",
+        hatch=".",
     )
 
     # plot chance level performance
@@ -97,7 +98,7 @@ if __name__ == "__main__":
         acc_vgg,
         color=colors,
         width=0.5,
-        # edgecolor="w",
+        edgecolor="w",
     )
 
     # plot chance level performance
