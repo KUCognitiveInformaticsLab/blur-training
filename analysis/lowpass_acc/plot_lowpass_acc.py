@@ -11,7 +11,7 @@ sys.path.append(os.path.join(str(current_dir), "../../"))
 
 from src.model.model_names import rename_model_name
 from src.model.plot import colors, lines, get_marker
-
+import matplotlib.ticker as tick
 
 if __name__ == "__main__":
     arch = str(sys.argv[1])  # "resnet50", "vgg16", "alexnet"
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     ax.legend(fontsize=8)
     # ax.set_xticks(np.arange(0, max_sigma+1, 5))
     # plt.gca().yaxis.set_minor_locator(tick.MultipleLocator(10))
-    # ax.xaxis.set_major_locator(tick.MultipleLocator(1))
+    ax.xaxis.set_major_locator(tick.MultipleLocator(1))
     ax.grid(which="major")
     ax.grid(which="minor")
     # plt.xlim()
