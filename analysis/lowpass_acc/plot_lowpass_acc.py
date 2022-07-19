@@ -141,7 +141,8 @@ if __name__ == "__main__":
             # plot humans data
             ax.plot(
                 [0, 4, 8],
-                [0.8932, 0.7261, 0.5067],
+                # [0.8932, 0.7261, 0.5067],  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
+                [0.894404332129964, 0.7787851314596554, 0.5809608540925267],  # consent human data
                 label=rename_model_name(arch=arch, model_name=model_name),
                 marker="x",
                 ls=lines[model_name],

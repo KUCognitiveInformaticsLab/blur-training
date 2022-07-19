@@ -107,10 +107,12 @@ if __name__ == "__main__":
     for model_name in model_names:
         if model_name == "humans":
             # plot humans data
-            ax.plot(x[0], [0.8932], marker="x", color=colors[model_name])
+            # ax.plot(x[0], [0.8932], marker="x", color=colors[model_name])  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
+            ax.plot(x[0], [0.894404332129964], marker="x", color=colors[model_name])
             ax.plot(
                 ["1-2", "4-8", "16-"],
-                [0.7885, 0.6391, 0.2336],
+                # [0.7885, 0.6391, 0.2336],  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
+                [0.7533670033670034, 0.6387931034482759, 0.30511463844797176],
                 label=rename_model_name(arch=arch, model_name=model_name),
                 marker="x",
                 ls=lines[model_name],
