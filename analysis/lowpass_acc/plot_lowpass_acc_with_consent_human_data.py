@@ -23,9 +23,10 @@ if __name__ == "__main__":
     analysis = f"lowpass_acc_{test_dataset}"
 
     # directories and model settings
-    in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
+    # in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/results/{analysis}/{num_classes}-class/"
+    in_dir = f"/Users/sou/work/ci-lab/blur-training-dev/analysis_from_s2/lowpass_acc/results/{analysis}/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/lowpass_acc/plots/{analysis}/{num_classes}-class/"
-    out_dir = f"./plots/{analysis}/{num_classes}-class/"
+    out_dir = f"./plots/{analysis}/{num_classes}-class_with_consent_human_data/"
 
     # models to plot
     model_names = [
@@ -87,7 +88,7 @@ if __name__ == "__main__":
     ]
 
     # set plot file name.
-    plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.pdf"
+    plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_{model_names}.png"
     # plot_file = f"{analysis}_{metrics}_max-s{max_sigma}_{num_classes}-class_normal_alexnet_humans.png"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
@@ -141,8 +142,8 @@ if __name__ == "__main__":
             # plot humans data
             ax.plot(
                 [0, 4, 8],
-                [0.8932, 0.7261, 0.5067],  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
-                # [0.894404332129964, 0.7787851314596554, 0.5809608540925267],  # consent human data
+                # [0.8932, 0.7261, 0.5067],  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
+                [0.894404332129964, 0.7787851314596554, 0.5809608540925267],  # consent human data
                 label=rename_model_name(arch=arch, model_name=model_name),
                 marker="x",
                 ls=lines[model_name],

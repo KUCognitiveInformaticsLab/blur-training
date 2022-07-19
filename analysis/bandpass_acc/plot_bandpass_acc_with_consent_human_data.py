@@ -23,9 +23,10 @@ if __name__ == "__main__":
     analysis = f"bandpass_acc_{test_dataset}"
 
     # directories and model settings
-    in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
+    # in_dir = f"/Users/sou/lab2-work/blur-training-dev/analysis/bandpass_acc/results/{num_classes}-class/"
+    in_dir = f"/Users/sou/work/ci-lab/blur-training-dev/analysis_from_s2/bandpass_acc/results/{num_classes}-class/"
     # out_dir = f"/Users/sou/lab1-work/blur-training-dev/analysis/bandpass_acc/plots/{num_classes}-class/"
-    out_dir = f"./plots/{num_classes}-class/"
+    out_dir = f"./plots/{num_classes}-class_with_consent_human_data/"
 
     assert os.path.exists(in_dir), f"{in_dir} does not exist."
     if not os.path.exists(out_dir):
@@ -111,8 +112,8 @@ if __name__ == "__main__":
             ax.plot(x[0], [0.894404332129964], marker="x", color=colors[model_name])
             ax.plot(
                 ["1-2", "4-8", "16-"],
-                [0.7885, 0.6391, 0.2336],  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
-                # [0.7533670033670034, 0.6387931034482759, 0.30511463844797176],
+                # [0.7885, 0.6391, 0.2336],  # all human data  # TODO: amt_bandpass_classificationレポジトリのデータと合わない？
+                [0.7533670033670034, 0.6387931034482759, 0.30511463844797176],
                 label=rename_model_name(arch=arch, model_name=model_name),
                 marker="x",
                 ls=lines[model_name],
